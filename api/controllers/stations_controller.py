@@ -1,9 +1,9 @@
 import connexion
 import six
 
-from swagger_server.models.radio_station import RadioStation  # noqa: E501
-from swagger_server.models.search_result import SearchResult  # noqa: E501
-from swagger_server import util
+from api.models.radio_station import RadioStation  # noqa: E501
+from api.models.search_result import SearchResult  # noqa: E501
+from api import util
 
 
 def get_station_by_country_code_and_station_id(countryCode, stationId):  # noqa: E501

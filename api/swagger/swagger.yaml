@@ -45,7 +45,7 @@ paths:
               $ref: "#/definitions/SearchResult"
         "400":
           description: "Invalid query"
-      x-swagger-router-controller: "swagger_server.controllers.stations_controller"
+      x-swagger-router-controller: "api.controllers.stations_controller"
   /stations/{countryCode}/{stationId}:
     get:
       tags:
@@ -74,7 +74,7 @@ paths:
             $ref: "#/definitions/RadioStation"
         "404":
           description: "Station not found"
-      x-swagger-router-controller: "swagger_server.controllers.stations_controller"
+      x-swagger-router-controller: "api.controllers.stations_controller"
 definitions:
   SearchResult:
     type: "object"

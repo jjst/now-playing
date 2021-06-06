@@ -5,9 +5,9 @@ from __future__ import absolute_import
 from flask import json
 from six import BytesIO
 
-from swagger_server.models.radio_station import RadioStation  # noqa: E501
-from swagger_server.models.search_result import SearchResult  # noqa: E501
-from swagger_server.test import BaseTestCase
+from api.models.radio_station import RadioStation  # noqa: E501
+from api.models.search_result import SearchResult  # noqa: E501
+from api.test import BaseTestCase
 
 
 class TestStationsController(BaseTestCase):
