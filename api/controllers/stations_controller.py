@@ -3,8 +3,8 @@ import six
 
 from api.models.radio_station import RadioStation  # noqa: E501
 from api.models.now_playing import NowPlaying  # noqa: E501
-from api.models.search_result import SearchResult  # noqa: E501
-from api import util
+
+from aggregators import fip
 
 
 stations = {
@@ -26,13 +26,17 @@ def get_station_by_country_code_and_station_id(countryCode, stationId):  # noqa:
     :rtype: RadioStation
     """
     try:
-        name = stations[countryCode][stationId]
-        return RadioStation(
-            id=stationId,
-            country_code=countryCode,
-            name=name,
-            now_playing=NowPlaying(type='song', title='William Shatner - Common People')
-        )
+        now_playing_items = fip.fetch_info()
+        playing_item = next(i for i in now_playing_items if i.station_id == stationId)
+        if playing_item:
+            return RadioStation(
+                id=stationId,
+                country_code=countryCode,
+                name="i dunno lol",
+                now_playing=NowPlaying(type='song', title=playing_item.title)
+            )
+        else:
+            return {'title': "No playing data for station"}, 404
     except KeyError:
         return {'title': "Station not found"}, 404
 
