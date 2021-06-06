@@ -1,0 +1,134 @@
+---
+swagger: "2.0"
+info:
+  description: "Now Playing API."
+  version: "0.1.0"
+  title: "Now Playing API"
+  contact:
+    email: "jeremiejost@gmail.com"
+basePath: "/api"
+tags:
+- name: "stations"
+  description: "Find radio stations and what they're playing"
+  externalDocs:
+    description: "Find out more"
+    url: "https://github.com/jjst/now-playing"
+schemes:
+- "https"
+- "http"
+paths:
+  /search:
+    get:
+      tags:
+      - "stations"
+      summary: "Finds a station by name"
+      description: "Muliple tags can be provided with comma separated strings. Use\
+        \         tag1, tag2, tag3 for testing."
+      operationId: "search"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "query"
+        in: "query"
+        description: "Tags to filter by"
+        required: true
+        type: "array"
+        items:
+          type: "string"
+        collectionFormat: "multi"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/SearchResult"
+        "400":
+          description: "Invalid query"
+      x-swagger-router-controller: "swagger_server.controllers.stations_controller"
+  /stations/{countryCode}/{stationId}:
+    get:
+      tags:
+      - "stations"
+      summary: "Find pet by ID"
+      description: "Returns a radio station"
+      operationId: "get_station_by_country_code_and_station_id"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "countryCode"
+        in: "path"
+        description: "Country code of a station"
+        required: true
+        type: "string"
+      - name: "stationId"
+        in: "path"
+        description: "ID of a station"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/RadioStation"
+        "404":
+          description: "Station not found"
+      x-swagger-router-controller: "swagger_server.controllers.stations_controller"
+definitions:
+  SearchResult:
+    type: "object"
+    required:
+    - "items"
+    properties:
+      items:
+        type: "array"
+        items:
+          $ref: "#/definitions/RadioStation"
+    example:
+      items:
+      - country_code: "country_code"
+        now_playing:
+          title: "title"
+          type: "type"
+        name: "name"
+        id: "id"
+      - country_code: "country_code"
+        now_playing:
+          title: "title"
+          type: "type"
+        name: "name"
+        id: "id"
+  RadioStation:
+    type: "object"
+    required:
+    - "country_code"
+    - "id"
+    - "name"
+    - "now_playing"
+    properties:
+      id:
+        type: "string"
+      name:
+        type: "string"
+      country_code:
+        type: "string"
+      now_playing:
+        $ref: "#/definitions/NowPlaying"
+    example:
+      country_code: "country_code"
+      now_playing:
+        title: "title"
+        type: "type"
+      name: "name"
+      id: "id"
+  NowPlaying:
+    type: "object"
+    properties:
+      title:
+        type: "string"
+      type:
+        type: "string"
+    example:
+      title: "title"
+      type: "type"
