@@ -2,21 +2,31 @@ stations:
   fr:
     fip:
       name: FIP
+      favicon: https://www.fip.fr/favicons/144-144.png
     fip-rock:
       name: FIP Rock
+      favicon: https://www.fip.fr/favicons/144-144.png
     fip-pop:
       name: FIP Pop
+      favicon: https://www.fip.fr/favicons/144-144.png
     fip-groove:
       name: FIP Groove
+      favicon: https://www.fip.fr/favicons/144-144.png
     fip-electro:
       name: FIP Electro
+      favicon: https://www.fip.fr/favicons/144-144.png
     fip-reggae:
       name: FIP Reggae
+      favicon: https://www.fip.fr/favicons/144-144.png
     fip-nouveautes:
       name: FIP Nouveautés
+      favicon: https://www.fip.fr/favicons/144-144.png
     france-bleu-alsace:
       name: France Bleu Alsace
+      favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
     france-inter:
       name: France Inter
+      favicon: https://www.franceinter.fr/favicon.ico
     radiomeuh:
       name: Radio Meuh
+      favicon: https://www.radiomeuh.com/favicon-32x32.png

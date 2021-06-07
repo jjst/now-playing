@@ -22,15 +22,13 @@ paths:
       tags:
       - "stations"
       summary: "Finds a station by name"
-      description: "Muliple tags can be provided with comma separated strings. Use\
-        \         tag1, tag2, tag3 for testing."
       operationId: "search"
       produces:
       - "application/json"
       parameters:
       - name: "query"
         in: "query"
-        description: "Tags to filter by"
+        description: "Search query"
         required: true
         type: "array"
         items:
@@ -111,6 +109,9 @@ definitions:
         type: "string"
       name:
         type: "string"
+      favicon:
+        type: "string"
+        format: uri
       country_code:
         type: "string"
       now_playing:
