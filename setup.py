@@ -3,8 +3,8 @@
 import sys
 from setuptools import setup, find_packages
 
-NAME = "api"
-VERSION = "1.0.0"
+NAME = "now-playing-api"
+VERSION = "0.1.0"
 
 # To install the library, run the following
 #
@@ -24,7 +24,9 @@ setup(
     keywords=["Swagger", "Now Playing API"],
     install_requires=REQUIRES,
     packages=find_packages(),
-    package_data={'': ['swagger/swagger.yaml']},
+    package_data={
+        '': ['swagger/swagger.yaml', 'config/*.yaml']
+    },
     include_package_data=True,
     entry_points={
         'console_scripts': ['api=api.__main__:main']},

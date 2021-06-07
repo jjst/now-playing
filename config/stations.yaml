@@ -1,0 +1,22 @@
+stations:
+  fr:
+    fip:
+      name: FIP
+    fip-rock:
+      name: FIP Rock
+    fip-pop:
+      name: FIP Pop
+    fip-groove:
+      name: FIP Groove
+    fip-electro:
+      name: FIP Electro
+    fip-reggae:
+      name: FIP Reggae
+    fip-nouveautes:
+      name: FIP Nouveautés
+    france-bleu-alsace:
+      name: France Bleu Alsace
+    france-inter:
+      name: France Inter
+    radiomeuh:
+      name: Radio Meuh

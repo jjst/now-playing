@@ -9,7 +9,7 @@ def fetch():
     data = response.json()
     song = data[0]
     title = song['artist'] + " - " + song['titre']
-    return PlayingItem('fr', 'radiomeuh', 'song', title, song)
+    return [PlayingItem('fr', 'radiomeuh', 'song', title, song)]
 
 
 if __name__ == '__main__':

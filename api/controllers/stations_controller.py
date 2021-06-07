@@ -1,17 +1,16 @@
 import connexion
 import six
+import yaml
 
 from api.models.radio_station import RadioStation  # noqa: E501
 from api.models.now_playing import NowPlaying  # noqa: E501
 
-from aggregators import radio_meuh
+import aggregators
 
 
-stations = {
-    'fr': {
-        'fip-rock': "FIP Rock"
-    }
-}
+with open('config/stations.yaml', 'r') as cfg:
+    stations = yaml.safe_load(cfg)['stations']
+
 
 def get_station_by_country_code_and_station_id(countryCode, stationId):  # noqa: E501
     """Find pet by ID
@@ -26,17 +25,25 @@ def get_station_by_country_code_and_station_id(countryCode, stationId):  # noqa:
     :rtype: RadioStation
     """
     try:
-        now_playing_items = radio_meuh.fetch()
-        playing_item = next(i for i in now_playing_items if i.station_id == stationId)
-        if playing_item:
+        station = stations[countryCode][stationId]
+        station_name = station['name']
+        aggregator = aggregators.aggregator_for_station(country_code=countryCode, station_id=stationId)
+        try:
+            now_playing_items = aggregator.fetch()
+            playing_item = next(i for i in now_playing_items if i.station_id == stationId)
             return RadioStation(
                 id=stationId,
                 country_code=countryCode,
-                name="i dunno lol",
-                now_playing=NowPlaying(type='song', title=playing_item.title)
+                name=station_name,
+                now_playing=NowPlaying(type=playing_item.type, title=playing_item.title)
             )
-        else:
-            return {'title': "No playing data for station"}, 404
+        except StopIteration:
+            return RadioStation(
+                id=stationId,
+                country_code=countryCode,
+                name=station_name,
+                now_playing=None
+            )
     except KeyError:
         return {'title': "Station not found"}, 404
 

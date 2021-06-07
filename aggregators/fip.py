@@ -1,6 +1,6 @@
 import requests
 from string import Template
-from collections import namedtuple
+from aggregators import PlayingItem
 
 stations = {
     'fip': 7,
@@ -21,8 +21,6 @@ API_URL = 'https://www.fip.fr/latest/api/graphql'
 # Using template to avoid complicated shenanigans with {}
 vars_template = Template('{"stationIds":$ids}')
 extensions_template = Template('{"persistedQuery":{"version":1,"sha256Hash":"$hash"}}')
-
-PlayingItem = namedtuple('PlayingItem', ['country_code', 'station_id', 'title', 'metadata'])
 
 
 def build_title(song):
@@ -45,7 +43,7 @@ def fetch():
     now_playing_list = json_body['data']['nowList']
     songs = [item['song'] for item in now_playing_list]
     playing_items = [
-        PlayingItem(country_code='fr', station_id=station, title=build_title(song), metadata=song)
+        PlayingItem(country_code='fr', station_id=station, type='song', title=build_title(song), metadata=song)
         for (station, song) in zip(stations.keys(), songs)
     ]
     return playing_items
