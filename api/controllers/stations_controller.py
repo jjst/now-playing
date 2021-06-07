@@ -3,6 +3,7 @@ import logging
 import six
 import yaml
 
+from api.models.radio_station_list import RadioStationList
 from api.models.radio_station import RadioStation
 from api.models.now_playing import NowPlaying
 from api.models.stream import Stream
@@ -15,7 +16,10 @@ with open('config/stations.yaml', 'r') as cfg:
 
 
 def get_stations_by_country_code(countryCode):
-    return stations[countryCode]
+    items = []
+    for station_id, data in stations[countryCode].items():
+        items.append(_build_station(data, station_id, countryCode))
+    return RadioStationList(items=items)
 
 
 def get_now_playing_by_country_code_and_station_id(countryCode, stationId):
@@ -52,18 +56,7 @@ def get_station_by_country_code_and_station_id(countryCode, stationId):  # noqa:
     """
     try:
         station = stations[countryCode][stationId]
-        station_name = station['name']
-        streams = [Stream(**s) for s in station.get('streams', [])]
-        favicon = station.get('favicon')
-        radio_station = RadioStation(
-            id=stationId,
-            country_code=countryCode,
-            name=station_name,
-            favicon=favicon,
-            streams=streams
-        )
-        return radio_station
-
+        return _build_station(station, stationId, countryCode)
     except KeyError:
         return {'title': "Station not found"}, 404
 
@@ -79,3 +72,18 @@ def search(query):  # noqa: E501
     :rtype: List[SearchResult]
     """
     return 'do some magic!'
+
+
+def _build_station(station, station_id, country_code):
+    station_name = station['name']
+    streams = [Stream(**s) for s in station.get('streams', [])]
+    favicon = station.get('favicon')
+    radio_station = RadioStation(
+        id=station_id,
+        country_code=country_code,
+        name=station_name,
+        favicon=favicon,
+        streams=streams
+    )
+    return radio_station
+
