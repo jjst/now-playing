@@ -1,4 +1,5 @@
 import connexion
+import logging
 import six
 import yaml
 
@@ -36,8 +37,10 @@ def get_station_by_country_code_and_station_id(countryCode, stationId):  # noqa:
 
         try:
             aggregator = aggregators.aggregator_for_station(country_code=countryCode, station_id=stationId)
-        except ModuleNotFoundError:
+        except ModuleNotFoundError as e:
             # Couldnt get a valid aggregator
+            logging.warn("Could not load station aggregator for station")
+            logging.exception(e)
             return radio_station
         try:
             now_playing_items = aggregator.fetch()

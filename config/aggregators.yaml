@@ -12,4 +12,6 @@ aggregators:
       - fr/fip-electro
       - fr/fip-nouveautes
       - fr/fip-monde
-
+  - module: france_inter
+    stations: 
+      - fr/france-inter
