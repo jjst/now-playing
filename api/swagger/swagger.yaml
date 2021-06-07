@@ -44,15 +44,37 @@ paths:
         "400":
           description: "Invalid query"
       x-swagger-router-controller: "api.controllers.stations_controller"
-  /stations/{countryCode}/{stationId}:
+  /stations/{countryCode}/:
     get:
       tags:
       - "stations"
       summary: "Find pet by ID"
+      description: "Lists radio stations by country"
+      operationId: "get_stations_by_country_code"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "countryCode"
+        in: "path"
+        description: "Country code of a station"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/RadioStation"
+        "404":
+          description: "Station not found"
+      x-swagger-router-controller: "api.controllers.stations_controller"
+  /stations/{countryCode}/{stationId}:
+    get:
+      tags:
+      - "stations"
+      summary: "Get a radio station"
       description: "Returns a radio station"
       operationId: "get_station_by_country_code_and_station_id"
       produces:
-      - "application/xml"
       - "application/json"
       parameters:
       - name: "countryCode"
@@ -70,6 +92,34 @@ paths:
           description: "successful operation"
           schema:
             $ref: "#/definitions/RadioStation"
+        "404":
+          description: "Station not found"
+      x-swagger-router-controller: "api.controllers.stations_controller"
+  /stations/{countryCode}/{stationId}/now-playing:
+    get:
+      tags:
+      - "stations"
+      summary: "Find pet by ID"
+      description: "Returns a radio station"
+      operationId: "get_now_playing_by_country_code_and_station_id"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "countryCode"
+        in: "path"
+        description: "Country code of a station"
+        required: true
+        type: "string"
+      - name: "stationId"
+        in: "path"
+        description: "ID of a station"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/NowPlaying"
         "404":
           description: "Station not found"
       x-swagger-router-controller: "api.controllers.stations_controller"
@@ -103,7 +153,6 @@ definitions:
     - "country_code"
     - "id"
     - "name"
-    - "now_playing"
     properties:
       id:
         type: "string"
@@ -114,8 +163,6 @@ definitions:
         format: uri
       country_code:
         type: "string"
-      now_playing:
-        $ref: "#/definitions/NowPlaying"
     example:
       country_code: "country_code"
       now_playing:
@@ -130,6 +177,8 @@ definitions:
         type: "string"
       type:
         type: "string"
+      metadata:
+        type: object
     example:
       title: "title"
       type: "type"

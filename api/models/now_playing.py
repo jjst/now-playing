@@ -15,26 +15,31 @@ class NowPlaying(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, title: str=None, type: str=None):  # noqa: E501
+    def __init__(self, title: str=None, type: str=None, metadata: object=None):  # noqa: E501
         """NowPlaying - a model defined in Swagger
 
         :param title: The title of this NowPlaying.  # noqa: E501
         :type title: str
         :param type: The type of this NowPlaying.  # noqa: E501
         :type type: str
+        :param metadata: The metadata of this NowPlaying.  # noqa: E501
+        :type metadata: object
         """
         self.swagger_types = {
             'title': str,
-            'type': str
+            'type': str,
+            'metadata': object
         }
 
         self.attribute_map = {
             'title': 'title',
-            'type': 'type'
+            'type': 'type',
+            'metadata': 'metadata'
         }
 
         self._title = title
         self._type = type
+        self._metadata = metadata
 
     @classmethod
     def from_dict(cls, dikt) -> 'NowPlaying':
@@ -88,3 +93,24 @@ class NowPlaying(Model):
         """
 
         self._type = type
+
+    @property
+    def metadata(self) -> object:
+        """Gets the metadata of this NowPlaying.
+
+
+        :return: The metadata of this NowPlaying.
+        :rtype: object
+        """
+        return self._metadata
+
+    @metadata.setter
+    def metadata(self, metadata: object):
+        """Sets the metadata of this NowPlaying.
+
+
+        :param metadata: The metadata of this NowPlaying.
+        :type metadata: object
+        """
+
+        self._metadata = metadata
