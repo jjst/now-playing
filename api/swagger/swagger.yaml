@@ -163,6 +163,10 @@ definitions:
         format: uri
       country_code:
         type: "string"
+      streams:
+        type: array
+        items:
+          $ref: "#/definitions/Stream"
     example:
       country_code: "country_code"
       now_playing:
@@ -170,6 +174,22 @@ definitions:
         type: "type"
       name: "name"
       id: "id"
+  Stream:
+    type: "object"
+    required:
+    - "url"
+    properties:
+      url:
+        type: "string"
+        format: url
+      quality:
+        type: "string"
+      bitrate_kbps:
+        type: integer
+        format: int32
+    example:
+      title: "title"
+      type: "type"
   NowPlaying:
     type: "object"
     properties:

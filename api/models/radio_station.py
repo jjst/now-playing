@@ -15,7 +15,7 @@ class RadioStation(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, id: str=None, name: str=None, favicon: str=None, country_code: str=None):  # noqa: E501
+    def __init__(self, id: str=None, name: str=None, favicon: str=None, country_code: str=None, streams: List[Stream]=None):  # noqa: E501
         """RadioStation - a model defined in Swagger
 
         :param id: The id of this RadioStation.  # noqa: E501
@@ -26,25 +26,30 @@ class RadioStation(Model):
         :type favicon: str
         :param country_code: The country_code of this RadioStation.  # noqa: E501
         :type country_code: str
+        :param streams: The streams of this RadioStation.  # noqa: E501
+        :type streams: List[Stream]
         """
         self.swagger_types = {
             'id': str,
             'name': str,
             'favicon': str,
-            'country_code': str
+            'country_code': str,
+            'streams': List[Stream]
         }
 
         self.attribute_map = {
             'id': 'id',
             'name': 'name',
             'favicon': 'favicon',
-            'country_code': 'country_code'
+            'country_code': 'country_code',
+            'streams': 'streams'
         }
 
         self._id = id
         self._name = name
         self._favicon = favicon
         self._country_code = country_code
+        self._streams = streams
 
     @classmethod
     def from_dict(cls, dikt) -> 'RadioStation':
@@ -146,3 +151,24 @@ class RadioStation(Model):
             raise ValueError("Invalid value for `country_code`, must not be `None`")  # noqa: E501
 
         self._country_code = country_code
+
+    @property
+    def streams(self) -> List[Stream]:
+        """Gets the streams of this RadioStation.
+
+
+        :return: The streams of this RadioStation.
+        :rtype: List[Stream]
+        """
+        return self._streams
+
+    @streams.setter
+    def streams(self, streams: List[Stream]):
+        """Sets the streams of this RadioStation.
+
+
+        :param streams: The streams of this RadioStation.
+        :type streams: List[Stream]
+        """
+
+        self._streams = streams
