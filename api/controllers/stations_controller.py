@@ -3,8 +3,9 @@ import logging
 import six
 import yaml
 
-from api.models.radio_station import RadioStation  # noqa: E501
-from api.models.now_playing import NowPlaying  # noqa: E501
+from api.models.radio_station import RadioStation
+from api.models.now_playing import NowPlaying
+from api.models.stream import Stream
 
 import aggregators
 
@@ -13,11 +14,11 @@ with open('config/stations.yaml', 'r') as cfg:
     stations = yaml.safe_load(cfg)['stations']
 
 
-def get_stations_by_country_code(countryCode):  # noqa: E501
+def get_stations_by_country_code(countryCode):
     return stations[countryCode]
 
 
-def get_now_playing_by_country_code_and_station_id(countryCode, stationId):  # noqa: E501
+def get_now_playing_by_country_code_and_station_id(countryCode, stationId):
     try:
         _ = stations[countryCode][stationId]
     except KeyError:
@@ -52,12 +53,14 @@ def get_station_by_country_code_and_station_id(countryCode, stationId):  # noqa:
     try:
         station = stations[countryCode][stationId]
         station_name = station['name']
+        streams = [Stream(**s) for s in station['streams']]
         favicon = station.get('favicon')
         radio_station = RadioStation(
             id=stationId,
             country_code=countryCode,
             name=station_name,
-            favicon=favicon
+            favicon=favicon,
+            streams=streams
         )
         return radio_station
 
