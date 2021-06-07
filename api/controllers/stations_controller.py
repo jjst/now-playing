@@ -53,7 +53,7 @@ def get_station_by_country_code_and_station_id(countryCode, stationId):  # noqa:
     try:
         station = stations[countryCode][stationId]
         station_name = station['name']
-        streams = [Stream(**s) for s in station['streams']]
+        streams = [Stream(**s) for s in station.get('streams', [])]
         favicon = station.get('favicon')
         radio_station = RadioStation(
             id=stationId,
