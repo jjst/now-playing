@@ -31,7 +31,7 @@ def build_title(song):
     return f"{', '.join(song['interpreters'])} - {song['title']}"
 
 
-def fetch_info():
+def fetch():
     ids_str = "[" + ','.join(str(i) for i in stations.values()) + "]"
     response = requests.get(
         url=API_URL,
@@ -52,4 +52,4 @@ def fetch_info():
 
 
 if __name__ == '__main__':
-    print(fetch_info())
+    print(fetch())

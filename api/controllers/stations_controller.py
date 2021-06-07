@@ -4,7 +4,7 @@ import six
 from api.models.radio_station import RadioStation  # noqa: E501
 from api.models.now_playing import NowPlaying  # noqa: E501
 
-from aggregators import fip
+from aggregators import radio_meuh
 
 
 stations = {
@@ -26,7 +26,7 @@ def get_station_by_country_code_and_station_id(countryCode, stationId):  # noqa:
     :rtype: RadioStation
     """
     try:
-        now_playing_items = fip.fetch_info()
+        now_playing_items = radio_meuh.fetch()
         playing_item = next(i for i in now_playing_items if i.station_id == stationId)
         if playing_item:
             return RadioStation(
