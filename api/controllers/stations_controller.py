@@ -28,10 +28,12 @@ def get_station_by_country_code_and_station_id(countryCode, stationId):  # noqa:
     try:
         station = stations[countryCode][stationId]
         station_name = station['name']
+        favicon = station.get('favicon')
         radio_station = RadioStation(
             id=stationId,
             country_code=countryCode,
             name=station_name,
+            favicon=favicon,
             now_playing=None
         )
 
