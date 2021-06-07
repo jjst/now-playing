@@ -11,6 +11,6 @@ COPY . /usr/src/app
 
 EXPOSE 8080
 
-ENTRYPOINT ["python3"]
+ENTRYPOINT ["waitress-serve"]
 
-CMD ["-m", "api"]
+CMD ["api:app"]
