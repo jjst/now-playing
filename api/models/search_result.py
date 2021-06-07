@@ -7,7 +7,6 @@ from typing import List, Dict  # noqa: F401
 
 from api.models.base_model_ import Model
 from api import util
-from api.models.radio_station import RadioStation
 
 
 class SearchResult(Model):
