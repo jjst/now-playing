@@ -21,7 +21,7 @@ paths:
     get:
       tags:
       - "stations"
-      summary: "Finds a station by name"
+      summary: "Find a station by name"
       operationId: "search"
       produces:
       - "application/json"
@@ -38,9 +38,7 @@ paths:
         "200":
           description: "successful operation"
           schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/SearchResult"
+            $ref: "#/definitions/SearchResult"
         "400":
           description: "Invalid query"
       x-swagger-router-controller: "api.controllers.stations_controller"
@@ -48,8 +46,8 @@ paths:
     get:
       tags:
       - "stations"
-      summary: "Find pet by ID"
-      description: "Lists radio stations by country"
+      summary: "List all stations by country code"
+      description: "Gets all radio stations in a given country represented by its country code"
       operationId: "get_stations_by_country_code"
       produces:
       - "application/json"
@@ -63,7 +61,7 @@ paths:
         "200":
           description: "successful operation"
           schema:
-            $ref: "#/definitions/RadioStation"
+            $ref: "#/definitions/RadioStationList"
         "404":
           description: "Station not found"
       x-swagger-router-controller: "api.controllers.stations_controller"
@@ -71,7 +69,7 @@ paths:
     get:
       tags:
       - "stations"
-      summary: "Get a radio station"
+      summary: "Get radio station information"
       description: "Returns a radio station"
       operationId: "get_station_by_country_code_and_station_id"
       produces:
@@ -99,8 +97,8 @@ paths:
     get:
       tags:
       - "stations"
-      summary: "Find pet by ID"
-      description: "Returns a radio station"
+      summary: "Get now playing information for a given station"
+      description: "Returns what a radio station is currently playing. This will return a song or programme title."
       operationId: "get_now_playing_by_country_code_and_station_id"
       produces:
       - "application/json"
@@ -133,20 +131,15 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/RadioStation"
-    example:
+  RadioStationList:
+    type: "object"
+    required:
+    - "items"
+    properties:
       items:
-      - country_code: "country_code"
-        now_playing:
-          title: "title"
-          type: "type"
-        name: "name"
-        id: "id"
-      - country_code: "country_code"
-        now_playing:
-          title: "title"
-          type: "type"
-        name: "name"
-        id: "id"
+        type: "array"
+        items:
+          $ref: "#/definitions/RadioStation"
   RadioStation:
     type: "object"
     required:
@@ -168,12 +161,12 @@ definitions:
         items:
           $ref: "#/definitions/Stream"
     example:
-      country_code: "country_code"
-      now_playing:
-        title: "title"
-        type: "type"
-      name: "name"
-      id: "id"
+      country_code: "fr"
+      id: "radiomeuh"
+      name: "Radio Meuh"
+      streams:
+        - url: "http://radiomeuh.ice.infomaniak.ch/radiomeuh-128.mp3"
+          bitrate_kbps: 128
   Stream:
     type: "object"
     required:
@@ -188,8 +181,8 @@ definitions:
         type: integer
         format: int32
     example:
-      title: "title"
-      type: "type"
+      url: "http://radiomeuh.ice.infomaniak.ch/radiomeuh-128.mp3"
+      bitrate_kbps: 128
   NowPlaying:
     type: "object"
     properties:
@@ -200,5 +193,5 @@ definitions:
       metadata:
         type: object
     example:
-      title: "title"
-      type: "type"
+      title: "Europe - The Final Countdown"
+      type: "song"
