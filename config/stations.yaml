@@ -3,26 +3,38 @@ stations:
     fip:
       name: FIP
       favicon: https://www.fip.fr/favicons/144-144.png
+      streams:
+        - url: https://icecast.radiofrance.fr/fip-midfi.mp3
     fip-rock:
       name: FIP Rock
       favicon: https://www.fip.fr/favicons/144-144.png
       streams:
-        - url: https://icecast.radiofrance.fr/fiprock-midfi.mp3?id=radiofrance
+        - url: https://icecast.radiofrance.fr/fiprock-midfi.mp3
     fip-pop:
       name: FIP Pop
       favicon: https://www.fip.fr/favicons/144-144.png
+      streams:
+        - url: https://icecast.radiofrance.fr/fippop-midfi.mp3
     fip-groove:
       name: FIP Groove
       favicon: https://www.fip.fr/favicons/144-144.png
+      streams:
+        - url: https://icecast.radiofrance.fr/fipgroove-midfi.mp3
     fip-electro:
       name: FIP Electro
       favicon: https://www.fip.fr/favicons/144-144.png
+      streams:
+        - url: https://icecast.radiofrance.fr/fipelectro-midfi.mp3
     fip-reggae:
       name: FIP Reggae
       favicon: https://www.fip.fr/favicons/144-144.png
+      streams:
+        - url: https://icecast.radiofrance.fr/fipreggae-midfi.mp3
     fip-nouveautes:
       name: FIP Nouveautés
       favicon: https://www.fip.fr/favicons/144-144.png
+      streams:
+        - url: https://icecast.radiofrance.fr/fipnouveautes-midfi.mp3
     france-bleu-alsace:
       name: France Bleu Alsace
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
