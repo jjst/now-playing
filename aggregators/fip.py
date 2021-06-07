@@ -13,7 +13,6 @@ stations = {
     'fip-reggae': 71,
     'fip-nouveautes': 70
 }
-station_ids = [7, 64, 65, 66, 78, 74, 69, 71, 70]
 persisted_query_hash = "151ca055b816d28507dae07f9c036c02031ed54e18defc3d16feee2551e9a731"
 
 API_URL = 'https://www.fip.fr/latest/api/graphql'

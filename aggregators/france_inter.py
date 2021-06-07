@@ -5,7 +5,9 @@ from aggregators import PlayingItem
 
 stations = {
     "france-inter": "https://www.franceinter.fr/programmes",
-    "france-bleu-alsace": "https://www.francebleu.fr/grid/alsace/1623084241"
+    "france-bleu-alsace": "https://www.francebleu.fr/grid/alsace/1623084241",
+    "france-bleu-belfort-montbeliard": "https://www.francebleu.fr/grid/belfort-montbeliard/1623084381",
+    "france-bleu-armorique": "https://www.francebleu.fr/grid/armorique/1623086990"
 }
 
 

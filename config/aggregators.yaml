@@ -16,3 +16,5 @@ aggregators:
     stations: 
       - fr/france-inter
       - fr/france-bleu-alsace
+      - fr/france-bleu-belfort-montbeliard
+      - fr/france-bleu-armorique

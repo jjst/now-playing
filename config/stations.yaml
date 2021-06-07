@@ -26,6 +26,12 @@ stations:
     france-bleu-alsace:
       name: France Bleu Alsace
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
+    france-bleu-armorique:
+      name: France Bleu Armorique
+      favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
+    france-bleu-belfort-montbeliard:
+      name: France Bleu Belfort-Montbéliard
+      favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
     france-inter:
       name: France Inter
       favicon: https://www.franceinter.fr/favicon.ico
