@@ -23,7 +23,7 @@ def get_stations_by_country_code(countryCode):
 
 
 def get_now_playing_by_country_code_and_station_id(countryCode, stationId):
-    logging.info("Getting now playing information for '{countryCode}/{stationId}'")
+    logging.info(f"Getting now playing information for station id: '{countryCode}/{stationId}'")
     try:
         _ = stations[countryCode][stationId]
     except KeyError:
