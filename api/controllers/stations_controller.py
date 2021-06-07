@@ -27,23 +27,25 @@ def get_station_by_country_code_and_station_id(countryCode, stationId):  # noqa:
     try:
         station = stations[countryCode][stationId]
         station_name = station['name']
-        aggregator = aggregators.aggregator_for_station(country_code=countryCode, station_id=stationId)
+        radio_station = RadioStation(
+            id=stationId,
+            country_code=countryCode,
+            name=station_name,
+            now_playing=None
+        )
+
+        try:
+            aggregator = aggregators.aggregator_for_station(country_code=countryCode, station_id=stationId)
+        except ModuleNotFoundError:
+            # Couldnt get a valid aggregator
+            return radio_station
         try:
             now_playing_items = aggregator.fetch()
             playing_item = next(i for i in now_playing_items if i.station_id == stationId)
-            return RadioStation(
-                id=stationId,
-                country_code=countryCode,
-                name=station_name,
-                now_playing=NowPlaying(type=playing_item.type, title=playing_item.title)
-            )
+            radio_station.now_playing = NowPlaying(type=playing_item.type, title=playing_item.title)
         except StopIteration:
-            return RadioStation(
-                id=stationId,
-                country_code=countryCode,
-                name=station_name,
-                now_playing=None
-            )
+            pass
+        return radio_station
     except KeyError:
         return {'title': "Station not found"}, 404
 
