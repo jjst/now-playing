@@ -23,6 +23,7 @@ def get_stations_by_country_code(countryCode):
 
 
 def get_now_playing_by_country_code_and_station_id(countryCode, stationId):
+    logging.info("Getting now playing information for '{countryCode}/{stationId}'")
     try:
         _ = stations[countryCode][stationId]
     except KeyError:
@@ -33,13 +34,13 @@ def get_now_playing_by_country_code_and_station_id(countryCode, stationId):
         # Couldnt get a valid aggregator
         logging.warn("Could not load station aggregator for station")
         logging.exception(e)
-        return {'title': "Could not load aggregator for station"}, 503
+        return {'title': "Could not load aggregator for station"}, 500
     try:
-        now_playing_items = aggregator.fetch()
+        now_playing_items = aggregator.fetch(countryCode, stationId)
         playing_item = next(i for i in now_playing_items if i.station_id == stationId)
         return NowPlaying(type=playing_item.type, title=playing_item.title)
     except StopIteration:
-        return {'title': "Could not fetch now playing information"}, 503
+        return {'title': "Could not fetch now playing information"}, 500
 
 
 def get_station_by_country_code_and_station_id(countryCode, stationId):  # noqa: E501

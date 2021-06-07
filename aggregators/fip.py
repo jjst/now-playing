@@ -29,7 +29,7 @@ def build_title(song):
     return f"{', '.join(song['interpreters'])} - {song['title']}"
 
 
-def fetch():
+def fetch(country_code, station_id):
     ids_str = "[" + ','.join(str(i) for i in stations.values()) + "]"
     response = requests.get(
         url=API_URL,
@@ -47,7 +47,3 @@ def fetch():
         for (station, song) in zip(stations.keys(), songs)
     ]
     return playing_items
-
-
-if __name__ == '__main__':
-    print(fetch())
