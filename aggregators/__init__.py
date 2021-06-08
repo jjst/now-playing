@@ -1,4 +1,5 @@
 import importlib
+import logging
 import yaml
 from dataclasses import dataclass, field
 
@@ -19,7 +20,11 @@ def load_aggregators():
         for country_code, stations in stations_cfg.items():
             for station_id, station_config in stations.items():
                 # FIXME only loading first configured aggregator rn
-                aggregators[(country_code, station_id)] = station_config['aggregators'][0]['module']
+                try:
+                    aggregators[(country_code, station_id)] = station_config['aggregators']['now-playing'][0]['module']
+                except TypeError as e:
+                    logging.error(f"Failed to load aggregator for station '{country_code}/{station_id}'")
+                    logging.exception(e)
     return aggregators
 
 
