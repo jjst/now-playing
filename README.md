@@ -11,7 +11,7 @@ is an example of building a swagger-enabled Flask server.
 This example uses the [Connexion](https://github.com/zalando/connexion) library on top of Flask.
 
 ## Requirements
-Python 3.5.2+
+Python 3.9+
 
 ## Usage
 To run the server, please execute the following from the root directory:
