@@ -14,22 +14,14 @@ class TestStationsController(BaseTestCase):
     """StationsController integration test stubs"""
 
     def test_get_station_by_country_code_and_station_id(self):
-        """Test case for get_station_by_country_code_and_station_id
-
-        Find pet by ID
-        """
         response = self.client.open(
-            '/api/stations/{countryCode}/{stationId}'.format(countryCode='countryCode_example', stationId='stationId_example'),
+            '/api/stations/{countryCode}/{stationId}'.format(countryCode='fr', stationId='radiomeuh'),
             method='GET')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
     def test_search(self):
-        """Test case for search
-
-        Finds a station by name
-        """
-        query_string = [('query', 'query_example')]
+        query_string = [('query', 'meuh')]
         response = self.client.open(
             '/api/search',
             method='GET',
