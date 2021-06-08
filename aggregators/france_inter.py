@@ -1,4 +1,3 @@
-import requests
 from datetime import datetime
 
 from aggregators import PlayingItem
@@ -11,9 +10,9 @@ stations = {
 }
 
 
-def fetch(country_code, station_id):
+def fetch(session, request_type, country_code, station_id):
     url = stations[station_id]
-    response = requests.get(
+    response = session.get(
         url=url,
         params={'xmlHttpRequest': 1, 'ignoreGridHour': 1}
     )

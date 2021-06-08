@@ -1,4 +1,3 @@
-import requests
 from string import Template
 from aggregators import PlayingItem
 
@@ -28,9 +27,9 @@ def build_title(song):
     return f"{', '.join(song['interpreters'])} - {song['title']}"
 
 
-def fetch(country_code, station_id):
+def fetch(session, request_type, country_code, station_id):
     ids_str = "[" + ','.join(str(i) for i in stations.values()) + "]"
-    response = requests.get(
+    response = session.get(
         url=API_URL,
         params={
             'operationName': 'NowList',
