@@ -1,6 +1,10 @@
 import sys
 import aggregators
 import requests
+import logging
+
+
+logging.basicConfig(encoding='utf-8', level=logging.DEBUG)
 
 
 def main():
