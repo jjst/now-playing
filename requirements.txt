@@ -18,6 +18,7 @@ pyrsistent==0.17.3
 python-dateutil==2.6.0
 PyYAML==5.4.1
 requests==2.25.1
+requests-cache==0.6.4
 six==1.16.0
 swagger-spec-validator==2.7.3
 swagger-ui-bundle==0.0.8
