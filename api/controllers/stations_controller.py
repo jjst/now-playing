@@ -1,5 +1,7 @@
 import connexion
 import logging
+import os
+import requests_cache
 import six
 import yaml
 
@@ -13,6 +15,9 @@ import aggregators
 
 with open('config/stations.yaml', 'r') as cfg:
     stations = yaml.safe_load(cfg)['stations']
+
+cache_ttl = int(os.environ.get("REQUEST_CACHE_TTL_SECONDS", "3"))
+session = requests_cache.CachedSession(backend='memory', expire_after=cache_ttl)
 
 
 def get_stations_by_country_code(countryCode):
@@ -36,7 +41,7 @@ def get_now_playing_by_country_code_and_station_id(countryCode, stationId):
         logging.exception(e)
         return {'title': "Could not load aggregator for station"}, 500
     try:
-        now_playing_items = aggregator.fetch(countryCode, stationId)
+        now_playing_items = aggregator.fetch(session, 'now-playing', countryCode, stationId)
         playing_item = next(i for i in now_playing_items if i.station_id == stationId)
         return NowPlaying(type=playing_item.type, title=playing_item.title)
     except StopIteration:
