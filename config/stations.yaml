@@ -5,59 +5,81 @@ stations:
       favicon: https://www.fip.fr/favicons/144-144.png
       streams:
         - url: https://icecast.radiofrance.fr/fip-midfi.mp3
+      aggregators:
+        - module: fip
     fip-rock:
       name: FIP Rock
       favicon: https://www.fip.fr/favicons/144-144.png
       streams:
         - url: https://icecast.radiofrance.fr/fiprock-midfi.mp3
+      aggregators:
+        - module: fip
     fip-pop:
       name: FIP Pop
       favicon: https://www.fip.fr/favicons/144-144.png
       streams:
         - url: https://icecast.radiofrance.fr/fippop-midfi.mp3
+      aggregators:
+        - module: fip
     fip-groove:
       name: FIP Groove
       favicon: https://www.fip.fr/favicons/144-144.png
       streams:
         - url: https://icecast.radiofrance.fr/fipgroove-midfi.mp3
+      aggregators:
+        - module: fip
     fip-electro:
       name: FIP Electro
       favicon: https://www.fip.fr/favicons/144-144.png
       streams:
         - url: https://icecast.radiofrance.fr/fipelectro-midfi.mp3
+      aggregators:
+        - module: fip
     fip-reggae:
       name: FIP Reggae
       favicon: https://www.fip.fr/favicons/144-144.png
       streams:
         - url: https://icecast.radiofrance.fr/fipreggae-midfi.mp3
+      aggregators:
+        - module: fip
     fip-nouveautes:
       name: FIP Nouveautés
       favicon: https://www.fip.fr/favicons/144-144.png
       streams:
         - url: https://icecast.radiofrance.fr/fipnouveautes-midfi.mp3
+      aggregators:
+        - module: fip
     france-bleu-alsace:
       name: France Bleu Alsace
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
+      aggregators:
+        - module: france_inter
     france-bleu-armorique:
       name: France Bleu Armorique
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
+      aggregators:
+        - module: france_inter
     france-bleu-belfort-montbeliard:
       name: France Bleu Belfort-Montbéliard
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
+      aggregators:
+        - module: france_inter
     france-inter:
       name: France Inter
       favicon: https://www.franceinter.fr/favicon.ico
       streams:
         - url: http://direct.franceinter.fr/live/franceinter-midfi.mp3
+      aggregators:
+        - module: france_inter
     radiomeuh:
       name: Radio Meuh
       favicon: https://www.radiomeuh.com/favicon-32x32.png
       streams:
         - url: http://radiomeuh.ice.infomaniak.ch/radiomeuh-128.mp3
           bitrate_kbps: 128
+      aggregators:
+        - module: radio_meuh
     top-music:
       name: Top Music
-      favicon: https://www.radiomeuh.com/favicon-32x32.png
-      streams:
-        - url: http://radiomeuh.ice.infomaniak.ch/radiomeuh-128.mp3
-          bitrate_kbps: 128
+      aggregators:
+        - module: top_music

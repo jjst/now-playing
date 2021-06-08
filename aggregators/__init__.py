@@ -14,12 +14,12 @@ class PlayingItem():
 
 def load_aggregators():
     aggregators = dict()
-    with open('config/aggregators.yaml', 'r') as cfg:
-        aggregators_cfg = yaml.safe_load(cfg)['aggregators']
-        for agg in aggregators_cfg:
-            for station_full_id in agg['stations']:
-                country, short_id = station_full_id.split('/')
-                aggregators[(country, short_id)] = agg['module']
+    with open('config/stations.yaml', 'r') as cfg:
+        stations_cfg = yaml.safe_load(cfg)['stations']
+        for country_code, stations in stations_cfg.items():
+            for station_id, station_config in stations.items():
+                # FIXME only loading first configured aggregator rn
+                aggregators[(country_code, station_id)] = station_config['aggregators'][0]['module']
     return aggregators
 
 
