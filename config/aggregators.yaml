@@ -18,3 +18,6 @@ aggregators:
       - fr/france-bleu-alsace
       - fr/france-bleu-belfort-montbeliard
       - fr/france-bleu-armorique
+  - module: top_music
+    stations: 
+      - fr/top-music

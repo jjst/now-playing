@@ -55,3 +55,9 @@ stations:
       streams:
         - url: http://radiomeuh.ice.infomaniak.ch/radiomeuh-128.mp3
           bitrate_kbps: 128
+    top-music:
+      name: Top Music
+      favicon: https://www.radiomeuh.com/favicon-32x32.png
+      streams:
+        - url: http://radiomeuh.ice.infomaniak.ch/radiomeuh-128.mp3
+          bitrate_kbps: 128

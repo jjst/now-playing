@@ -1,9 +1,15 @@
-from collections import namedtuple
 import importlib
 import yaml
+from dataclasses import dataclass, field
 
 
-PlayingItem = namedtuple('PlayingItem', ['country_code', 'station_id', 'type', 'title', 'metadata'])
+@dataclass
+class PlayingItem():
+    country_code: str
+    station_id: str
+    type: str
+    title: str
+    metadata: dict = field(default_factory=dict)
 
 
 def load_aggregators():
