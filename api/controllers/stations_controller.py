@@ -39,7 +39,7 @@ def get_now_playing_by_country_code_and_station_id(countryCode, stationId):
         # Couldnt get a valid aggregator
         logging.warn("Could not load station aggregator for station")
         logging.exception(e)
-        return {'title': "Could not load aggregator for station"}, 500
+        return {'title': f"No 'now-playing' information is available for station '{countryCode}/{stationId}'"}, 404
     try:
         now_playing_items = aggregator.fetch(session, 'now-playing', countryCode, stationId)
         playing_item = next(i for i in now_playing_items if i.station_id == stationId)
@@ -49,9 +49,8 @@ def get_now_playing_by_country_code_and_station_id(countryCode, stationId):
 
 
 def get_station_by_country_code_and_station_id(countryCode, stationId):  # noqa: E501
-    """Find pet by ID
-
-    Returns a radio station # noqa: E501
+    """
+    Returns a radio station
 
     :param countryCode: Country code of a station
     :type countryCode: str
@@ -70,14 +69,11 @@ def get_station_by_country_code_and_station_id(countryCode, stationId):  # noqa:
 def search(query):  # noqa: E501
     """Finds a station by name
 
-    Muliple tags can be provided with comma separated strings. Use         tag1, tag2, tag3 for testing. # noqa: E501
-
-    :param query: Tags to filter by
-    :type query: List[str]
+    :param query: Search query
 
     :rtype: List[SearchResult]
     """
-    return 'do some magic!'
+    return []
 
 
 def _build_station(station, station_id, country_code):
@@ -92,4 +88,3 @@ def _build_station(station, station_id, country_code):
         streams=streams
     )
     return radio_station
-

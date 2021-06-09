@@ -119,7 +119,7 @@ paths:
           schema:
             $ref: "#/definitions/NowPlaying"
         "404":
-          description: "Station not found"
+          description: "now-playing information for this station is not available"
       x-swagger-router-controller: "api.controllers.stations_controller"
 definitions:
   SearchResult:
@@ -190,6 +190,9 @@ definitions:
         type: "string"
       type:
         type: "string"
+        enum:
+          - song
+          - programme
       metadata:
         type: object
     example:
