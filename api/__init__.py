@@ -3,6 +3,6 @@ import connexion
 from api import encoder
 
 
-app = connexion.FlaskApp(__name__, specification_dir='./swagger/')
+app = connexion.FlaskApp(__name__, specification_dir='./openapi/')
 app.app.json_encoder = encoder.JSONEncoder
-app.add_api('swagger.yaml', arguments={'title': 'Now Playing API'})
+app.add_api('spec.yaml', arguments={'title': 'Now Playing API'})
