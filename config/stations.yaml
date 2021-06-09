@@ -1,5 +1,10 @@
 stations:
   fr:
+    cherie-fm:
+      name: Chérie FM
+      aggregators:
+        now-playing:
+          - module: cherie_fm
     fip:
       name: FIP
       favicon: https://www.fip.fr/favicons/144-144.png
