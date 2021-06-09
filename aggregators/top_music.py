@@ -7,4 +7,4 @@ def fetch(session, request_type, country_code, station_id):
     response = session.get(url)
     response.encoding = 'latin_1'
     title = response.text
-    return [PlayingItem(country_code='fr', station_id='top-music', type='song', title=title)]
+    return [PlayingItem(type='song', title=title)]

@@ -41,7 +41,7 @@ def fetch(session, request_type, country_code, station_id):
     now_playing_list = json_body['data']['nowList']
     songs = [item['song'] for item in now_playing_list]
     playing_items = [
-        PlayingItem(country_code='fr', station_id=station_id, type='song', title=build_title(song), metadata=song)
+        PlayingItem(type='song', title=build_title(song), metadata=song)
         for song in songs
     ]
     return playing_items

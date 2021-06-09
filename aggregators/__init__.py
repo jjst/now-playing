@@ -6,8 +6,6 @@ from dataclasses import dataclass, field
 
 @dataclass
 class PlayingItem():
-    country_code: str
-    station_id: str
     type: str
     title: str
     metadata: dict = field(default_factory=dict)

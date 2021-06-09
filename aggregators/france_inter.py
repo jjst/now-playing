@@ -29,4 +29,4 @@ def fetch_url(session, url, country_code, station_id):
                 title = item['conceptTitle']
             else:
                 title = item['conceptTitle'] + " - " + item['expressionTitle']
-            return [PlayingItem(country_code, station_id, 'programme', title, item)]
+            return [PlayingItem('programme', title, item)]
