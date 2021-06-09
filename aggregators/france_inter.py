@@ -7,10 +7,10 @@ url = "https://www.franceinter.fr/programmes"
 
 
 def fetch(session, request_type, country_code, station_id):
-    return fetch_url(session, url, country_code, station_id)
+    return fetch_url(session, url)
 
 
-def fetch_url(session, url, country_code, station_id):
+def fetch_url(session, url):
     response = session.get(
         url=url,
         params={'xmlHttpRequest': 1, 'ignoreGridHour': 1}
