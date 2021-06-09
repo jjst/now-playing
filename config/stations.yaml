@@ -451,4 +451,7 @@ stations:
       name: Top Music
       aggregators:
         now-playing:
-          - module: top_music
+          - module: plain_text_aggregator
+            params:
+              url: https://www.topmusic.fr/player/widget_title.php
+              encoding: latin-1
