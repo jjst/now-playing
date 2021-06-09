@@ -27,7 +27,7 @@ def build_title(song):
     return f"{', '.join(song['interpreters'])} - {song['title']}"
 
 
-def fetch(session, request_type, country_code, station_id):
+def fetch(session, request_type, station_id):
     ids_str = "[" + str(stations[station_id]) + "]"
     response = session.get(
         url=API_URL,

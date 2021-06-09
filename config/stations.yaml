@@ -8,6 +8,8 @@ stations:
       aggregators:
         now-playing:
           - module: fip
+            params:
+              station_id:
     fip-rock:
       name: FIP Rock
       favicon: https://www.fip.fr/favicons/144-144.png
@@ -16,6 +18,8 @@ stations:
       aggregators:
         now-playing:
           - module: fip
+            params:
+              station_id:
     fip-pop:
       name: FIP Pop
       favicon: https://www.fip.fr/favicons/144-144.png
@@ -24,6 +28,8 @@ stations:
       aggregators:
         now-playing:
           - module: fip
+            params:
+              station_id:
     fip-groove:
       name: FIP Groove
       favicon: https://www.fip.fr/favicons/144-144.png
@@ -32,6 +38,8 @@ stations:
       aggregators:
         now-playing:
           - module: fip
+            params:
+              station_id:
     fip-electro:
       name: FIP Electro
       favicon: https://www.fip.fr/favicons/144-144.png
@@ -40,6 +48,8 @@ stations:
       aggregators:
         now-playing:
           - module: fip
+            params:
+              station_id:
     fip-reggae:
       name: FIP Reggae
       favicon: https://www.fip.fr/favicons/144-144.png
@@ -48,6 +58,8 @@ stations:
       aggregators:
         now-playing:
           - module: fip
+            params:
+              station_id:
     fip-nouveautes:
       name: FIP Nouveautés
       favicon: https://www.fip.fr/favicons/144-144.png
@@ -56,276 +68,368 @@ stations:
       aggregators:
         now-playing:
           - module: fip
+            params:
+              station_id:
     france-bleu-alsace:
       name: France Bleu Alsace
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-armorique:
       name: France Bleu Armorique
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-auxerre:
       name: France Bleu Auxerre
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-azur:
       name: France Bleu Azur
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-bearn:
       name: France Bleu Béarn Bigorre
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-belfort-montbeliard:
       name: France Bleu Belfort-Montbéliard
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-berry:
       name: France Bleu Berry
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-besancon:
       name: France Bleu Besançon
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-bourgogne:
       name: France Bleu Bourgogne
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-breizh-izel:
       name: France Bleu Breizh Izel
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-champagne-ardenne:
       name: France Bleu Champagne-Ardenne
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-cotentin:
       name: France Bleu Cotentin
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-creuse:
       name: France Bleu Creuse
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-drome-ardeche:
       name: France Bleu Drôme Ardèche
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-elsass:
       name: France Bleu Elsass
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-gard-lozere:
       name: France Bleu Gard Lozère
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-gascogne:
       name: France Bleu Gascogne
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-gironde:
       name: France Bleu Gironde
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-herault:
       name: France Bleu Hérault
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-isere:
       name: France Bleu Isère
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-la-rochelle:
       name: France Bleu La Rochelle
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-limousin:
       name: France Bleu Limousin
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-loire-ocean:
       name: France Bleu Loire Océan
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-lorraine-nord:
       name: France Bleu Lorraine Nord
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-maine:
       name: France Bleu Maine
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-mayenne:
       name: France Bleu Mayenne
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-nord:
       name: France Bleu Nord
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-normandie-caen:
       name: France Bleu Normandie (Calvados - Orne)
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-normandie-rouen:
       name: France Bleu Normandie (Seine-Maritime - Eure)
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-toulouse:
       name: France Bleu Occitanie
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-orleans:
       name: France Bleu Orléans
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-107-1:
       name: France Bleu Paris
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-pays-basque:
       name: France Bleu Pays Basque
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-pays-d-auvergne:
       name: France Bleu Pays d'Auvergne
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-pays-de-savoie:
       name: France Bleu Pays de Savoie
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-perigord:
       name: France Bleu Périgord
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-picardie:
       name: France Bleu Picardie
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-poitou:
       name: France Bleu Poitou
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-provence:
       name: France Bleu Provence
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-rcfm:
       name: France Bleu RCFM
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-roussillon:
       name: France Bleu Roussillon
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-saint-etienne-loire:
       name: France Bleu Saint-Étienne Loire
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-sud-lorraine:
       name: France Bleu Sud Lorraine
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-touraine:
       name: France Bleu Touraine
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-bleu-vaucluse:
       name: France Bleu Vaucluse
       favicon: https://www.francebleu.fr/favicons/favicon-32x32.png
       aggregators:
         now-playing:
         - module: france_bleu
+          params:
+            station_id:
     france-inter:
       name: France Inter
       favicon: https://www.franceinter.fr/favicon.ico

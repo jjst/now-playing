@@ -6,7 +6,7 @@ import logging
 url = "https://www.franceinter.fr/programmes"
 
 
-def fetch(session, request_type, country_code, station_id):
+def fetch(session, request_type):
     return fetch_url(session, url)
 
 
