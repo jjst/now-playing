@@ -41,8 +41,8 @@ def get_now_playing_by_country_code_and_station_id(countryCode, stationId):
         logging.exception(e)
         return {'title': f"No 'now-playing' information is available for station '{countryCode}/{stationId}'"}, 404
     try:
-        now_playing_items = aggregator.fetch(session, 'now-playing', countryCode, stationId)
-        playing_item = next(i for i in now_playing_items if i.station_id == stationId)
+        now_playing_items = aggregator(session, 'now-playing')
+        playing_item = next(iter(now_playing_items))
         return NowPlaying(type=playing_item.type, title=playing_item.title)
     except StopIteration:
         return {'title': "Could not fetch now playing information"}, 500

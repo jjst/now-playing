@@ -3,9 +3,9 @@ from aggregators import PlayingItem
 url = "https://www.radiomeuh.com/player/rtdata/tracks.json"
 
 
-def fetch(session, request_type, country_code, station_id):
+def fetch(session, request_type):
     response = session.get(url)
     data = response.json()
     song = data[0]
     title = song['artist'] + " - " + song['titre']
-    return [PlayingItem('fr', 'radiomeuh', 'song', title, song)]
+    return [PlayingItem('song', title, song)]

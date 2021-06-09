@@ -27,8 +27,8 @@ def build_title(song):
     return f"{', '.join(song['interpreters'])} - {song['title']}"
 
 
-def fetch(session, request_type, country_code, station_id):
-    ids_str = "[" + ','.join(str(i) for i in stations.values()) + "]"
+def fetch(session, request_type, station_id):
+    ids_str = "[" + str(stations[station_id]) + "]"
     response = session.get(
         url=API_URL,
         params={
@@ -41,7 +41,7 @@ def fetch(session, request_type, country_code, station_id):
     now_playing_list = json_body['data']['nowList']
     songs = [item['song'] for item in now_playing_list]
     playing_items = [
-        PlayingItem(country_code='fr', station_id=station, type='song', title=build_title(song), metadata=song)
-        for (station, song) in zip(stations.keys(), songs)
+        PlayingItem(type='song', title=build_title(song), metadata=song)
+        for song in songs
     ]
     return playing_items
