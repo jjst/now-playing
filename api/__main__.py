@@ -3,7 +3,8 @@
 from api import app
 import logging
 
-logging.basicConfig(level='DEBUG')
+# FIXME configure via config file instead
+logging.basicConfig(level='DEBUG', force=True)
 
 
 def main():

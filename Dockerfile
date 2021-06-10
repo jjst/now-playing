@@ -5,7 +5,11 @@ WORKDIR /usr/src/app
 
 COPY requirements.txt /usr/src/app/
 
-RUN pip3 install --no-cache-dir -r requirements.txt
+# Required to build grpcio
+RUN apk add g++ linux-headers && \
+    echo 'manylinux1_compatible = True' > /usr/local/lib/python3.9/site-packages/_manylinux.py && \
+    pip3 install --no-cache-dir -r requirements.txt && \
+    apk del g++
 
 COPY . /usr/src/app
 

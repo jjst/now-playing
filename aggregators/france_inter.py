@@ -17,7 +17,6 @@ def fetch_url(session, url):
     )
     now = datetime.now()
     playlist = response.json()
-    print(playlist)
     for item in playlist:
         start = datetime.fromtimestamp(item['start'])
         end = datetime.fromtimestamp(item['end'])
@@ -30,3 +29,4 @@ def fetch_url(session, url):
             else:
                 title = item['conceptTitle'] + " - " + item['expressionTitle']
             return [PlayingItem('programme', title, item)]
+    return []
