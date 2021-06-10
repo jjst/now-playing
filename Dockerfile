@@ -1,4 +1,4 @@
-FROM python:3.9-alpine3.13
+FROM jjst/alpine-python-grpcio:3.13-python3.9-grpcio-1.38.0
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
@@ -6,9 +6,7 @@ WORKDIR /usr/src/app
 COPY requirements.txt /usr/src/app/
 
 # Required to build grpcio
-RUN apk add g++ linux-headers && \
-    echo 'manylinux1_compatible = True' > /usr/local/lib/python3.9/site-packages/_manylinux.py && \
-    pip3 install --no-cache-dir -r requirements.txt
+RUN pip3 install --no-cache-dir -r requirements.txt
 
 COPY . /usr/src/app
 
