@@ -1,4 +1,4 @@
-FROM jjst/alpine-python-grpcio:3.13-python3.9-grpcio-1.30.0-r1
+FROM jjst/alpine-python-grpcio:3.13-python3.9-grpcio-1.38.0
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
