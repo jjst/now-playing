@@ -29,3 +29,6 @@ jobs:
       - name: Test
         run: |
           tox
+      - name: Build docker image
+        run: |
+          docker build .
