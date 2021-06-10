@@ -64,4 +64,7 @@ def aggregator_for_station(full_id=None, country_code=None, station_id=None):
 def load(aggregator):
     module = importlib.import_module("aggregators." + aggregator.module_name)
     fetch_func = module.fetch
-    return functools.partial(fetch_func, **aggregator.params)
+    bound_function = functools.partial(fetch_func, **aggregator.params)
+    bound_function.module_name = aggregator.module_name
+    bound_function.params = aggregator.params
+    return bound_function

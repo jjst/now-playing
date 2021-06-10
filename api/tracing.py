@@ -1,6 +1,7 @@
 import logging
 from opentelemetry.launcher import configure_opentelemetry
 from opentelemetry.instrumentation.flask import FlaskInstrumentor
+from opentelemetry.instrumentation.requests import RequestsInstrumentor
 import os
 
 
@@ -19,4 +20,5 @@ def configure_tracer(app):
       access_token=lightstep_access_token,
     )
     FlaskInstrumentor().instrument_app(app.app)
+    RequestsInstrumentor().instrument()
     logging.info("Tracing is enabled.")
