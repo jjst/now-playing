@@ -37,4 +37,8 @@ jobs:
         continue-on-error: true
       - name: Build docker image
         run: |
-          docker build .
+          docker build -t now-playing:latest .
+      - name: Test image runs
+        run: |
+          docker run --rm --name now-playing -d -p 8080:8080 now-playing:latest
+          docker top now-playing
