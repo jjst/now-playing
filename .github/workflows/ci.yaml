@@ -60,9 +60,9 @@ jobs:
       - name: Generate app spec from template
         run: |
           envsubst < ./deploy/digitalocean.template.yaml > $DEPLOY_FILE_PATH
-        echo "Generated deploy file:"
-        echo "----------------------"
-        cat $DEPLOY_FILE_PATH
+          echo "Generated deploy file:"
+          echo "----------------------"
+          cat $DEPLOY_FILE_PATH
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
         with:
