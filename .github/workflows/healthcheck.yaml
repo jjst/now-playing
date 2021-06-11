@@ -13,8 +13,14 @@ jobs:
       APP_HOSTNAME: https://now-playing-42nq5.ondigitalocean.app
       NAMESPACE: fr
     steps:
-      - run: |
-          for id in $(http $APP_HOSTNAME/api/stations/$NAMESPACE/ | jq -r '.items | .[] | .id'); do
+      - name: Setup
+        run: |
+          sudo apt install httpie jq
+      - name: Health check
+        run: |
+          stations=$(http $APP_HOSTNAME/api/stations/$NAMESPACE/ | jq -r '.items | .[] | .id')
+          echo $stations
+          for id in $stations; do
             http $APP_HOSTNAME/api/stations/$NAMESPACE/$id/now-playing
           done
 
