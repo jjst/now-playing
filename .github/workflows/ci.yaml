@@ -47,14 +47,18 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
+    env:
+      DIGITALOCEAN_APP_ID: 6ef01c83-87b1-45c2-9bbd-82dc15c19a12
     steps:
       - uses: actions/checkout@v2
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-      - name: Deploy image
-        env:
-          DIGITALOCEAN_APP_ID: 6ef01c83-87b1-45c2-9bbd-82dc15c19a12
+      - name: Update app spec
         run: |
           doctl apps update $DIGITALOCEAN_APP_ID --spec ./deploy/digitalocean.yaml
+      - name: Create deployment
+        run: |
+          doctl apps create-deployment $DIGITALOCEAN_APP_ID --wait
+
