@@ -7,7 +7,7 @@ on:
   push:
     paths:
       - '.github/workflows/healthcheck.yaml'
-      - './deploy/health-check.sh'
+      - 'deploy/health-check.sh'
 
 jobs:
   health-check:
