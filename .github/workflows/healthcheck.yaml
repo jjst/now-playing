@@ -4,6 +4,10 @@ on:
   workflow_dispatch:
   schedule:
     - cron: "*/15 * * * *"
+  push:
+    paths:
+      - '.github/workflows/healthcheck.yaml'
+      - './deploy/health-check.sh'
 
 jobs:
   health-check:
