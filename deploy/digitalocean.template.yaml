@@ -3,9 +3,15 @@ region: fra
 services:
 - dockerfile_path: Dockerfile
   envs:
+  - key: APPLICATION_VERSION
+    scope: RUN_TIME
+    value: $APPLICATION_VERSION
   - key: LS_SERVICE_NAME
     scope: RUN_TIME
     value: now-playing
+  - key: LS_SERVICE_VERSION
+    scope: RUN_TIME
+    value: $APPLICATION_VERSION
   - key: LS_ACCESS_TOKEN
     scope: RUN_TIME
     type: SECRET
