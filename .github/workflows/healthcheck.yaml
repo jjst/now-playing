@@ -1,0 +1,20 @@
+name: Health check
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/15 * * * *"
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    name: Run health check
+    env:
+      APP_HOSTNAME: https://now-playing-42nq5.ondigitalocean.app
+      NAMESPACE: fr
+    steps:
+      - run: |
+          for id in $(http $APP_HOSTNAME/api/stations/$NAMESPACE/ | jq -r '.items | .[] | .id'); do
+            http $APP_HOSTNAME/api/stations/$NAMESPACE/$id/now-playing
+          done
+
