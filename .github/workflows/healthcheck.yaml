@@ -24,3 +24,4 @@ jobs:
       - name: Health check
         run: |
           ./deploy/health-check.sh
+
