@@ -54,11 +54,9 @@ jobs:
       - uses: actions/checkout@v2
       - name: "Set environmental variables"
         run: |
-          bash --version
-          arrIN=(${GITHUB_REF//\// })
-          branch_name=arrIN[-1]
-          echo "Branch name="$branch_name
-          echo "APPLICATION_VERSION=$branch_name-$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
+          app_version=$(./gen-app-version.sh)
+          echo "App version: $app_version"
+          echo "APPLICATION_VERSION=$app_version" >> $GITHUB_ENV
       - name: Generate app spec from template
         run: |
           envsubst < ./deploy/digitalocean.template.yaml > $DEPLOY_FILE_PATH
