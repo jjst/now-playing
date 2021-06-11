@@ -1,0 +1,23 @@
+name: now-playing
+region: fra
+services:
+- dockerfile_path: Dockerfile
+  envs:
+  - key: LS_SERVICE_NAME
+    scope: RUN_TIME
+    value: now-playing
+  - key: LS_ACCESS_TOKEN
+    scope: RUN_TIME
+    type: SECRET
+    value: EV[1:N/Eru6BnFSEdGli37J1i/qIv/KryiscU:zmEt1jUTliqofKOWvH5SML3Fw+GkA+gLGFESsJ0WBLTdr79e6a8xxtL2icId7Im5oevkHAgQQfIVP7DDXwYgTkadF5KUXZEOOUdSe14+jMJyrHkrRSGJfmtwNg5d6pmm+qMPOrlZmlt2uAfcK9lfn0ALEDeTNfVf]
+  github:
+    branch: main
+    deploy_on_push: false
+    repo: jjst/now-playing
+  http_port: 8080
+  instance_count: 1
+  instance_size_slug: basic-xxs
+  name: now-playing
+  routes:
+  - path: /
+  source_dir: /
