@@ -4,7 +4,6 @@ on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -38,3 +37,16 @@ jobs:
         run: |
           docker run --rm --name now-playing -d -p 8080:8080 now-playing:latest
           docker top now-playing
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+      - name: Deploy image
+        env:
+          DIGITALOCEAN_APP_ID: 6ef01c83-87b1-45c2-9bbd-82dc15c19a12
+        run: |
+          doctl apps update $DIGITALOCEAN_APP_ID --spec ./deploy/digitalocean.yaml
