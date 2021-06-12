@@ -10,7 +10,7 @@ stations:
               field_extractors:
                 artist: '$.[?(@.id == "190")].playlist[?(@.id != 0)].song.artist'
                 title: '$.[?(@.id == "190")].playlist[?(@.id != 0)].song.title'
-              format_string: '{title} - {artist}'
+              format_string: '{artist} - {title}'
               engine: java-jayway
     fip:
       name: FIP
