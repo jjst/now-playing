@@ -4,7 +4,14 @@ stations:
       name: Chérie FM
       aggregators:
         now-playing:
-          - module: cherie_fm
+          - module: jsonpath_aggregator
+            params:
+              url: "https://www.cheriefm.fr/onair"
+              field_extractors:
+                artist: '$.[?(@.id == "190")].playlist[?(@.id != 0)].song.artist'
+                title: '$.[?(@.id == "190")].playlist[?(@.id != 0)].song.title'
+              format_string: '{title} - {artist}'
+              engine: java-jayway
     fip:
       name: FIP
       favicon: https://www.fip.fr/favicons/144-144.png
