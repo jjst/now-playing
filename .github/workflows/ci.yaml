@@ -61,7 +61,7 @@ jobs:
           echo "----------------------"
           cat $DEPLOY_FILE_PATH
       - name: Deploy app
-        uses: jjst/digitalocean-deploy-app@v0.8
+        uses: jjst/action-digitalocean-deploy-app@v1
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
           application-id: 6ef01c83-87b1-45c2-9bbd-82dc15c19a12
