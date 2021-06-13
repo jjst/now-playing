@@ -24,7 +24,7 @@ with open('config/stations.yaml', 'r') as cfg:
     stations = yaml.safe_load(cfg)['stations']
 
 cache_ttl = int(os.environ.get("REQUEST_CACHE_TTL_SECONDS", "3"))
-session = requests_cache.CachedSession(backend='memory', expire_after=cache_ttl)
+session = requests_cache.CachedSession(backend='memory', expire_after=cache_ttl, allowable_methods=('GET', 'POST'))
 
 
 def get_stations_by_country_code(countryCode):
