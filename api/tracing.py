@@ -19,6 +19,18 @@ def configure_tracer(app):
       service_name=service_name,
       access_token=lightstep_access_token,
     )
-    FlaskInstrumentor().instrument_app(app.app)
-    RequestsInstrumentor().instrument()
+    add_instrumentation(app)
     logging.info("Tracing is enabled.")
+
+
+def add_instrumentation(app):
+    FlaskInstrumentor().instrument_app(app.app)
+    RequestsInstrumentor().instrument(span_callback=set_cached_response_tag)
+
+
+def set_cached_response_tag(span, result):
+    try:
+        cached_response = result.from_cache
+    except KeyError:
+        cached_response = False
+    span.set_attribute('http.cached_response', cached_response)
