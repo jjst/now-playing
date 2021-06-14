@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 
 from api import app
-import logging
-
-# FIXME configure via config file instead
-logging.basicConfig(level='DEBUG', force=True)
+import config
 
 
 def main():
+    config.load_logging_config()
     app.run(port=8080)
 
 

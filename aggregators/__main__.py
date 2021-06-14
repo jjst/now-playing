@@ -1,13 +1,12 @@
 import sys
-import aggregators
 import requests
-import logging
 
-
-logging.basicConfig(encoding='utf-8', level=logging.DEBUG)
+import aggregators
+import config
 
 
 def main():
+    config.load_logging_config()
     country_code, station_name = sys.argv[1].split('/')
     full_station_id = sys.argv[1]
     aggregator = aggregators.aggregator_for_station(full_station_id)
