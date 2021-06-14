@@ -12,6 +12,6 @@ COPY . /usr/src/app
 
 EXPOSE 8080
 
-ENTRYPOINT ["waitress-serve"]
+ENTRYPOINT ["gunicorn"]
 
-CMD ["api:app"]
+CMD ["--access-logfile=-", "--bind", "0.0.0.0:8080", "api:app"]
