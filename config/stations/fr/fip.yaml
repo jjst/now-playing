@@ -1,0 +1,72 @@
+stations:
+  fr:
+    fip:
+      name: FIP
+      favicon: https://www.fip.fr/favicons/144-144.png
+      streams:
+        - url: https://icecast.radiofrance.fr/fip-midfi.mp3
+      aggregators:
+        now-playing:
+          - module: fip
+            params:
+              station_id:
+    fip-rock:
+      name: FIP Rock
+      favicon: https://www.fip.fr/favicons/144-144.png
+      streams:
+        - url: https://icecast.radiofrance.fr/fiprock-midfi.mp3
+      aggregators:
+        now-playing:
+          - module: fip
+            params:
+              station_id:
+    fip-pop:
+      name: FIP Pop
+      favicon: https://www.fip.fr/favicons/144-144.png
+      streams:
+        - url: https://icecast.radiofrance.fr/fippop-midfi.mp3
+      aggregators:
+        now-playing:
+          - module: fip
+            params:
+              station_id:
+    fip-groove:
+      name: FIP Groove
+      favicon: https://www.fip.fr/favicons/144-144.png
+      streams:
+        - url: https://icecast.radiofrance.fr/fipgroove-midfi.mp3
+      aggregators:
+        now-playing:
+          - module: fip
+            params:
+              station_id:
+    fip-electro:
+      name: FIP Electro
+      favicon: https://www.fip.fr/favicons/144-144.png
+      streams:
+        - url: https://icecast.radiofrance.fr/fipelectro-midfi.mp3
+      aggregators:
+        now-playing:
+          - module: fip
+            params:
+              station_id:
+    fip-reggae:
+      name: FIP Reggae
+      favicon: https://www.fip.fr/favicons/144-144.png
+      streams:
+        - url: https://icecast.radiofrance.fr/fipreggae-midfi.mp3
+      aggregators:
+        now-playing:
+          - module: fip
+            params:
+              station_id:
+    fip-nouveautes:
+      name: FIP Nouveautés
+      favicon: https://www.fip.fr/favicons/144-144.png
+      streams:
+        - url: https://icecast.radiofrance.fr/fipnouveautes-midfi.mp3
+      aggregators:
+        now-playing:
+          - module: fip
+            params:
+              station_id:

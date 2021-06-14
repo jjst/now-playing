@@ -1,0 +1,39 @@
+stations:
+  fr:
+    cherie-fm:
+      name: Chérie FM
+      aggregators:
+        now-playing:
+          - module: jsonpath_aggregator
+            params:
+              url: "https://www.cheriefm.fr/onair"
+              field_extractors:
+                artist: '$.[?(@.id == "190")].playlist[?(@.id != 0)].song.artist'
+                title: '$.[?(@.id == "190")].playlist[?(@.id != 0)].song.title'
+              format_string: '{artist} - {title}'
+              engine: java-jayway
+    france-inter:
+      name: France Inter
+      favicon: https://www.franceinter.fr/favicon.ico
+      streams:
+        - url: http://direct.franceinter.fr/live/franceinter-midfi.mp3
+      aggregators:
+        now-playing:
+          - module: france_inter
+    radiomeuh:
+      name: Radio Meuh
+      favicon: https://www.radiomeuh.com/favicon-32x32.png
+      streams:
+        - url: http://radiomeuh.ice.infomaniak.ch/radiomeuh-128.mp3
+          bitrate_kbps: 128
+      aggregators:
+        now-playing:
+          - module: radio_meuh
+    top-music:
+      name: Top Music
+      aggregators:
+        now-playing:
+          - module: plain_text_aggregator
+            params:
+              url: https://www.topmusic.fr/player/widget_title.php
+              encoding: latin-1
