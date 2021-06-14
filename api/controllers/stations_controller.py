@@ -1,9 +1,6 @@
-import connexion
 import logging
 import os
 import requests_cache
-import six
-import yaml
 
 from opentelemetry import trace
 from opentelemetry.sdk.trace import TracerProvider
@@ -15,13 +12,12 @@ from api.models.now_playing import NowPlaying
 from api.models.stream import Stream
 
 import aggregators
+import config
 
 trace.set_tracer_provider(TracerProvider())
 
 
-
-with open('config/stations.yaml', 'r') as cfg:
-    stations = yaml.safe_load(cfg)['stations']
+stations = config.load_stations()
 
 cache_ttl = int(os.environ.get("REQUEST_CACHE_TTL_SECONDS", "3"))
 session = requests_cache.CachedSession(backend='memory', expire_after=cache_ttl, allowable_methods=('GET', 'POST'))
