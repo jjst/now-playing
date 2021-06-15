@@ -14,4 +14,4 @@ EXPOSE 8080
 
 ENTRYPOINT ["gunicorn"]
 
-CMD ["--access-logfile=-", "--bind", "0.0.0.0:8080", "api:app"]
+CMD ["--access-logfile=-", "--bind", "0.0.0.0:8080", "--worker-tmp-dir", "/dev/shm", "api:app"]
