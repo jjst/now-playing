@@ -29,7 +29,7 @@ services:
   source_dir: /
   health_check:
     initial_delay_seconds: 5
-    period_seconds: 1
+    period_seconds: 5
     timeout_seconds: 5
     success_threshold: 3
     failure_threshold: 3
