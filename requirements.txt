@@ -28,6 +28,7 @@ PyYAML==5.4.1
 requests==2.25.1
 requests-cache==0.6.4
 six==1.16.0
+git+https://github.com/Horrendus/streamscrobbler-python@master
 swagger-spec-validator==2.7.3
 swagger-ui-bundle==0.0.8
 urllib3==1.26.5
