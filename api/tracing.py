@@ -2,6 +2,8 @@ import logging
 from opentelemetry.launcher import configure_opentelemetry
 from opentelemetry.instrumentation.flask import FlaskInstrumentor
 from opentelemetry.instrumentation.requests import RequestsInstrumentor
+from opentelemetry.instrumentation.urllib import URLLibInstrumentor
+
 import os
 
 
@@ -26,6 +28,7 @@ def configure_tracer(app):
 def add_instrumentation(app):
     FlaskInstrumentor().instrument_app(app.app)
     RequestsInstrumentor().instrument(span_callback=set_cached_response_tag)
+    URLLibInstrumentor().instrument()
 
 
 def set_cached_response_tag(span, result):
