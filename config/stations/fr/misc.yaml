@@ -34,7 +34,6 @@ stations:
           - module: stream_aggregator
             params:
               stream_url: http://icecast.infini.fr:8000/mutine
-              encoding: latin-1
     radiomeuh:
       name: Radio Meuh
       favicon: https://www.radiomeuh.com/favicon-32x32.png
