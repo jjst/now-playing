@@ -12,8 +12,8 @@ RUN apk add git && \
 
 COPY . /usr/src/app
 
+WORKDIR /usr/src/app/src
 EXPOSE 8080
-
 ENTRYPOINT ["gunicorn"]
 
 CMD ["--access-logfile=-", "--bind", "0.0.0.0:8080", "--worker-tmp-dir", "/dev/shm", "api:app"]

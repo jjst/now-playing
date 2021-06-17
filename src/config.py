@@ -5,15 +5,20 @@ import yaml
 path = os.path.dirname(os.path.abspath(__file__))
 
 
-DEFAULT_CONFIG_PATH = os.path.join(path, 'stations')
+DEFAULT_CONFIG_PATH = os.path.abspath(os.path.join(os.path.join(path, os.pardir), "conf"))
+
+DEFAULT_STATION_CONFIG_PATH = os.path.join(DEFAULT_CONFIG_PATH, "stations")
 
 
-def load_logging_config():
-    config_file = os.path.join(os.getcwd(), 'logging.ini')
+def load_logging_config(path=DEFAULT_CONFIG_PATH):
+    # Using print() since logging not set up yet
+    print(f"Loading config from '{path}'")
+    config_file = os.path.join(path, 'logging.ini')
     logging.config.fileConfig(config_file)
 
 
-def load_stations(path=DEFAULT_CONFIG_PATH):
+def load_stations(path=DEFAULT_STATION_CONFIG_PATH):
+    print(f"Loading station config from '{path}'")
     if os.path.isfile(path):
         return _load_stations_file(path)
     else:
