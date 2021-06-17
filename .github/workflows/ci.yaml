@@ -28,6 +28,9 @@ jobs:
   build-image:
     name: Build docker image
     runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME: jjst/now-playing:latest
+      DOCKER_BUILDKIT: 1
     steps:
       - uses: actions/checkout@v2
       # In this step, this action saves a list of existing images,
@@ -36,13 +39,25 @@ jobs:
       - uses: satackey/action-docker-layer-caching@v0.0.11
         # Ignore the failure of a step and avoid terminating the job.
         continue-on-error: true
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
       - name: Build docker image
         run: |
-          docker build -t now-playing:latest .
+          docker build -t $IMAGE_NAME .
       - name: Test image runs
         run: |
-          docker run --rm --name now-playing -d -p 8080:8080 now-playing:latest
+          docker run --rm --name now-playing -d -p 8080:8080 $IMAGE_NAME
           docker top now-playing
+      - name: Log in to Docker Hub
+        if: github.ref == 'refs/heads/main'
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Push to Docker Hub
+        if: github.ref == 'refs/heads/main'
+        run: |
+          docker push $IMAGE_NAME
   deploy:
     name: Deploy
     runs-on: ubuntu-latest

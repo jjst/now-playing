@@ -16,10 +16,11 @@ services:
     scope: RUN_TIME
     type: SECRET
     value: EV[1:N/Eru6BnFSEdGli37J1i/qIv/KryiscU:zmEt1jUTliqofKOWvH5SML3Fw+GkA+gLGFESsJ0WBLTdr79e6a8xxtL2icId7Im5oevkHAgQQfIVP7DDXwYgTkadF5KUXZEOOUdSe14+jMJyrHkrRSGJfmtwNg5d6pmm+qMPOrlZmlt2uAfcK9lfn0ALEDeTNfVf]
-  github:
-    branch: main
-    deploy_on_push: false
-    repo: jjst/now-playing
+  image:
+    registry: jjst
+    registry_type: DOCKER_HUB
+    repository: now-playing
+    tag: latest
   http_port: 8080
   instance_count: 1
   instance_size_slug: basic-xxs
