@@ -1,8 +1,6 @@
-from dynaconf.default_settings import get
-from dynaconf import Dynaconf
-from base.config.watchedconf import WatchedConf
 import os
 from apscheduler.schedulers.background import BackgroundScheduler
+import logging
 import subprocess
 import tempfile
 
@@ -12,28 +10,17 @@ import tempfile
 # * File watcher
 # * Git watcher
 
-
 TEMP_DIR = tempfile.gettempdir()
-
 CONFIG_REPOSITORY_PATH = os.path.join(TEMP_DIR, "git-config")
+DEFAULT_CHECK_FREQUENCY_SECONDS = 10
+
+_scheduler = BackgroundScheduler(daemon=True)
 
 
-path = os.path.dirname(os.path.abspath(__file__))
-
-DEFAULT_CONFIG_PATH = os.path.abspath(os.path.join(path, "../../conf"))
-
-DEFAULT_STATION_CONFIG_PATH = os.path.join(DEFAULT_CONFIG_PATH, "stations")
-
-
-def dynadynaconf():
-    conf = WatchedConf(
-        envvar_prefix="DYNACONF",
-        # settings_files=['logging.ini'], # FIXME: causes exception
-        includes=['stations/*.yaml', 'stations/*/*.yaml'],
-        root_path=DEFAULT_CONFIG_PATH,
-        merge_enabled=True
-    )
-    return conf
+class GitWatcher():
+    def __init__(self, repo, subfolder, frequency=DEFAULT_CHECK_FREQUENCY_SECONDS):
+        clone_repo(repo, subfolder)
+        schedule_pulls(repo, subfolder, frequency)
 
 
 def clone_repo(repo, subfolder):
@@ -46,9 +33,8 @@ def clone_repo(repo, subfolder):
 
 def schedule_pulls(repo, subfolder, frequency):
     print("Starting scheduled checks")
-    sched = BackgroundScheduler(daemon=True)
-    sched.add_job(lambda: check_for_changes(repo, subfolder), 'interval', seconds=frequency)
-    sched.start()
+    _scheduler.add_job(lambda: check_for_changes(repo, subfolder), 'interval', seconds=frequency)
+    _scheduler.start()
 
 
 def check_for_changes(repo, subfolder):
@@ -61,4 +47,5 @@ def check_for_changes(repo, subfolder):
     changed = subprocess.check_output(["git", "diff", "--name-only", "main", "origin/main"] + extra_args, cwd=CONFIG_REPOSITORY_PATH)
     changed = changed.decode('utf-8').strip().split("\n")
     subprocess.run(["git", "reset", "--hard", "origin/main"], cwd=CONFIG_REPOSITORY_PATH)
-    print(changed)
+    if changed:
+        logging.info(changed)

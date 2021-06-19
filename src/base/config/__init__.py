@@ -1,9 +1,23 @@
 import logging.config
 import os
-from base.dynadynaconf import dynadynaconf, DEFAULT_CONFIG_PATH
+
+from base.config.watchedconf import WatchedConf
 
 
-settings = dynadynaconf()
+path = os.path.dirname(os.path.abspath(__file__))
+
+DEFAULT_CONFIG_PATH = os.path.abspath(os.path.join(path, "../../conf"))
+
+DEFAULT_STATION_CONFIG_PATH = os.path.join(DEFAULT_CONFIG_PATH, "stations")
+
+
+settings = WatchedConf(
+        envvar_prefix="DYNACONF",
+        # settings_files=['logging.ini'], # FIXME: causes exception
+        includes=['stations/*.yaml', 'stations/*/*.yaml'],
+        root_path=DEFAULT_CONFIG_PATH,
+        merge_enabled=True
+    )
 
 
 def load_logging_config(path=DEFAULT_CONFIG_PATH):
