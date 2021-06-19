@@ -12,12 +12,10 @@ from api.models.now_playing import NowPlaying
 from api.models.stream import Stream
 
 import aggregators
-import config
+from base.config import settings
 
 trace.set_tracer_provider(TracerProvider())
 
-
-stations = config.load_stations()
 
 cache_ttl = int(os.environ.get("REQUEST_CACHE_TTL_SECONDS", "3"))
 session = requests_cache.CachedSession(backend='memory', expire_after=cache_ttl, allowable_methods=('GET', 'POST'))
@@ -25,7 +23,7 @@ session = requests_cache.CachedSession(backend='memory', expire_after=cache_ttl,
 
 def get_stations_by_country_code(countryCode):
     items = []
-    for station_id, data in stations[countryCode].items():
+    for station_id, data in settings.get_fresh("stations")[countryCode].items():
         items.append(_build_station(data, station_id, countryCode))
     return RadioStationList(items=items)
 
@@ -34,7 +32,7 @@ def get_now_playing_by_country_code_and_station_id(countryCode, stationId):
     tracer = trace.get_tracer(__name__)
     logging.info(f"Getting now playing information for station id: '{countryCode}/{stationId}'")
     try:
-        _ = stations[countryCode][stationId]
+        _ = settings.stations[countryCode][stationId]
     except KeyError:
         return {'title': "Station not found"}, 404
     try:
@@ -71,7 +69,7 @@ def get_station_by_country_code_and_station_id(countryCode, stationId):  # noqa:
     :rtype: RadioStation
     """
     try:
-        station = stations[countryCode][stationId]
+        station = settings.stations[countryCode][stationId]
         return _build_station(station, stationId, countryCode)
     except KeyError:
         return {'title': "Station not found"}, 404

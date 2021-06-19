@@ -1,5 +1,6 @@
 from dynaconf.default_settings import get
 from dynaconf.loaders import yaml_loader
+from dynaconf import Dynaconf
 import os
 from apscheduler.schedulers.background import BackgroundScheduler
 import subprocess
@@ -11,12 +12,32 @@ TEMP_DIR = tempfile.gettempdir()
 CONFIG_REPOSITORY_PATH = os.path.join(TEMP_DIR, "git-config")
 
 
-def clone_and_watch_repo(repo, subfolder, frequency):
+path = os.path.dirname(os.path.abspath(__file__))
+
+DEFAULT_CONFIG_PATH = os.path.abspath(os.path.join(path, "../../conf"))
+
+DEFAULT_STATION_CONFIG_PATH = os.path.join(DEFAULT_CONFIG_PATH, "stations")
+
+
+def dynadynaconf():
+    return Dynaconf(
+        envvar_prefix="DYNACONF",
+        # settings_files=['logging.ini'], # FIXME: causes exception
+        includes=['stations/*.yaml', 'stations/*/*.yaml'],
+        root_path=DEFAULT_CONFIG_PATH,
+        merge_enabled=True
+    )
+
+
+def clone_repo(repo, subfolder):
     print("Cloning repo")
-    subprocess.run(["git", "clone", "--no-checkout", "--depth=1", repo, CONFIG_REPOSITORY_PATH], cwd=TEMP_DIR)
+    subprocess.run(["git", "clone", "--depth=1", repo, CONFIG_REPOSITORY_PATH], cwd=TEMP_DIR)
     if subfolder:
         subprocess.run(["git", "sparse-checkout", "init", "--cone"], cwd=CONFIG_REPOSITORY_PATH)
         subprocess.run(["git", "sparse-checkout", "set", subfolder], cwd=CONFIG_REPOSITORY_PATH)
+
+
+def schedule_pulls(repo, subfolder, frequency):
     print("Starting scheduled checks")
     sched = BackgroundScheduler(daemon=True)
     sched.add_job(lambda: check_for_changes(repo, subfolder), 'interval', seconds=frequency)
@@ -25,31 +46,15 @@ def clone_and_watch_repo(repo, subfolder, frequency):
 
 def check_for_changes(repo, subfolder):
     print("Checking repo for changes...")
-    subprocess.run(["git", "fetch"], cwd=CONFIG_REPOSITORY_PATH)
+    subprocess.run(["git", "fetch", "--depth=1"], cwd=CONFIG_REPOSITORY_PATH)
     if subfolder:
         extra_args = ["--", subfolder]
     else:
         extra_args = []
     changed = subprocess.check_output(["git", "diff", "--name-only", "main", "origin/main"] + extra_args, cwd=CONFIG_REPOSITORY_PATH)
     changed = changed.decode('utf-8').strip().split("\n")
+    subprocess.run(["git", "reset", "--hard", "origin/main"], cwd=CONFIG_REPOSITORY_PATH)
     print(changed)
-
-
-def load(obj, env=None, silent=True, key=None, filename=None):
-    """
-    Reads and loads in to "obj" a single key or all keys from source
-    :param obj: the settings instance
-    :param env: settings current env (upper case) default='DEVELOPMENT'
-    :param silent: if errors should raise
-    :param key: if defined load a single key, else load all from `env`
-    :param filename: Custom filename to load (useful for tests)
-    :return: None
-    """
-    # Load data from your custom data source (file, database, memory etc)
-    # use `obj.set(key, value)` or `obj.update(dict)` to load data
-    # use `obj.find_file('filename.ext')` to find the file in search tree
-    # Return nothing
-    print(f"In load obj={obj} key={key}")
 
 
 repo = get("GIT_REPO_FOR_DYNACONF")
