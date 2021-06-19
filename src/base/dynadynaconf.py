@@ -62,12 +62,3 @@ def check_for_changes(repo, subfolder):
     changed = changed.decode('utf-8').strip().split("\n")
     subprocess.run(["git", "reset", "--hard", "origin/main"], cwd=CONFIG_REPOSITORY_PATH)
     print(changed)
-
-
-repo = get("GIT_REPO_FOR_DYNACONF")
-subfolder = get("GIT_REPO_SUBFOLDER_FOR_DYNACONF", None)
-frequency = int(get("GIT_REPO_CHECK_FREQUENCY_SECONDS_FOR_DYNACONF", 10))
-if os.path.exists(CONFIG_REPOSITORY_PATH):
-    print(f"'{CONFIG_REPOSITORY_PATH}' is not empty, skipping")
-if repo and not os.path.exists(CONFIG_REPOSITORY_PATH):
-    clone_and_watch_repo(repo, subfolder, frequency=frequency)
