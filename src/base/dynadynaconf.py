@@ -1,10 +1,16 @@
 from dynaconf.default_settings import get
-from dynaconf.loaders import yaml_loader
 from dynaconf import Dynaconf
+from base.config.watchedconf import WatchedConf
 import os
 from apscheduler.schedulers.background import BackgroundScheduler
 import subprocess
 import tempfile
+
+#FIXME: this becomes the git watcher code
+# Separate module for:
+# * General conf stuffs
+# * File watcher
+# * Git watcher
 
 
 TEMP_DIR = tempfile.gettempdir()
@@ -20,13 +26,14 @@ DEFAULT_STATION_CONFIG_PATH = os.path.join(DEFAULT_CONFIG_PATH, "stations")
 
 
 def dynadynaconf():
-    return Dynaconf(
+    conf = WatchedConf(
         envvar_prefix="DYNACONF",
         # settings_files=['logging.ini'], # FIXME: causes exception
         includes=['stations/*.yaml', 'stations/*/*.yaml'],
         root_path=DEFAULT_CONFIG_PATH,
         merge_enabled=True
     )
+    return conf
 
 
 def clone_repo(repo, subfolder):
