@@ -3,7 +3,7 @@ import functools
 import logging
 from dataclasses import dataclass, field
 
-import config
+from base import config
 
 
 @dataclass
