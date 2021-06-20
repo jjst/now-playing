@@ -1,3 +1,4 @@
+from dynaconf.default_settings import get
 import logging.config
 import os
 
@@ -6,16 +7,17 @@ from base.config.watchedconf import WatchedConf
 
 path = os.path.dirname(os.path.abspath(__file__))
 
-DEFAULT_CONFIG_PATH = os.path.abspath(os.path.join(path, "../../conf"))
+DEFAULT_CONFIG_PATH = os.path.abspath(os.path.join(path, "../../../conf"))
 
-DEFAULT_STATION_CONFIG_PATH = os.path.join(DEFAULT_CONFIG_PATH, "stations")
+ROOT_PATH_FOR_DYNACONF = get("ROOT_PATH_FOR_DYNACONF", DEFAULT_CONFIG_PATH)
 
+print(f"Using config path {ROOT_PATH_FOR_DYNACONF}")
 
 settings = WatchedConf(
         envvar_prefix="DYNACONF",
         # settings_files=['logging.ini'], # FIXME: causes exception
         includes=['stations/*.yaml', 'stations/*/*.yaml'],
-        root_path=DEFAULT_CONFIG_PATH,
+        root_path=ROOT_PATH_FOR_DYNACONF,
         merge_enabled=True
     )
 

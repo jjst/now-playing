@@ -11,11 +11,10 @@ RUN apk add git && \
 
 COPY . /usr/src/app
 
-WORKDIR /usr/src/app/src
+WORKDIR /usr/src/app/
 EXPOSE 8080
-ENTRYPOINT ["gunicorn"]
 # Support dynamically loading config from git
-ENV LOADERS_FOR_DYNACONF="['git_config_loader', 'dynaconf.loaders.env_loader']"
-ENV GIT_REPO_FOR_DYNACONF="https://github.com/jjst/now-playing.git"
-ENV GIT_REPO_SUBFOLDER_FOR_DYNACONF="conf"
+ENV GIT_CONFIG_REPOSITORY="https://github.com/jjst/now-playing.git"
+ENV GIT_CONFIG_REPOSITORY_SUBFOLDER="conf"
+ENTRYPOINT ["./docker/entrypoint.sh"]
 CMD ["--access-logfile=-", "--bind", "0.0.0.0:8080", "--worker-tmp-dir", "/dev/shm", "api:app"]
