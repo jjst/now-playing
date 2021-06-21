@@ -12,8 +12,7 @@ PYTHON_JSONPATH_NG_EXT = 'python-jsonpath-ng-ext'
 JAVA_JAYWAY = 'java-jayway'
 DEFAULT_ENGINE = PYTHON_JSONPATH_NG_EXT
 
-# JAVA_JSONPATH_API_URL = "https://java-jsonpath-api-bknua.ondigitalocean.app/"
-JAVA_JSONPATH_API_URL = "http://localhost:4567/"
+JAVA_JSONPATH_API_URL = "https://java-jsonpath-api-bknua.ondigitalocean.app/"
 
 
 def fetch(session, request_type: str, url: str, field_extractors: dict, format_string: str, engine: str = DEFAULT_ENGINE):
