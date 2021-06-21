@@ -1,0 +1,14 @@
+stations:
+  ie:
+    spin-1038:
+      name: Spin 1038
+      aggregators:
+        now-playing:
+          - module: jsonpath_aggregator
+            params:
+              url: "https://s3-eu-west-1.amazonaws.com/storage.publisherplus.ie/media.radiocms.net/now-playing/spin1038"
+              field_extractors:
+                artist: '$.artist'
+                title: '$.title'
+              format_string: '{artist} - {title}'
+              engine: java-jayway
