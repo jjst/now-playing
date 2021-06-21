@@ -2,7 +2,7 @@ import sys
 import requests
 
 import aggregators
-import config
+from base import config
 
 
 def main():
