@@ -8,6 +8,7 @@ import json
 import os
 import re
 import sys
+import itertools
 
 from unidecode import unidecode
 
@@ -38,11 +39,19 @@ def generate_slug(station_name):
     return slug
 
 
+def hash_name(station_name):
+    hashed_name = unidecode(station_name).lower()
+    hashed_name = re.sub('[^\\w]', '', hashed_name)
+    return hashed_name
+
+
 def main():
     folder = sys.argv[1]
     all_stations = load_data(folder)
     print_stats(all_stations)
-    print(list(generate_slug(s['name']) for s in all_stations))
+    sorted_by_hash = sorted(all_stations, key=lambda s: hash_name(s['name']))
+    grouped_by_hash = itertools.groupby(sorted_by_hash, key=lambda s: hash_name(s['name']))
+    print(list(grouped_by_hash))
 
 
 if __name__ == '__main__':
