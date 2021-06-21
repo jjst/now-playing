@@ -52,14 +52,11 @@ def query_java_jsonpath_api(session, jsonpath_queries, json_str):
         'queries': jsonpath_queries,
         'json_str': json_str
     }
-    print(request_body)
-    print(json.dumps(request_body))
     response = session.post(JAVA_JSONPATH_API_URL, json=request_body)
     try:
         results = response.json()
         logging.debug("API response:")
         logging.debug(results)
-        print(type(results))
     except JSONDecodeError:
         logging.error("API response:")
         logging.error(response.text)
