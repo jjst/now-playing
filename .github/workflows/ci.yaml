@@ -25,11 +25,24 @@ jobs:
       - name: Test
         run: |
           tox
+  gen-app-version:
+    name: Generation app version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - id: gen-version
+        run: |
+          app_version=$(./gen-app-version.sh)
+          echo "App version: $app_version"
+          echo "::set-output name=version::$app_version"
+    outputs:
+      app-version: ${{ steps.gen-version.outputs.version }}
   build-image:
     name: Build docker image
     runs-on: ubuntu-latest
+    needs: gen-app-version
     env:
-      IMAGE_NAME: jjst/now-playing:latest
+      IMAGE_NAME: jjst/now-playing:${{ needs.gen-app-version.outputs.app-version }}
       DOCKER_BUILDKIT: 1
     steps:
       - uses: actions/checkout@v2
@@ -62,14 +75,12 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
+    needs: gen-app-version, build-image
     steps:
       - uses: actions/checkout@v2
-      - name: "Set environmental variables"
-        run: |
-          app_version=$(./gen-app-version.sh)
-          echo "App version: $app_version"
-          echo "APPLICATION_VERSION=$app_version" >> $GITHUB_ENV
       - name: Generate app spec from template
+        env:
+          APPLICATION_VERSION: ${{ needs.gen-app-version.outputs.app-version }}
         run: |
           envsubst < ./deploy/app.template.yaml > ./deploy/app.yaml
           echo "Generated deploy file:"

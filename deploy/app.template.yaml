@@ -20,7 +20,7 @@ services:
     registry: jjst
     registry_type: DOCKER_HUB
     repository: now-playing
-    tag: latest
+    tag: $APPLICATION_VERSION
   http_port: 8080
   instance_count: 1
   instance_size_slug: basic-xxs
