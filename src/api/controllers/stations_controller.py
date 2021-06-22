@@ -27,33 +27,33 @@ def get_stations():
     return RadioStationList(items=[_build_station(s) for s in all_stations])
 
 
-def get_stations_by_country_code(countryCode):
-    stations_by_country = stations.get_all(namespace=countryCode)
+def get_stations_by_country_code(namespace):
+    stations_by_country = stations.get_all(namespace=namespace)
     return RadioStationList(items=[_build_station(s) for s in stations_by_country])
 
 
-def get_now_playing_by_country_code_and_station_id(countryCode, stationId):
+def get_now_playing_by_country_code_and_station_id(namespace, slug):
     tracer = trace.get_tracer(__name__)
-    logging.info(f"Getting now playing information for station id: '{countryCode}/{stationId}'")
+    logging.info(f"Getting now playing information for station id: '{namespace}/{slug}'")
     try:
-        _ = stations.get(countryCode, stationId)
+        _ = stations.get(namespace, slug)
     except KeyError:
         return {'title': "Station not found"}, 404
     try:
-        aggregator = aggregators.aggregator_for_station(country_code=countryCode, station_id=stationId)
+        aggregator = aggregators.aggregator_for_station(country_code=namespace, station_id=slug)
     except ModuleNotFoundError as e:
         # Couldnt get a valid aggregator
         logging.warn("Could not load station aggregator for station")
         logging.exception(e)
-        return {'title': f"No 'now-playing' information is available for station '{countryCode}/{stationId}'"}, 404
+        return {'title': f"No 'now-playing' information is available for station '{namespace}/{slug}'"}, 404
     try:
         with tracer.start_as_current_span("call_aggregator") as span:
             span.set_attribute('aggregator.module_name', aggregator.module_name)
             for key, val in aggregator.params.items():
                 span.set_attribute(f'aggregator.params.{key}', str(val))
-            span.set_attribute('long_id', f'{countryCode}/{stationId}')
-            span.set_attribute('country_code', countryCode)
-            span.set_attribute('station_id', stationId)
+            span.set_attribute('station_id', f'{namespace}/{slug}')
+            span.set_attribute('namespace', namespace)
+            span.set_attribute('slug', slug)
             now_playing_items = aggregator(session, 'now-playing')
         playing_item = next(iter(now_playing_items))
         return NowPlaying(type=playing_item.type, title=playing_item.title)
@@ -61,19 +61,19 @@ def get_now_playing_by_country_code_and_station_id(countryCode, stationId):
         return {'title': "Could not fetch now playing information"}, 500
 
 
-def get_station_by_country_code_and_station_id(countryCode, stationId):  # noqa: E501
+def get_station_by_country_code_and_station_id(namespace, slug):  # noqa: E501
     """
     Returns a radio station
 
-    :param countryCode: Country code of a station
-    :type countryCode: str
-    :param stationId: ID of a station
-    :type stationId: str
+    :param namespace: Country code of a station
+    :type namespace: str
+    :param slug: ID of a station
+    :type slug: str
 
     :rtype: RadioStation
     """
     try:
-        station_info = stations.get(countryCode, stationId)
+        station_info = stations.get(namespace, slug)
         return _build_station(station_info)
     except KeyError:
         return {'title': "Station not found"}, 404
