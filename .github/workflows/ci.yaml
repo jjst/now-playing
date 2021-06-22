@@ -26,7 +26,7 @@ jobs:
         run: |
           tox
   gen-app-version:
-    name: Generation app version
+    name: Generate app version
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
