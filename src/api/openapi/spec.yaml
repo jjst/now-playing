@@ -47,7 +47,7 @@ paths:
       tags:
       - "stations"
       summary: "List all stations"
-      description: "Gets all radio stations in a given country represented by its country code"
+      description: "Gets all radio stations"
       operationId: "get_stations"
       produces:
       - "application/json"
@@ -57,17 +57,17 @@ paths:
           schema:
             $ref: "#/definitions/RadioStationList"
       x-swagger-router-controller: "api.controllers.stations_controller"
-  /stations/{countryCode}:
+  /stations/{namespace}:
     get:
       tags:
       - "stations"
-      summary: "List all stations by country code"
-      description: "Gets all radio stations in a given country represented by its country code"
+      summary: "List all stations in a namespace"
+      description: "Gets all radio stations in a namespace"
       operationId: "get_stations_by_country_code"
       produces:
       - "application/json"
       parameters:
-      - name: "countryCode"
+      - name: "namespace"
         in: "path"
         description: "Country code of a station"
         required: true
@@ -80,7 +80,7 @@ paths:
         "404":
           description: "Station not found"
       x-swagger-router-controller: "api.controllers.stations_controller"
-  /stations/{countryCode}/{stationId}:
+  /stations/{namespace}/{slug}:
     get:
       tags:
       - "stations"
@@ -90,14 +90,14 @@ paths:
       produces:
       - "application/json"
       parameters:
-      - name: "countryCode"
+      - name: "namespace"
         in: "path"
-        description: "Country code of a station"
+        description: "Namespace of a station"
         required: true
         type: "string"
-      - name: "stationId"
+      - name: "slug"
         in: "path"
-        description: "ID of a station"
+        description: "slug (short human-readable id) of a station"
         required: true
         type: "string"
       responses:
@@ -108,7 +108,7 @@ paths:
         "404":
           description: "Station not found"
       x-swagger-router-controller: "api.controllers.stations_controller"
-  /stations/{countryCode}/{stationId}/now-playing:
+  /stations/{namespace}/{slug}/now-playing:
     get:
       tags:
       - "stations"
@@ -118,12 +118,12 @@ paths:
       produces:
       - "application/json"
       parameters:
-      - name: "countryCode"
+      - name: "namespace"
         in: "path"
         description: "Country code of a station"
         required: true
         type: "string"
-      - name: "stationId"
+      - name: "slug"
         in: "path"
         description: "ID of a station"
         required: true
@@ -158,11 +158,16 @@ definitions:
   RadioStation:
     type: "object"
     required:
-    - "country_code"
+    - "namespace"
+    - "slug"
     - "id"
     - "name"
     properties:
       id:
+        type: "string"
+      namespace:
+        type: "string"
+      slug:
         type: "string"
       name:
         type: "string"
@@ -176,8 +181,10 @@ definitions:
         items:
           $ref: "#/definitions/Stream"
     example:
+      namespace: "fr"
+      slug: "radiomeuh"
+      id: "fr/radiomeuh"
       country_code: "fr"
-      id: "radiomeuh"
       name: "Radio Meuh"
       streams:
         - url: "http://radiomeuh.ice.infomaniak.ch/radiomeuh-128.mp3"
