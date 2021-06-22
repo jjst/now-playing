@@ -22,6 +22,11 @@ cache_ttl = int(os.environ.get("REQUEST_CACHE_TTL_SECONDS", "3"))
 session = requests_cache.CachedSession(backend='memory', expire_after=cache_ttl, allowable_methods=('GET', 'POST'))
 
 
+def get_stations():
+    all_stations = stations.get_all()
+    return RadioStationList(items=[_build_station(s) for s in all_stations])
+
+
 def get_stations_by_country_code(countryCode):
     stations_by_country = stations.get_all(namespace=countryCode)
     return RadioStationList(items=[_build_station(s) for s in stations_by_country])

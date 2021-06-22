@@ -18,12 +18,12 @@ def get_all(namespace: Optional[str] = None) -> list[RadioStationInfo]:
     def stations_in_namespace(ns):
         items = []
         for station_id, data in settings.get("stations")[ns].items():
-            items.append(_build_station_info(data, station_id, namespace))
+            items.append(_build_station_info(data, station_id, ns))
         return items
     if namespace:
         return stations_in_namespace(namespace)
     else:
-        return itertools.chain(stations_in_namespace(ns) for ns in settings.get("stations"))
+        return itertools.chain.from_iterable(stations_in_namespace(ns) for ns in settings.get("stations"))
 
 
 def get(namespace: str, id: str) -> RadioStationInfo:
