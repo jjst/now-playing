@@ -12,7 +12,8 @@ from api.models.now_playing import NowPlaying
 from api.models.stream import Stream
 
 import aggregators
-from base.config import settings
+from base.stations import RadioStationInfo
+import base.stations as stations
 
 trace.set_tracer_provider(TracerProvider())
 
@@ -22,17 +23,15 @@ session = requests_cache.CachedSession(backend='memory', expire_after=cache_ttl,
 
 
 def get_stations_by_country_code(countryCode):
-    items = []
-    for station_id, data in settings.get_fresh("stations")[countryCode].items():
-        items.append(_build_station(data, station_id, countryCode))
-    return RadioStationList(items=items)
+    stations_by_country = stations.get_all(namespace=countryCode)
+    return RadioStationList(items=[_build_station(s) for s in stations_by_country])
 
 
 def get_now_playing_by_country_code_and_station_id(countryCode, stationId):
     tracer = trace.get_tracer(__name__)
     logging.info(f"Getting now playing information for station id: '{countryCode}/{stationId}'")
     try:
-        _ = settings.stations[countryCode][stationId]
+        _ = stations.get(countryCode, stationId)
     except KeyError:
         return {'title': "Station not found"}, 404
     try:
@@ -69,8 +68,8 @@ def get_station_by_country_code_and_station_id(countryCode, stationId):  # noqa:
     :rtype: RadioStation
     """
     try:
-        station = settings.stations[countryCode][stationId]
-        return _build_station(station, stationId, countryCode)
+        station_info = stations.get(countryCode, stationId)
+        return _build_station(station_info)
     except KeyError:
         return {'title': "Station not found"}, 404
 
@@ -85,15 +84,13 @@ def search(query):  # noqa: E501
     return []
 
 
-def _build_station(station, station_id, country_code):
-    station_name = station['name']
-    streams = [Stream(**s) for s in station.get('streams', [])]
-    favicon = station.get('favicon')
+def _build_station(station_info: RadioStationInfo):
+    streams = [Stream(**s) for s in station_info.streams]
     radio_station = RadioStation(
-        id=station_id,
-        country_code=country_code,
-        name=station_name,
-        favicon=favicon,
+        id=station_info.id,
+        country_code=station_info.country_code,
+        name=station_info.name,
+        favicon=station_info.favicon,
         streams=streams
     )
     return radio_station
