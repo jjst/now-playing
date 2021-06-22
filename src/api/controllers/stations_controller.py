@@ -92,8 +92,9 @@ def search(query):  # noqa: E501
 def _build_station(station_info: RadioStationInfo):
     streams = [Stream(**s) for s in station_info.streams]
     radio_station = RadioStation(
-        id=station_info.id,
-        country_code=station_info.country_code,
+        namespace=station_info.namespace,
+        slug=station_info.slug,
+        id=f"{station_info.namespace}/{station_info.slug}",
         name=station_info.name,
         favicon=station_info.favicon,
         streams=streams
