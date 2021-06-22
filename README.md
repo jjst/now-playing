@@ -38,6 +38,14 @@ sudo pip install tox
 tox
 ```
 
+The tests are ran using pytest inside tox. [Pytest-specific test runner
+arguments](https://docs.pytest.org/en/6.2.x/usage.html) can be passed as extra positional arguments after `--`. For
+example, to run only the tests in the `aggregators` submodule matching the `france-bleu` radio station, run:
+
+```
+tox -- aggregators -k france-bleu
+```
+
 ## Running with Docker
 
 To run the server on a Docker container, please execute the following from the root directory:
