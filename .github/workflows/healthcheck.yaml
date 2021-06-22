@@ -15,7 +15,6 @@ jobs:
     name: Run health check
     env:
       APP_HOSTNAME: https://now-playing-42nq5.ondigitalocean.app
-      NAMESPACE: fr
     steps:
       - uses: actions/checkout@v2
       - name: Setup

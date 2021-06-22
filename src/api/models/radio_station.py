@@ -16,11 +16,15 @@ class RadioStation(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, id: str=None, name: str=None, favicon: str=None, country_code: str=None, streams: List[Stream]=None):  # noqa: E501
+    def __init__(self, id: str=None, namespace: str=None, slug: str=None, name: str=None, favicon: str=None, country_code: str=None, streams: List[Stream]=None):  # noqa: E501
         """RadioStation - a model defined in Swagger
 
         :param id: The id of this RadioStation.  # noqa: E501
         :type id: str
+        :param namespace: The namespace of this RadioStation.  # noqa: E501
+        :type namespace: str
+        :param slug: The slug of this RadioStation.  # noqa: E501
+        :type slug: str
         :param name: The name of this RadioStation.  # noqa: E501
         :type name: str
         :param favicon: The favicon of this RadioStation.  # noqa: E501
@@ -32,6 +36,8 @@ class RadioStation(Model):
         """
         self.swagger_types = {
             'id': str,
+            'namespace': str,
+            'slug': str,
             'name': str,
             'favicon': str,
             'country_code': str,
@@ -40,6 +46,8 @@ class RadioStation(Model):
 
         self.attribute_map = {
             'id': 'id',
+            'namespace': 'namespace',
+            'slug': 'slug',
             'name': 'name',
             'favicon': 'favicon',
             'country_code': 'country_code',
@@ -47,6 +55,8 @@ class RadioStation(Model):
         }
 
         self._id = id
+        self._namespace = namespace
+        self._slug = slug
         self._name = name
         self._favicon = favicon
         self._country_code = country_code
@@ -85,6 +95,52 @@ class RadioStation(Model):
             raise ValueError("Invalid value for `id`, must not be `None`")  # noqa: E501
 
         self._id = id
+
+    @property
+    def namespace(self) -> str:
+        """Gets the namespace of this RadioStation.
+
+
+        :return: The namespace of this RadioStation.
+        :rtype: str
+        """
+        return self._namespace
+
+    @namespace.setter
+    def namespace(self, namespace: str):
+        """Sets the namespace of this RadioStation.
+
+
+        :param namespace: The namespace of this RadioStation.
+        :type namespace: str
+        """
+        if namespace is None:
+            raise ValueError("Invalid value for `namespace`, must not be `None`")  # noqa: E501
+
+        self._namespace = namespace
+
+    @property
+    def slug(self) -> str:
+        """Gets the slug of this RadioStation.
+
+
+        :return: The slug of this RadioStation.
+        :rtype: str
+        """
+        return self._slug
+
+    @slug.setter
+    def slug(self, slug: str):
+        """Sets the slug of this RadioStation.
+
+
+        :param slug: The slug of this RadioStation.
+        :type slug: str
+        """
+        if slug is None:
+            raise ValueError("Invalid value for `slug`, must not be `None`")  # noqa: E501
+
+        self._slug = slug
 
     @property
     def name(self) -> str:
@@ -148,8 +204,6 @@ class RadioStation(Model):
         :param country_code: The country_code of this RadioStation.
         :type country_code: str
         """
-        if country_code is None:
-            raise ValueError("Invalid value for `country_code`, must not be `None`")  # noqa: E501
 
         self._country_code = country_code
 

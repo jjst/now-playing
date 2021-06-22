@@ -34,4 +34,4 @@ services:
     timeout_seconds: 5
     success_threshold: 3
     failure_threshold: 3
-    http_path: /api/stations/fr/
+    http_path: /api/stations

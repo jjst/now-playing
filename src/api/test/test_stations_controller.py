@@ -15,19 +15,11 @@ class TestStationsController(BaseTestCase):
 
     def test_get_station_by_country_code_and_station_id(self):
         response = self.client.open(
-            '/api/stations/{countryCode}/{stationId}'.format(countryCode='fr', stationId='radiomeuh'),
+            '/api/stations/{namespace}/{slug}'.format(namespace='fr', slug='radiomeuh'),
             method='GET')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
-    def test_search(self):
-        query_string = [('query', 'meuh')]
-        response = self.client.open(
-            '/api/search',
-            method='GET',
-            query_string=query_string)
-        self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
 
 
 if __name__ == '__main__':
