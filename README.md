@@ -1,6 +1,12 @@
 # Now Playing!
 
-Find what's currently playing on any radio station.
+Find what's currently playing on any radio station. Alpha version live at https://now-playing-42nq5.ondigitalocean.app/.
+
+## Usage
+
+Try out the API using [Swagger UI](https://now-playing-42nq5.ondigitalocean.app/api/ui/#!/stations/).
+
+I'll add more stuff here eventually.
 
 ## API
 
