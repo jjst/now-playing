@@ -19,13 +19,32 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install flake8 pytest tox
+      # Checks to see if any files in the PR match one of the listed file types.
+      # We can use this filter to decide whether or not to run linters or tests.
+      # You can check if a file with a listed file type is in the PR by doing:
+      # if: ${{ steps.filter.outputs.md == 'true' }}
+      # This will return true if there's a markdown file that was changed
+      # in the PR.
+      - uses: dorny/paths-filter@v2.2.1
+        id: filter
+        with:
+          filters: |
+            md:
+              - '**/*.md'
+            py:
+              - '**/*.py'
+            yaml:
+              - '**/*.yml'
+              - '**/*.yaml'
       - name: Lint with flake8
+        if: ${{ steps.filter.outputs.py == 'true' }}
         run: |
           # stop the build if there are Python syntax errors or undefined names
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
       - name: Test
+        if: ${{ steps.filter.outputs.py == 'true' || steps.filter.outputs.yaml == 'true' }}
         run: |
           tox
   gen-app-version:
