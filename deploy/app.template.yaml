@@ -16,6 +16,14 @@ services:
     scope: RUN_TIME
     type: SECRET
     value: EV[1:N/Eru6BnFSEdGli37J1i/qIv/KryiscU:zmEt1jUTliqofKOWvH5SML3Fw+GkA+gLGFESsJ0WBLTdr79e6a8xxtL2icId7Im5oevkHAgQQfIVP7DDXwYgTkadF5KUXZEOOUdSe14+jMJyrHkrRSGJfmtwNg5d6pmm+qMPOrlZmlt2uAfcK9lfn0ALEDeTNfVf]
+  - key: AWS_ACCESS_KEY_ID
+    scope: RUN_TIME
+    type: SECRET
+    value: EV[1:h+kn+SxevlSrPEd6QMq7pP9ErPQKA9EE:p2t1PXXLxW8/IYRGrLhkXVDcHZaqI+KWZoy9qIf0FjalPquI]
+  - key: AWS_SECRET_ACCESS_KEY
+    scope: RUN_TIME
+    type: SECRET
+    value: EV[1:I7bGtB42t5k+gXQR+rWrBU6Eap7KBunx:WsHMtddtdvdFOvoCaPXsIxuBAhB6LMQNB4ZChfy9/XAT9+YWVerPaPjV2LFVxN9A5O6jxSebw6g=]
   image:
     registry: jjst
     registry_type: DOCKER_HUB
