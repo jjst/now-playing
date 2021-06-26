@@ -1,16 +1,17 @@
 from string import Template
 from aggregators import PlayingItem
 
+# FIXME: pass these ids as config values straight from the config file
 stations = {
-    'fip': 7,
-    'fip-rock': 64,
-    'fip-jazz': 65,
-    'fip-groove': 66,
-    'fip-pop': 78,
-    'fip-electro': 74,
-    'fip-monde': 69,
-    'fip-reggae': 71,
-    'fip-nouveautes': 70
+    'fr/fip': 7,
+    'fr/fip-rock': 64,
+    'fr/fip-jazz': 65,
+    'fr/fip-groove': 66,
+    'fr/fip-pop': 78,
+    'fr/fip-electro': 74,
+    'fr/fip-monde': 69,
+    'fr/fip-reggae': 71,
+    'fr/fip-nouveautes': 70
 }
 persisted_query_hash = "151ca055b816d28507dae07f9c036c02031ed54e18defc3d16feee2551e9a731"
 
