@@ -36,11 +36,23 @@ def load_aggregators():
     return aggregators
 
 
-def _with_default_params(params: dict, country_code: str, station_id: str) -> dict:
+def _with_default_params(params: dict, namespace: str, slug: str) -> dict:
+    """
+    Support for default parameters. Some aggregator parameters don't need to
+    have a value specified, they indicate the aggregator wants to get existing
+    information from the station it's aggregating data for.
+    """
+    # TODO: I'm not actually sure I want to keep this feature as-is.
+    # Leaning towards always providing station info as a param to fetch() instead.
     if 'country_code' in params:
-        params['country_code'] = country_code
+        # Legacy attr name
+        params['country_code'] = namespace
+    if 'namespace' in params:
+        params['namespace'] = namespace
+    if 'slug' in params:
+        params['slug'] = slug
     if 'station_id' in params:
-        params['station_id'] = station_id
+        params['station_id'] = f"{namespace}/{slug}"
     return params
 
 

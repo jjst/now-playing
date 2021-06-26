@@ -6,6 +6,7 @@ stations:
         now-playing:
           - module: jsonpath_aggregator
             params:
+              station_id:
               url: "https://www.cheriefm.fr/onair"
               field_extractors:
                 artist: '$.[?(@.id == "190")].playlist[?(@.id != 0)].song.artist'

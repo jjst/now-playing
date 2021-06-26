@@ -15,7 +15,7 @@ print(f"Using config path {ROOT_PATH_FOR_DYNACONF}")
 
 settings = WatchedConf(
         envvar_prefix="DYNACONF",
-        # settings_files=['logging.ini'], # FIXME: causes exception
+        settings_files=['config.yaml'],
         includes=['stations/*.yaml', 'stations/*/*.yaml'],
         root_path=ROOT_PATH_FOR_DYNACONF,
         merge_enabled=True
@@ -23,6 +23,7 @@ settings = WatchedConf(
 
 
 def load_logging_config(path=DEFAULT_CONFIG_PATH):
+    # FIXME: should load using dynaconf/generic conf loading, but causes exception rn 🤷
     # Using print() since logging not set up yet
     print(f"Loading config from '{path}'")
     config_file = os.path.join(path, 'logging.ini')
