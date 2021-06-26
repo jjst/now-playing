@@ -77,6 +77,7 @@ def query_java_jsonpath_api(session, jsonpath_queries, json_str):
 
 def save_data_on_s3(station_id, json_data, extracted_data):
     if settings.s3.enabled:
+        logging.info("Saving aggregated data to S3")
         try:
             s3 = boto3.resource('s3', endpoint_url=settings.s3.endpoint_url)
             timestamp = int(time.time())
@@ -89,6 +90,11 @@ def save_data_on_s3(station_id, json_data, extracted_data):
                     Key=key,
                     Body=json.dumps(data)
                 )
+        except botocore.exceptions.BotoCoreError as e:
+            # Don't error out here, just log a warning.
+            # Aggregation was still successful, we just can't gather stats.
+            logging.warning("Could not save aggregation results on S3")
+            logging.exception(e)
         except botocore.exceptions.ClientError as e:
             # Don't error out here, just log a warning.
             # Aggregation was still successful, we just can't gather stats.
