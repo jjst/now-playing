@@ -3,7 +3,7 @@ from opentelemetry.launcher import configure_opentelemetry
 from opentelemetry.instrumentation.flask import FlaskInstrumentor
 from opentelemetry.instrumentation.requests import RequestsInstrumentor
 from opentelemetry.instrumentation.urllib import URLLibInstrumentor
-from opentelemetry.instrumentation.boto import BotoInstrumentor
+from opentelemetry.instrumentation.botocore import BotocoreInstrumentor
 
 import os
 
@@ -30,7 +30,7 @@ def add_instrumentation(app):
     FlaskInstrumentor().instrument_app(app.app)
     RequestsInstrumentor().instrument(span_callback=set_cached_response_tag)
     URLLibInstrumentor().instrument()
-    BotoInstrumentor().instrument()
+    BotocoreInstrumentor().instrument()
 
 
 def set_cached_response_tag(span, result):
