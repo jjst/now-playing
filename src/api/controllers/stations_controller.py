@@ -1,6 +1,10 @@
+import json
 import logging
 import os
 import requests_cache
+import boto3
+import botocore.exceptions
+import time
 
 from opentelemetry import trace
 from opentelemetry.sdk.trace import TracerProvider
@@ -12,8 +16,11 @@ from api.models.now_playing import NowPlaying
 from api.models.stream import Stream
 
 import aggregators
+from aggregators import AggregationResult
+from base.json import DataClassJSONEncoder
 from base.stations import RadioStationInfo
 import base.stations as stations
+from base.config import settings
 
 trace.set_tracer_provider(TracerProvider())
 
@@ -55,6 +62,8 @@ def get_now_playing_by_country_code_and_station_id(namespace, slug):
             span.set_attribute('namespace', namespace)
             span.set_attribute('slug', slug)
             aggregation_result = aggregator(session, 'now-playing')
+        with tracer.start_as_current_span("save_aggregation_result_on_s3") as span:
+            save_aggregation_result_on_s3(f"{namespace}/{slug}", aggregation_result)
         playing_item = next(iter(aggregation_result.items))
         return NowPlaying(type=playing_item.type, title=playing_item.title)
     except StopIteration:
@@ -100,3 +109,39 @@ def _build_station(station_info: RadioStationInfo):
         streams=streams
     )
     return radio_station
+
+
+def save_aggregation_result_on_s3(station_id, aggregation_result: AggregationResult):
+    if settings.s3.enabled:
+        logging.info("Saving aggregated data to S3")
+        try:
+            s3 = boto3.resource('s3', endpoint_url=settings.s3.endpoint_url)
+            timestamp = int(time.time())
+            bucket = s3.Bucket(settings.s3.bucket_name)
+            key = f"{station_id}/{timestamp}/extracted.json"
+            bucket.put_object(
+                Key=key,
+                Body=json.dumps(aggregation_result.items, cls=DataClassJSONEncoder)
+            )
+            for source in aggregation_result.sources:
+                if isinstance(source.data, str):
+                    extension = "txt"
+                    body = source.data
+                else:
+                    extension = "json"
+                    body = json.dumps(source.data)
+                key = f"{station_id}/{timestamp}/sources/{source.type}/data.{extension}"
+                bucket.put_object(
+                    Key=key,
+                    Body=body
+                )
+        except botocore.exceptions.BotoCoreError as e:
+            # Don't error out here, just log a warning.
+            # Aggregation was still successful, we just can't gather stats.
+            logging.warning("Could not save aggregation results on S3")
+            logging.exception(e)
+        except botocore.exceptions.ClientError as e:
+            # Don't error out here, just log a warning.
+            # Aggregation was still successful, we just can't gather stats.
+            logging.warning("Could not save aggregation results on S3")
+            logging.exception(e)
