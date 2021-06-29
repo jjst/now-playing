@@ -13,14 +13,19 @@ from api.test import BaseTestCase
 class TestStationsController(BaseTestCase):
     """StationsController integration test stubs"""
 
-    def test_get_station_by_country_code_and_station_id(self):
+    def test_get_station_by_station_id(self):
         response = self.client.open(
             '/api/stations/{namespace}/{slug}'.format(namespace='fr', slug='radiomeuh'),
             method='GET')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
-
+    def test_get_now_playing_by_station_id(self):
+        response = self.client.open(
+            '/api/stations/{namespace}/{slug}/now-playing'.format(namespace='fr', slug='radiomeuh'),
+            method='GET')
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
 
 if __name__ == '__main__':
     import unittest

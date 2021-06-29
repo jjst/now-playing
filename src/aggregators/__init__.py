@@ -1,6 +1,8 @@
+from enum import Enum
 import importlib
 import functools
 import logging
+from typing import Union
 from dataclasses import dataclass, field
 
 from base import config
@@ -10,7 +12,22 @@ from base import config
 class PlayingItem():
     type: str
     title: str
-    metadata: dict = field(default_factory=dict)
+
+
+@dataclass
+class Source():
+    type: str
+    data: Union[dict, str, None]
+
+
+@dataclass
+class AggregationResult():
+    items: list[PlayingItem]
+    sources: list[Source]
+
+    @staticmethod
+    def empty(sources: list[Source]):
+        return AggregationResult(items=[], sources=sources)
 
 
 @dataclass
