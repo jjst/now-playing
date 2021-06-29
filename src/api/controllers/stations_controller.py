@@ -54,8 +54,8 @@ def get_now_playing_by_country_code_and_station_id(namespace, slug):
             span.set_attribute('station_id', f'{namespace}/{slug}')
             span.set_attribute('namespace', namespace)
             span.set_attribute('slug', slug)
-            now_playing_items = aggregator(session, 'now-playing')
-        playing_item = next(iter(now_playing_items))
+            aggregation_result = aggregator(session, 'now-playing')
+        playing_item = next(iter(aggregation_result.items))
         return NowPlaying(type=playing_item.type, title=playing_item.title)
     except StopIteration:
         return {'title': "Could not fetch now playing information"}, 500

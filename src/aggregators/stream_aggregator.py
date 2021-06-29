@@ -1,4 +1,4 @@
-from aggregators import PlayingItem
+from aggregators import AggregationResult, PlayingItem, Source
 
 import chardet
 import logging
@@ -7,8 +7,11 @@ from streamscrobbler import streamscrobbler
 
 def fetch(session, request_type: str, stream_url: str, encoding: str = None):
     stationinfo = streamscrobbler.get_server_info(stream_url)
+    items = []
+    sources = []
     if stationinfo['metadata']:
         metadata = stationinfo['metadata']
+        sources = [Source(type='stream_metadata', data=metadata)]
         try:
             song = metadata['song']
             # Looks like sometimes the library returns bytes instead of str...
@@ -20,7 +23,10 @@ def fetch(session, request_type: str, stream_url: str, encoding: str = None):
                     logging.info(f"Detected: {result}")
                     encoding = result['encoding']
                 song = song.decode(encoding)
-            return [PlayingItem(type='song', title=song)]
+            items = [PlayingItem(type='song', title=song)]
         except KeyError:
-            return []
-    return []
+            pass
+    return AggregationResult(
+        items=items,
+        sources=sources
+    )

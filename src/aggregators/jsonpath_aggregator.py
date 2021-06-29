@@ -9,7 +9,7 @@ import logging
 import time
 
 from base.config import settings
-from aggregators import PlayingItem
+from aggregators import AggregationResult, PlayingItem, Source
 
 PYTHON_JSONPATH_NG_EXT = 'python-jsonpath-ng-ext'
 JAVA_JAYWAY = 'java-jayway'
@@ -29,12 +29,15 @@ def fetch(session, request_type: str, station_id: str, url: str, field_extractor
     # (We intentionally save even on unsuccessful extractions, because it's valuable data)
     save_data_on_s3(station_id, json_data, field_values)
     # Make sure all field extraction was successful
+    playing_items = []
     if all(field_values.values()):
         logging.debug(field_values)
         title = format_string.format(**field_values)
         playing_items = [PlayingItem(type='song', title=title)]
-        return playing_items
-    return []
+    return AggregationResult(
+        items=playing_items,
+        sources=[Source(type='json', data=json_data)]
+    )
 
 
 def read_json(response):
