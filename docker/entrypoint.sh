@@ -20,4 +20,4 @@ if [ -n "${GIT_CONFIG_REPOSITORY+set}" ]; then
 fi
 
 cd src/
-gunicorn --access-logfile=- --bind 0.0.0.0:8080 --worker-tmp-dir /dev/shm api:app
+python3 "$@"

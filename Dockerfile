@@ -17,4 +17,4 @@ EXPOSE 8080
 ENV GIT_CONFIG_REPOSITORY="https://github.com/jjst/now-playing.git"
 ENV GIT_CONFIG_REPOSITORY_SUBFOLDER="conf"
 ENTRYPOINT ["./docker/entrypoint.sh"]
-CMD ["--access-logfile=-", "--bind", "0.0.0.0:8080", "--worker-tmp-dir", "/dev/shm", "api:app"]
+CMD ["-m", "api"]
