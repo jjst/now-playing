@@ -11,6 +11,8 @@ from opentelemetry.instrumentation.urllib import URLLibInstrumentor
 from opentelemetry.instrumentation.botocore import BotocoreInstrumentor
 from opentelemetry.instrumentation.asgi import OpenTelemetryMiddleware
 
+from api.tracing.aiohttp import instrument_aiohttp_app
+
 
 import os
 
@@ -44,6 +46,7 @@ def configure_tracer(app):
 def add_instrumentation(app):
     # FIXME: doesn't work since aiohttp isn't ASGI-compatible
     # app.app = OpenTelemetryMiddleware(app.app)
+    instrument_aiohttp_app(app.app)
     RequestsInstrumentor().instrument(span_callback=set_cached_response_tag)
     URLLibInstrumentor().instrument()
     BotocoreInstrumentor().instrument()
