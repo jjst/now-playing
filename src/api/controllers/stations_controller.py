@@ -92,7 +92,7 @@ async def get_station_by_country_code_and_station_id(namespace, slug):  # noqa: 
         return json_response(data={'title': "Station not found"}, status=404)
 
 
-def search(query):  # noqa: E501
+async def search(query):  # noqa: E501
     """Finds a station by name
 
     :param query: Search query
