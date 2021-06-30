@@ -1,14 +1,27 @@
 from aiohttp.web import middleware
 from opentelemetry import trace
 
+tracer = trace.get_tracer(__name__)
+
+USER_AGENT = 'User-Agent'
+
 
 @middleware
 async def middleware(request, handler):
+    print(request.host)
+    print(request.headers)
     route = request.match_info.route
-    tracer = trace.get_tracer(__name__)
     span_name = f"{route.method} {route.resource.canonical}"
     with tracer.start_as_current_span(span_name) as span:
+        span.set_attribute('span.kind', 'server')
+        span.set_attribute('http.route', route.resource.canonical)
+        span.set_attribute('http.host', request.host)
+        span.set_attribute('http.method', route.method)
+        span.set_attribute('http.target', request.rel_url)
+        if USER_AGENT in request.headers:
+            span.set_attribute('http.user_agent', request.headers[USER_AGENT])
         resp = await handler(request)
+        span.set_attribute('http.status_code', resp.status)
     return resp
 
 
