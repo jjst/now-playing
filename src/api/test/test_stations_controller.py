@@ -1,32 +1,22 @@
 # coding: utf-8
-
-from __future__ import absolute_import
-
-from flask import json
-from six import BytesIO
-
-from api.models.radio_station import RadioStation  # noqa: E501
-from api.models.search_result import SearchResult  # noqa: E501
-from api.test import BaseTestCase
+import connexion
+import logging
 
 
-class TestStationsController(BaseTestCase):
-    """StationsController integration test stubs"""
+def create_app(loop):
+    logging.getLogger('connexion.operation').setLevel('ERROR')
+    app = connexion.AioHttpApp(__name__, specification_dir='../openapi/')
+    app.add_api('spec.yaml')
+    return app.app
 
-    def test_get_station_by_station_id(self):
-        response = self.client.open(
-            '/api/stations/{namespace}/{slug}'.format(namespace='fr', slug='radiomeuh'),
-            method='GET')
-        self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
 
-    def test_get_now_playing_by_station_id(self):
-        response = self.client.open(
-            '/api/stations/{namespace}/{slug}/now-playing'.format(namespace='fr', slug='radiomeuh'),
-            method='GET')
-        self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
+async def test_get_station_by_station_id(test_client):
+    client = await test_client(create_app)
+    response = await client.get('/api/stations/{namespace}/{slug}'.format(namespace='fr', slug='radiomeuh'))
+    assert response.status == 200
 
-if __name__ == '__main__':
-    import unittest
-    unittest.main()
+
+async def test_get_now_playing_by_station_id(test_client):
+    client = await test_client(create_app)
+    response = await client.get('/api/stations/{namespace}/{slug}/now-playing'.format(namespace='fr', slug='radiomeuh'))
+    assert response.status == 200

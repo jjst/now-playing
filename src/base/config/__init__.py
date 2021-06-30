@@ -25,9 +25,10 @@ settings = WatchedConf(
 def load_logging_config(path=DEFAULT_CONFIG_PATH):
     # FIXME: should load using dynaconf/generic conf loading, but causes exception rn 🤷
     # Using print() since logging not set up yet
+    # FIXME: should also convert to using YAML and `dictConfig` instead of legacy `fileConfig`
     print(f"Loading config from '{path}'")
     config_file = os.path.join(path, 'logging.ini')
-    logging.config.fileConfig(config_file)
+    logging.config.fileConfig(config_file, disable_existing_loggers=False)
 
 
 def load_stations():

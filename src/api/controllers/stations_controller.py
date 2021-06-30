@@ -5,6 +5,7 @@ import requests_cache
 import boto3
 import botocore.exceptions
 import time
+from aiohttp.web import json_response
 
 from opentelemetry import trace
 from opentelemetry.sdk.trace import TracerProvider
@@ -18,6 +19,7 @@ from api.models.stream import Stream
 import aggregators
 from aggregators import AggregationResult
 from base.json import DataClassJSONEncoder
+from api.encoder import JSONEncoder as ConnexionJsonEncoder
 from base.stations import RadioStationInfo
 import base.stations as stations
 from base.config import settings
@@ -29,30 +31,32 @@ cache_ttl = int(os.environ.get("REQUEST_CACHE_TTL_SECONDS", "3"))
 session = requests_cache.CachedSession(backend='memory', expire_after=cache_ttl, allowable_methods=('GET', 'POST'))
 
 
-def get_stations():
+async def get_stations():
     all_stations = stations.get_all()
-    return RadioStationList(items=[_build_station(s) for s in all_stations])
+    data = RadioStationList(items=[_build_station(s) for s in all_stations])
+    return json_response(data=data.to_dict())
 
 
-def get_stations_by_country_code(namespace):
+async def get_stations_by_country_code(namespace):
     stations_by_country = stations.get_all(namespace=namespace)
-    return RadioStationList(items=[_build_station(s) for s in stations_by_country])
+    data = RadioStationList(items=[_build_station(s) for s in stations_by_country])
+    return json_response(data=data.to_dict())
 
 
-def get_now_playing_by_country_code_and_station_id(namespace, slug):
+async def get_now_playing_by_country_code_and_station_id(namespace, slug):
     tracer = trace.get_tracer(__name__)
     logging.info(f"Getting now playing information for station id: '{namespace}/{slug}'")
     try:
         _ = stations.get(namespace, slug)
     except KeyError:
-        return {'title': "Station not found"}, 404
+        return json_response(data={'title': "Station not found"}, status=404)
     try:
         aggregator = aggregators.aggregator_for_station(country_code=namespace, station_id=slug)
     except ModuleNotFoundError as e:
         # Couldnt get a valid aggregator
         logging.warn("Could not load station aggregator for station")
         logging.exception(e)
-        return {'title': f"No 'now-playing' information is available for station '{namespace}/{slug}'"}, 404
+        return json_response(data={'title': f"No 'now-playing' information is available for station '{namespace}/{slug}'"}, status=404)
     try:
         with tracer.start_as_current_span("call_aggregator") as span:
             span.set_attribute('aggregator.module_name', aggregator.module_name)
@@ -65,12 +69,12 @@ def get_now_playing_by_country_code_and_station_id(namespace, slug):
         with tracer.start_as_current_span("save_aggregation_result_on_s3") as span:
             save_aggregation_result_on_s3(f"{namespace}/{slug}", aggregation_result)
         playing_item = next(iter(aggregation_result.items))
-        return NowPlaying(type=playing_item.type, title=playing_item.title)
+        return json_response(data=NowPlaying(type=playing_item.type, title=playing_item.title).to_dict())
     except StopIteration:
-        return {'title': "Could not fetch now playing information"}, 500
+        return json_response(data={'title': "Could not fetch now playing information"}, status=500)
 
 
-def get_station_by_country_code_and_station_id(namespace, slug):  # noqa: E501
+async def get_station_by_country_code_and_station_id(namespace, slug):  # noqa: E501
     """
     Returns a radio station
 
@@ -83,9 +87,9 @@ def get_station_by_country_code_and_station_id(namespace, slug):  # noqa: E501
     """
     try:
         station_info = stations.get(namespace, slug)
-        return _build_station(station_info)
+        return json_response(data=_build_station(station_info).to_dict())
     except KeyError:
-        return {'title': "Station not found"}, 404
+        return json_response(data={'title': "Station not found"}, status=404)
 
 
 def search(query):  # noqa: E501
