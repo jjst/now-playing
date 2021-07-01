@@ -22,7 +22,6 @@ def fetch_url(session, url):
         end = datetime.fromtimestamp(item['end'])
         if now <= end:
             logging.debug(f'{start} -> {end}: {item["conceptTitle"]} - {item["expressionTitle"]}')
-            print(now >= start)
         if now >= start and now <= end:
             if item['conceptTitle'] == item['expressionTitle']:
                 title = item['conceptTitle']
