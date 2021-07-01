@@ -10,8 +10,7 @@ async def middleware(request, handler):
     if route.resource:
         span_name = f"{route.method} {route.resource.canonical}"
         tracer = trace.get_tracer(__name__)
-        with tracer.start_as_current_span(span_name) as span:
-            span.set_attribute('span.kind', 'server')
+        with tracer.start_as_current_span(span_name, kind=trace.SpanKind.SERVER) as span:
             span.set_attribute('http.route', route.resource.canonical)
             span.set_attribute('http.host', request.host)
             span.set_attribute('http.method', route.method)

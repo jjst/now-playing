@@ -9,7 +9,6 @@ import time
 from aiohttp.web import json_response
 
 from opentelemetry import trace
-from opentelemetry.sdk.trace import TracerProvider
 
 
 from api.models.radio_station_list import RadioStationList
@@ -24,9 +23,6 @@ from api.encoder import JSONEncoder as ConnexionJsonEncoder
 from base.stations import RadioStationInfo
 import base.stations as stations
 from base.config import settings
-
-trace.set_tracer_provider(TracerProvider())
-
 
 cache_ttl = int(os.environ.get("REQUEST_CACHE_TTL_SECONDS", "3"))
 session = requests_cache.CachedSession(backend='memory', expire_after=cache_ttl, allowable_methods=('GET', 'POST'))
