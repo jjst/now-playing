@@ -15,7 +15,7 @@ async def middleware(request, handler):
             span.set_attribute('http.route', route.resource.canonical)
             span.set_attribute('http.host', request.host)
             span.set_attribute('http.method', route.method)
-            span.set_attribute('http.target', request.rel_url)
+            span.set_attribute('http.target', str(request.rel_url))
             if USER_AGENT in request.headers:
                 span.set_attribute('http.user_agent', request.headers[USER_AGENT])
             resp = await handler(request)
