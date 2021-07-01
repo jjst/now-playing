@@ -1,4 +1,4 @@
 s3:
-  enabled: True
+  enabled: False
   endpoint_url: https://s3.eu-central-1.wasabisys.com
   bucket_name: now-playing-aggregated-data
