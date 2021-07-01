@@ -117,7 +117,7 @@ def _build_station(station_info: RadioStationInfo):
 
 async def save_aggregation_result_on_s3(station_id, aggregation_result: AggregationResult):
     if settings.s3.enabled:
-        logging.info("Saving aggregated data to S3")
+        logging.info(f"Saving aggregated data for {station_id} to S3")
         try:
             tracer = trace.get_tracer(__name__)
             with tracer.start_as_current_span("save_aggregation_result_on_s3"):
