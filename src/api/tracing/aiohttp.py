@@ -19,6 +19,8 @@ async def middleware(request, handler):
                 span.set_attribute('http.user_agent', request.headers[USER_AGENT])
             resp = await handler(request)
             span.set_attribute('http.status_code', resp.status)
+            if 500 <= resp.status <= 599:
+                span.set_attribute('error', True)
         return resp
     else:
         return await handler(request)
