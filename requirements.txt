@@ -64,7 +64,6 @@ python-dotenv==0.17.1
 pytz==2021.1
 PyYAML==5.4.1
 redis==3.5.3
-redis-opentracing==1.0.0
 requests==2.25.1
 requests-cache==0.6.4
 s3transfer==0.4.2
