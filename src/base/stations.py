@@ -13,6 +13,9 @@ class RadioStationInfo:
     favicon: Optional[str]
     streams: list[Any]
 
+    def station_id(self):
+        return f'{self.namespace}/{self.slug}'
+
 
 def get_all(namespace: Optional[str] = None) -> list[RadioStationInfo]:
     def stations_in_namespace(ns):

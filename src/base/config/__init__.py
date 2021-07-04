@@ -14,12 +14,12 @@ ROOT_PATH_FOR_DYNACONF = get("ROOT_PATH_FOR_DYNACONF", DEFAULT_CONFIG_PATH)
 print(f"Using config path {ROOT_PATH_FOR_DYNACONF}")
 
 settings = WatchedConf(
-        envvar_prefix="DYNACONF",
-        settings_files=['config.yaml'],
-        includes=['stations/*.yaml', 'stations/*/*.yaml'],
-        root_path=ROOT_PATH_FOR_DYNACONF,
-        merge_enabled=True
-    )
+    envvar_prefix=False,
+    settings_files=['config.yaml'],
+    includes=['stations/*.yaml', 'stations/*/*.yaml'],
+    root_path=ROOT_PATH_FOR_DYNACONF,
+    merge_enabled=True
+)
 
 
 def load_logging_config(path=DEFAULT_CONFIG_PATH):
