@@ -8,7 +8,13 @@ from base.stations import RadioStationInfo
 
 class ResponseCache():
     def __init__(self, settings=settings):
-        self.redis_client = redis.Redis(settings.redis.host, settings.redis.port, settings.redis.db)
+        self.redis_client = redis.Redis(
+            settings.redis.host,
+            settings.redis.port,
+            settings.redis.db,
+            socket_timeout=settings.redis.socket_timeout,
+            socket_connect_timeout=settings.redis.socket_connect_timeout,
+        )
         self.default_ttl_seconds = settings.redis.ttl_seconds
 
     def get(self, station: RadioStationInfo) -> Optional[str]:
