@@ -27,6 +27,6 @@ def fetch_url(session, url):
                 title = item['conceptTitle']
             else:
                 title = item['conceptTitle'] + " - " + item['expressionTitle']
-            items = [PlayingItem('programme', title)]
+            items = [PlayingItem('programme', title, start_time=start, end_time=end)]
             return AggregationResult(items, sources=[Source('json', playlist)])
     return AggregationResult.empty(sources=[Source('json', playlist)])

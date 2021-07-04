@@ -1,17 +1,27 @@
+from datetime import datetime, timedelta
 from enum import Enum
 import importlib
 import functools
 import logging
-from typing import Union
+from typing import Union, Optional
 from dataclasses import dataclass, field
 
 from base import config
 
 
+# TODO: Separate into subclasses for Programme and Song, with different attributes
+# artist + title in one case, programme_title + episode_title in other
 @dataclass
 class PlayingItem():
     type: str
     title: str
+    start_time: Optional[datetime] = None
+    end_time: Optional[datetime] = None
+
+    def duration(self) -> Optional[timedelta]:
+        if self.start_time and self.end_time:
+            return self.end_time - self.start_time
+        return None
 
 
 @dataclass
