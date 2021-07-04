@@ -7,7 +7,6 @@ import boto3
 import botocore.exceptions
 import time
 from aiohttp.web import Response, json_response
-import redis
 
 from opentelemetry import trace
 
@@ -16,6 +15,7 @@ from api.models.radio_station_list import RadioStationList
 from api.models.radio_station import RadioStation
 from api.models.now_playing import NowPlaying
 from api.models.stream import Stream
+from api.response_cache import ResponseCache
 
 import aggregators
 from aggregators import AggregationResult
@@ -31,7 +31,7 @@ tracer = trace.get_tracer(__name__)
 cache_ttl = int(os.environ.get("REQUEST_CACHE_TTL_SECONDS", "3"))
 session = requests_cache.CachedSession(backend='memory', expire_after=cache_ttl, allowable_methods=('GET', 'POST'))
 
-redis_client = redis.Redis(settings.redis.host, settings.redis.port, settings.redis.db)
+response_cache = ResponseCache()
 
 
 async def get_stations():
@@ -52,7 +52,7 @@ async def get_now_playing_by_country_code_and_station_id(namespace, slug):
         station = stations.get(namespace, slug)
     except KeyError:
         return json_response(data={'title': "Station not found"}, status=404)
-    cached_response = redis_client.get(station.station_id())
+    cached_response = response_cache.get(station)
     current_span = trace.get_current_span()
     if cached_response:
         logging.info(f"Returning cached respones for {station.station_id()}")
@@ -80,7 +80,7 @@ async def get_now_playing_by_country_code_and_station_id(namespace, slug):
             asyncio.create_task(save_aggregation_result_on_s3(f"{namespace}/{slug}", aggregation_result))
         playing_item = next(iter(aggregation_result.items))
         data = NowPlaying(type=playing_item.type, title=playing_item.title).to_dict()
-        redis_client.set(station.station_id(), json.dumps(data), ex=10)
+        response_cache.set(station, json.dumps(data), ttl_seconds=10)
         return json_response(data=data)
     except StopIteration:
         return json_response(data={'title': "Could not fetch now playing information"}, status=500)
