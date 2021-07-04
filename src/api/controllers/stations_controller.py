@@ -6,7 +6,7 @@ import requests_cache
 import boto3
 import botocore.exceptions
 import time
-from aiohttp.web import json_response
+from aiohttp.web import Response, json_response
 
 from opentelemetry import trace
 
@@ -15,6 +15,7 @@ from api.models.radio_station_list import RadioStationList
 from api.models.radio_station import RadioStation
 from api.models.now_playing import NowPlaying
 from api.models.stream import Stream
+from api.response_cache import ResponseCache
 
 import aggregators
 from aggregators import AggregationResult
@@ -24,8 +25,13 @@ from base.stations import RadioStationInfo
 import base.stations as stations
 from base.config import settings
 
+
+tracer = trace.get_tracer(__name__)
+
 cache_ttl = int(os.environ.get("REQUEST_CACHE_TTL_SECONDS", "3"))
 session = requests_cache.CachedSession(backend='memory', expire_after=cache_ttl, allowable_methods=('GET', 'POST'))
+
+response_cache = ResponseCache()
 
 
 async def get_stations():
@@ -41,12 +47,20 @@ async def get_stations_by_country_code(namespace):
 
 
 async def get_now_playing_by_country_code_and_station_id(namespace, slug):
-    tracer = trace.get_tracer(__name__)
     logging.info(f"Getting now playing information for station id: '{namespace}/{slug}'")
     try:
-        _ = stations.get(namespace, slug)
+        station = stations.get(namespace, slug)
     except KeyError:
         return json_response(data={'title': "Station not found"}, status=404)
+    cached_response = response_cache.get(station)
+    current_span = trace.get_current_span()
+    if cached_response:
+        logging.info(f"Returning cached respones for {station.station_id()}")
+        if current_span:
+            current_span.set_attribute('http.cached_response', True)
+        return Response(body=cached_response, content_type='application/json')
+    elif current_span:
+        current_span.set_attribute('http.cached_response', False)
     try:
         aggregator = aggregators.aggregator_for_station(country_code=namespace, station_id=slug)
     except ModuleNotFoundError as e:
@@ -65,7 +79,9 @@ async def get_now_playing_by_country_code_and_station_id(namespace, slug):
             aggregation_result = aggregator(session, 'now-playing')
             asyncio.create_task(save_aggregation_result_on_s3(f"{namespace}/{slug}", aggregation_result))
         playing_item = next(iter(aggregation_result.items))
-        return json_response(data=NowPlaying(type=playing_item.type, title=playing_item.title).to_dict())
+        data = NowPlaying(type=playing_item.type, title=playing_item.title).to_dict()
+        response_cache.set(station, json.dumps(data), ttl_seconds=10)
+        return json_response(data=data)
     except StopIteration:
         return json_response(data={'title': "Could not fetch now playing information"}, status=500)
 
@@ -115,7 +131,6 @@ async def save_aggregation_result_on_s3(station_id, aggregation_result: Aggregat
     if settings.s3.enabled:
         logging.info(f"Saving aggregated data for {station_id} to S3")
         try:
-            tracer = trace.get_tracer(__name__)
             with tracer.start_as_current_span("save_aggregation_result_on_s3"):
                 s3 = boto3.resource('s3', endpoint_url=settings.s3.endpoint_url)
                 timestamp = int(time.time())

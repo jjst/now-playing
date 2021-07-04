@@ -9,7 +9,7 @@ from opentelemetry.launcher import configure_opentelemetry
 from opentelemetry.instrumentation.requests import RequestsInstrumentor
 from opentelemetry.instrumentation.urllib import URLLibInstrumentor
 from opentelemetry.instrumentation.botocore import BotocoreInstrumentor
-from opentelemetry.instrumentation.asgi import OpenTelemetryMiddleware
+from opentelemetry.instrumentation.redis import RedisInstrumentor
 
 from api.tracing.aiohttp import instrument_aiohttp_app
 
@@ -44,18 +44,17 @@ def configure_tracer(app):
 
 
 def add_instrumentation(app):
-    # FIXME: doesn't work since aiohttp isn't ASGI-compatible
-    # app.app = OpenTelemetryMiddleware(app.app)
     instrument_aiohttp_app(app.app)
     RequestsInstrumentor().instrument(span_callback=set_cached_response_tag)
     URLLibInstrumentor().instrument()
     BotocoreInstrumentor().instrument()
+    RedisInstrumentor().instrument()
     return app
 
 
 def set_cached_response_tag(span, result):
     try:
         cached_response = result.from_cache
-    except KeyError:
+    except AttributeError:
         cached_response = False
     span.set_attribute('http.cached_response', cached_response)

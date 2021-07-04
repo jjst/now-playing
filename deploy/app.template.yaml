@@ -1,7 +1,7 @@
 name: now-playing
 region: fra
 services:
-- dockerfile_path: Dockerfile
+- name: now-playing
   envs:
   - key: APPLICATION_VERSION
     scope: RUN_TIME
@@ -24,6 +24,9 @@ services:
     scope: RUN_TIME
     type: SECRET
     value: EV[1:I7bGtB42t5k+gXQR+rWrBU6Eap7KBunx:WsHMtddtdvdFOvoCaPXsIxuBAhB6LMQNB4ZChfy9/XAT9+YWVerPaPjV2LFVxN9A5O6jxSebw6g=]
+  - key: redis__host
+    scope: RUN_TIME
+    value: redis
   image:
     registry: jjst
     registry_type: DOCKER_HUB
@@ -32,7 +35,6 @@ services:
   http_port: 8080
   instance_count: 1
   instance_size_slug: basic-xxs
-  name: now-playing
   routes:
   - path: /
   source_dir: /
@@ -43,3 +45,12 @@ services:
     success_threshold: 3
     failure_threshold: 3
     http_path: /api/stations
+- name: redis
+  image:
+    registry_type: DOCKER_HUB
+    registry: _
+    repository: redis
+    tag: 6.2.4-alpine
+  instance_size_slug: basic-xxs
+  internal_ports:
+    - 6379

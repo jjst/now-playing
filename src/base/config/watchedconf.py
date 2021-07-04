@@ -4,9 +4,6 @@ from dynaconf.utils import ensure_a_list
 from dynaconf import Dynaconf
 import os
 import logging
-import subprocess
-import tempfile
-import watchdog
 import fnmatch
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler

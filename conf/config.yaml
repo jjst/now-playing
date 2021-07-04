@@ -2,3 +2,8 @@ s3:
   enabled: False
   endpoint_url: https://s3.eu-central-1.wasabisys.com
   bucket_name: now-playing-aggregated-data
+redis:
+  host: localhost
+  port: 6379
+  db: 0
+  ttl_seconds: 10
