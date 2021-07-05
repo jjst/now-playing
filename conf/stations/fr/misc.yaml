@@ -1,26 +1,5 @@
 stations:
   fr:
-    cherie-fm:
-      name: Chérie FM
-      aggregators:
-        now-playing:
-          - module: jsonpath_aggregator
-            params:
-              station_id:
-              url: "https://www.cheriefm.fr/onair"
-              item_type: song
-              field_extractors:
-                artist: '$.[?(@.id == "190")].playlist[?(@.song.id != 0)].song.artist'
-                title: '$.[?(@.id == "190")].playlist[?(@.song.id != 0)].song.title'
-              format_string: '{artist} - {title}'
-              engine: java-jayway
-    france-info:
-      name: France Info
-      aggregators:
-        now-playing:
-          - module: stream_aggregator
-            params:
-              stream_url: "http://icecast.radiofrance.fr/franceinfo-midfi.mp3"
     france-inter:
       name: France Inter
       favicon: https://www.franceinter.fr/favicon.ico
