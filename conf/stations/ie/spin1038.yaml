@@ -7,6 +7,7 @@ stations:
           - module: jsonpath_aggregator
             params:
               station_id:
+              item_type: song
               url: "https://s3-eu-west-1.amazonaws.com/storage.publisherplus.ie/media.radiocms.net/now-playing/spin1038"
               field_extractors:
                 artist: '$.artist'

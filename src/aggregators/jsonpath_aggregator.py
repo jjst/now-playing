@@ -1,5 +1,6 @@
 from jsonpath_ng.ext import parse
 import commentjson
+from datetime import datetime
 import json
 from json.decoder import JSONDecodeError
 import pprint
@@ -14,7 +15,7 @@ DEFAULT_ENGINE = PYTHON_JSONPATH_NG_EXT
 JAVA_JSONPATH_API_URL = "https://java-jsonpath-api-bknua.ondigitalocean.app/"
 
 
-def fetch(session, request_type: str, station_id: str, url: str, field_extractors: dict, format_string: str, engine: str = DEFAULT_ENGINE):
+def fetch(session, request_type: str, item_type: str, station_id: str, url: str, field_extractors: dict, format_string: str, engine: str = DEFAULT_ENGINE):
     print(station_id)
     response = session.get(url)
     json_data = read_json(response)
@@ -24,10 +25,16 @@ def fetch(session, request_type: str, station_id: str, url: str, field_extractor
     field_values = {name: extracted_json_by_json_query[query] for (name, query) in field_extractors.items()}
     # Make sure all field extraction was successful
     playing_items = []
+    print(field_values)
     if all(field_values.values()):
         logging.debug(field_values)
         title = format_string.format(**field_values)
-        playing_items = [PlayingItem(type='song', title=title)]
+        # Hack, do something better
+        if 'end_time' in field_values:
+            end_time = datetime.fromtimestamp(int(field_values['end_time']))
+        else:
+            end_time = None
+        playing_items = [PlayingItem(type=item_type, title=title, end_time=end_time)]
     return AggregationResult(
         items=playing_items,
         sources=[Source(type='json', data=json_data)]
