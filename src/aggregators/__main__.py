@@ -11,11 +11,12 @@ def main():
     full_station_id = sys.argv[1]
     aggregator = aggregators.aggregator_for_station(full_station_id)
     session = requests.Session()
-    results = aggregator(
+    result = aggregator(
         session,
         'now-playing'
     )
-    print(results)
+    print(result.items)
+    print(result.sources)
 
 
 if __name__ == '__main__':

@@ -8,9 +8,10 @@ stations:
             params:
               station_id:
               url: "https://www.cheriefm.fr/onair"
+              item_type: song
               field_extractors:
-                artist: '$.[?(@.id == "190")].playlist[?(@.id != 0)].song.artist'
-                title: '$.[?(@.id == "190")].playlist[?(@.id != 0)].song.title'
+                artist: '$.[?(@.id == "190")].playlist[?(@.song.id != 0)].song.artist'
+                title: '$.[?(@.id == "190")].playlist[?(@.song.id != 0)].song.title'
               format_string: '{artist} - {title}'
               engine: java-jayway
     france-info:
