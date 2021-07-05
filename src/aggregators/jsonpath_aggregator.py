@@ -40,7 +40,12 @@ def fetch(session, request_type: str, item_type: str, station_id: str, url: str,
 
 
 def read_json(response):
-    return commentjson.loads(response.text)
+    try:
+        return commentjson.loads(response.text)
+    except ValueError:
+        logging.error("Failed to parse response. Is it valid JSON? Here's what I got:")
+        logging.error(response)
+        return {}
 
 
 def extract_json(session, jsonpath_queries, json_data, engine=DEFAULT_ENGINE):
