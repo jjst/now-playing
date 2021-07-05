@@ -45,6 +45,7 @@ def read_json(response):
     except ValueError:
         logging.error("Failed to parse response. Is it valid JSON? Here's what I got:")
         logging.error(response)
+        logging.error(response.text)
         return {}
 
 
