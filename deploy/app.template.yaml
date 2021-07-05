@@ -48,9 +48,9 @@ services:
 - name: redis
   image:
     registry_type: DOCKER_HUB
-    registry: _
+    registry: jjst
     repository: redis
-    tag: 6.2.4-alpine
+    tag: $APPLICATION_VERSION
   instance_size_slug: basic-xxs
   internal_ports:
     - 6379
