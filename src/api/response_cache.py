@@ -30,7 +30,7 @@ class ResponseCache():
         if expire_in:
             ttl_seconds = expire_in
         elif expire_at:
-            ttl_seconds = (datetime.now() - expire_at).total_seconds()
+            ttl_seconds = min(self.default_ttl_seconds, (expire_at - datetime.now()).total_seconds())
         else:
             ttl_seconds = self.default_ttl_seconds
         try:
