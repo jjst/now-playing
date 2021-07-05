@@ -5,6 +5,7 @@ import json
 from json.decoder import JSONDecodeError
 import pprint
 import logging
+from requests.exceptions import HTTPError
 
 from aggregators import AggregationResult, PlayingItem, Source
 
@@ -17,6 +18,11 @@ JAVA_JSONPATH_API_URL = "https://java-jsonpath-api-bknua.ondigitalocean.app/"
 
 def fetch(session, request_type: str, item_type: str, station_id: str, url: str, field_extractors: dict, format_string: str, engine: str = DEFAULT_ENGINE):
     response = session.get(url)
+    try:
+        response.raise_for_status()
+    except HTTPError as e:
+        logging.error(e)
+        return AggregationResult(items=[], sources=[])
     json_data = read_json(response)
     logging.debug(f"Raw extracted data from {url}:")
     logging.debug(json_data)
