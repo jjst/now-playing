@@ -1,0 +1,17 @@
+stations:
+  im:
+    3fm:
+      name: 3FM Isle Of Man
+      aggregators:
+        now-playing:
+          - module: jsonpath_aggregator
+            params:
+              station_id:
+              url: https://np.radioplayer.co.uk/qp/v4/events/?rpId=1075
+              item_type: song
+              field_extractors:
+                artist: '$.results.now.artistName'
+                title: '$.results.now.name'
+                end_time: '$.results.now.stopTime'
+              format_string: '{artist} - {title}'
+              engine: java-jayway
