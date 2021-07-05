@@ -31,7 +31,7 @@ class ResponseCache():
             ttl_seconds = expire_in
         elif expire_at:
             ttl_seconds = (datetime.now() - expire_at).total_seconds()
-        if not ttl_seconds:
+        else:
             ttl_seconds = self.default_ttl_seconds
         try:
             self.redis_client.set(station.station_id(), response, ex=ttl_seconds)
