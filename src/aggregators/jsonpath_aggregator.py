@@ -16,7 +16,6 @@ JAVA_JSONPATH_API_URL = "https://java-jsonpath-api-bknua.ondigitalocean.app/"
 
 
 def fetch(session, request_type: str, item_type: str, station_id: str, url: str, field_extractors: dict, format_string: str, engine: str = DEFAULT_ENGINE):
-    print(station_id)
     response = session.get(url)
     json_data = read_json(response)
     logging.debug(f"Raw extracted data from {url}:")
@@ -25,7 +24,6 @@ def fetch(session, request_type: str, item_type: str, station_id: str, url: str,
     field_values = {name: extracted_json_by_json_query[query] for (name, query) in field_extractors.items()}
     # Make sure all field extraction was successful
     playing_items = []
-    print(field_values)
     if all(field_values.values()):
         logging.debug(field_values)
         title = format_string.format(**field_values)
@@ -51,7 +49,7 @@ def extract_json(session, jsonpath_queries, json_data, engine=DEFAULT_ENGINE):
         for query in jsonpath_queries:
             jsonpath_expr = parse(query)
             matches = jsonpath_expr.find(json_data)
-            query_results[query] = matches[0]
+            query_results[query] = matches[0].value
     elif engine == JAVA_JAYWAY:
         query_results = query_java_jsonpath_api(session, list(jsonpath_queries), json.dumps(json_data))
         logging.debug("Extraction results from API:")

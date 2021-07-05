@@ -16,7 +16,6 @@ def main():
         'now-playing'
     )
     print(result.items)
-    print(result.sources)
 
 
 if __name__ == '__main__':
