@@ -80,7 +80,7 @@ async def get_now_playing_by_country_code_and_station_id(namespace, slug):
             asyncio.create_task(save_aggregation_result_on_s3(f"{namespace}/{slug}", aggregation_result))
         playing_item = next(iter(aggregation_result.items))
         data = NowPlaying(type=playing_item.type, title=playing_item.title).to_dict()
-        response_cache.set(station, json.dumps(data), ttl_seconds=10)
+        response_cache.set(station, json.dumps(data), expire_at=playing_item.end_time)
         return json_response(data=data)
     except StopIteration:
         return json_response(data={'title': "Could not fetch now playing information"}, status=500)

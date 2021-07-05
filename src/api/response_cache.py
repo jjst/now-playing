@@ -1,5 +1,6 @@
 import logging
 import redis
+from datetime import datetime, timedelta
 from typing import Optional
 
 from base.config import settings
@@ -15,7 +16,7 @@ class ResponseCache():
             socket_timeout=settings.redis.socket_timeout,
             socket_connect_timeout=settings.redis.socket_connect_timeout,
         )
-        self.default_ttl_seconds = settings.redis.ttl_seconds
+        self.default_ttl_seconds = settings.redis.default_ttl_seconds
 
     def get(self, station: RadioStationInfo) -> Optional[str]:
         try:
@@ -25,7 +26,11 @@ class ResponseCache():
             logging.exception(e)
             return None
 
-    def set(self, station: RadioStationInfo, response: str, ttl_seconds: Optional[int] = None):
+    def set(self, station: RadioStationInfo, response: str, expire_in: Optional[int] = None, expire_at: Optional[datetime] = None):
+        if expire_in:
+            ttl_seconds = expire_in
+        elif expire_at:
+            ttl_seconds = (datetime.now() - expire_at).total_seconds()
         if not ttl_seconds:
             ttl_seconds = self.default_ttl_seconds
         try:
