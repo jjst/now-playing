@@ -1,0 +1,15 @@
+stations:
+  fr:
+    le-mouv:
+      name: Le Mouv'
+      aggregators:
+        now-playing:
+          - module: jsonpath_aggregator
+            params:
+              station_id:
+              url: https://www.mouv.fr/latest/api/graphql?operationName=Now&variables=%7B%22bannerPreset%22%3A%221000x563%22%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%22beee49a80482cf945d19e0fc01551696dbfd486760dd368be6713f1ac5b180a0%22%7D%7D
+              item_type: song
+              field_extractors:
+                artist: '$.data.now.playing_item.title'
+                title: '$.data.now.playing_item.subtitle'
+              format_string: '{artist} - {title}'
