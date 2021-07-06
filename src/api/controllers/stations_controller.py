@@ -20,7 +20,6 @@ from api.response_cache import ResponseCache
 import aggregators
 from aggregators import AggregationResult
 from base.json import DataClassJSONEncoder
-from api.encoder import JSONEncoder as ConnexionJsonEncoder
 from base.stations import RadioStationInfo
 import base.stations as stations
 from base.config import settings
@@ -67,7 +66,10 @@ async def get_now_playing_by_country_code_and_station_id(namespace, slug):
         # Couldnt get a valid aggregator
         logging.warn("Could not load station aggregator for station")
         logging.exception(e)
-        return json_response(data={'title': f"No 'now-playing' information is available for station '{namespace}/{slug}'"}, status=404)
+        return json_response(
+            data={'title': f"No 'now-playing' information is available for station '{namespace}/{slug}'"},
+            status=404
+        )
     try:
         with tracer.start_as_current_span("call_aggregator") as span:
             span.set_attribute('aggregator.module_name', aggregator.module_name)
