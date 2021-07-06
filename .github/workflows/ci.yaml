@@ -41,7 +41,6 @@ jobs:
               - '**/*.yml'
               - '**/*.yaml'
       - name: Lint with flake8
-        if: ${{ steps.filter.outputs.py == 'true' }}
         uses: TrueBrain/actions-flake8@v2
         with:
           max_line_length: 120
