@@ -6,6 +6,13 @@ from typing import Optional
 from base.config import settings
 from base.stations import RadioStationInfo
 
+response_prefix = "response"
+response_hash_prefix = "response-hash"
+
+
+def key_for(station, prefix):
+    return f"{prefix}:{station.station_id()}"
+
 
 class ResponseCache():
     def __init__(self, settings=settings):
@@ -20,7 +27,7 @@ class ResponseCache():
 
     def get(self, station: RadioStationInfo) -> Optional[str]:
         try:
-            return self.redis_client.get(station.station_id())
+            return self.redis_client.get(key_for(station, 'response'))
         except redis.exceptions.ConnectionError as e:
             logging.warning("Error connecting to Redis. Server cannot return cached response.")
             logging.exception(e)
@@ -34,7 +41,7 @@ class ResponseCache():
         else:
             ttl_seconds = self.default_ttl_seconds
         try:
-            self.redis_client.set(station.station_id(), response, ex=ttl_seconds)
+            self.redis_client.set(key_for(station, 'response'), response, ex=ttl_seconds)
         except redis.exceptions.ConnectionError as e:
             logging.warning("Error connecting to Redis. Server cannot return cached response.")
             logging.exception(e)
