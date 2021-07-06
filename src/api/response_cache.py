@@ -31,6 +31,8 @@ class ResponseCache():
             return None
 
     def set(self, station: RadioStationInfo, response: str, expire_in: Optional[int] = None, expire_at: Optional[datetime] = None):
+        if expire_in and expire_at:
+            raise ValueError("Only one of 'expire_in' or 'expire_at' should be provided as argument")
         current_span = trace.get_current_span()
         new_hashed_response = xxhash.xxh32_digest(response)
         old_hashed_response = self.redis_client.getset(key_for(station, 'response-hash'), new_hashed_response)
