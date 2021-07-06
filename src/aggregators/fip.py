@@ -1,4 +1,6 @@
+import logging
 from string import Template
+from requests.exceptions import HTTPError
 from aggregators import AggregationResult, PlayingItem, Source
 
 # FIXME: pass these ids as config values straight from the config file
@@ -38,6 +40,11 @@ def fetch(session, request_type, station_id):
             'extensions': extensions_template.substitute(hash=persisted_query_hash)
         }
     )
+    try:
+        response.raise_for_status()
+    except HTTPError as e:
+        logging.error(e)
+        return AggregationResult(items=[], sources=[])
     json_body = response.json()
     now_playing_list = json_body['data']['nowList']
     songs = [item['song'] for item in now_playing_list]
