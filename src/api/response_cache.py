@@ -3,6 +3,7 @@ import redis
 import xxhash
 from datetime import datetime, timedelta
 from typing import Optional
+from opentelemetry import trace
 
 from base.config import settings
 from base.stations import RadioStationInfo
@@ -30,6 +31,7 @@ class ResponseCache():
             return None
 
     def set(self, station: RadioStationInfo, response: str, expire_in: Optional[int] = None, expire_at: Optional[datetime] = None):
+        current_span = trace.get_current_span()
         new_hashed_response = xxhash.xxh32_digest(response)
         old_hashed_response = self.redis_client.getset(key_for(station, 'response-hash'), new_hashed_response)
         if expire_in:
@@ -40,6 +42,7 @@ class ResponseCache():
             ttl_seconds = self.default_ttl_seconds_if_changed
         else:
             ttl_seconds = self.default_ttl_seconds
+        current_span.add_event("determine_cached_response_ttl", attributes={'ttl_seconds', ttl_seconds})
         try:
             self.redis_client.set(key_for(station, 'response'), response, ex=ttl_seconds)
         except redis.exceptions.ConnectionError as e:
