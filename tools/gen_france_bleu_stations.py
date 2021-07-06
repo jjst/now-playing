@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import yaml
+
 stations = [
     {
         "name": "France Bleu Alsace",
@@ -193,6 +195,5 @@ for station in stations:
         }
     }
 
-import yaml
 with open('france_bleu.yaml', 'w') as f:
     documents = yaml.dump(s, f, allow_unicode=True, sort_keys=False)

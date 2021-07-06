@@ -36,8 +36,8 @@ def configure_tracer(app):
         service_name = os.environ['LS_SERVICE_NAME']
         lightstep_access_token = os.environ['LS_ACCESS_TOKEN']
         configure_opentelemetry(
-          service_name=service_name,
-          access_token=lightstep_access_token,
+            service_name=service_name,
+            access_token=lightstep_access_token,
         )
     add_instrumentation(app)
     logging.info("Tracing is enabled.")

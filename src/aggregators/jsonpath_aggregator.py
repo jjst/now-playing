@@ -16,7 +16,8 @@ DEFAULT_ENGINE = PYTHON_JSONPATH_NG_EXT
 JAVA_JSONPATH_API_URL = "https://java-jsonpath-api-bknua.ondigitalocean.app/"
 
 
-def fetch(session, request_type: str, item_type: str, station_id: str, url: str, field_extractors: dict, format_string: str, engine: str = DEFAULT_ENGINE):
+def fetch(session, request_type: str, item_type: str, station_id: str,
+          url: str, field_extractors: dict, format_string: str, engine: str = DEFAULT_ENGINE):
     response = session.get(url)
     try:
         response.raise_for_status()

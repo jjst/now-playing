@@ -1,7 +1,7 @@
 import logging
 import redis
 import xxhash
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Optional
 from opentelemetry import trace
 
@@ -30,7 +30,8 @@ class ResponseCache():
             logging.exception(e)
             return None
 
-    def set(self, station: RadioStationInfo, response: str, expire_in: Optional[int] = None, expire_at: Optional[datetime] = None):
+    def set(self, station: RadioStationInfo, response: str,
+            expire_in: Optional[int] = None, expire_at: Optional[datetime] = None):
         if expire_in and expire_at:
             raise ValueError("Only one of 'expire_in' or 'expire_at' should be provided as argument")
         current_span = trace.get_current_span()

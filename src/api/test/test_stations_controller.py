@@ -27,7 +27,7 @@ async def test_get_now_playing_by_station_id(test_client):
 
 async def test_get_now_playing_by_station_id_uses_cache(test_client):
     client = await test_client(create_app)
-    response = await client.get('/api/stations/{namespace}/{slug}/now-playing'.format(namespace='fr', slug='radiomeuh'))
+    await client.get('/api/stations/{namespace}/{slug}/now-playing'.format(namespace='fr', slug='radiomeuh'))
     response_cache = ResponseCache()
     station = stations.get('fr', 'radiomeuh')
     cached_response = response_cache.get(station)

@@ -1,5 +1,3 @@
-from dynaconf.default_settings import get
-from dynaconf.base import LazySettings
 from dynaconf.utils import ensure_a_list
 from dynaconf import Dynaconf
 import os
