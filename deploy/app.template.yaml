@@ -24,9 +24,9 @@ services:
     scope: RUN_TIME
     type: SECRET
     value: EV[1:I7bGtB42t5k+gXQR+rWrBU6Eap7KBunx:WsHMtddtdvdFOvoCaPXsIxuBAhB6LMQNB4ZChfy9/XAT9+YWVerPaPjV2LFVxN9A5O6jxSebw6g=]
-  - key: redis__host
+  - key: redis__url
     scope: RUN_TIME
-    value: redis
+    value: redis://redis:6379/0
   image:
     registry: jjst
     registry_type: DOCKER_HUB
