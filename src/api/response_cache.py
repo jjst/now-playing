@@ -13,6 +13,7 @@ response_hash_prefix = "response-hash"
 
 tracer = trace.get_tracer(__name__)
 
+
 def key_for(station, prefix):
     return f"{prefix}:{station.station_id()}"
 
