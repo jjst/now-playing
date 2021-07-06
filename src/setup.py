@@ -33,4 +33,3 @@ setup(
     Now Playing API.
     """
 )
-
