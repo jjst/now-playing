@@ -44,7 +44,7 @@ class ResponseCache():
             ttl_seconds = self.default_ttl_seconds_if_changed
         else:
             ttl_seconds = self.default_ttl_seconds
-        current_span.add_event("determine_cached_response_ttl", attributes={'ttl_seconds', ttl_seconds})
+        current_span.add_event("determine_cached_response_ttl", attributes={'ttl_seconds': ttl_seconds})
         try:
             self.redis_client.set(key_for(station, 'response'), response, ex=ttl_seconds)
         except redis.exceptions.ConnectionError as e:
