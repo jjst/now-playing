@@ -10,3 +10,6 @@ redis:
 response_cache:
   default_ttl_seconds: 10
   default_ttl_seconds_if_changed: 120
+requests:
+  default_timeout_seconds: 10
+  cache_ttl_seconds: 10

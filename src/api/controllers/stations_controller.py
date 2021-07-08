@@ -1,8 +1,6 @@
 import asyncio
 import json
 import logging
-import os
-import requests_cache
 import boto3
 import botocore.exceptions
 import time
@@ -21,14 +19,12 @@ import aggregators
 from aggregators import AggregationResult
 from base.json import DataClassJSONEncoder
 from base.stations import RadioStationInfo
+from base.session import session
 import base.stations as stations
 from base.config import settings
 
 
 tracer = trace.get_tracer(__name__)
-
-cache_ttl = int(os.environ.get("REQUEST_CACHE_TTL_SECONDS", "3"))
-session = requests_cache.CachedSession(backend='memory', expire_after=cache_ttl, allowable_methods=('GET', 'POST'))
 
 response_cache = ResponseCache()
 
