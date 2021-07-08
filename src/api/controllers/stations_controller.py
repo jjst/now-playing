@@ -1,8 +1,6 @@
 import asyncio
 import json
 import logging
-import os
-import requests_cache
 import boto3
 import botocore.exceptions
 import time
