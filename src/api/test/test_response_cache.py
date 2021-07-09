@@ -42,8 +42,12 @@ def test_set_uses_default_ttl_if_no_response_hash():
     response_cache.redis_client = MagicMock()
     response_cache.redis_client.set = MagicMock(return_value=None)
     response_cache.set(station, response)
-    response_cache.redis_client.set.assert_any_call('response-hash:fr/radiomeuh', xxhash.xxh32_digest(response), ex=5, get=True)
-    response_cache.redis_client.set.assert_any_call('response:fr/radiomeuh', 'test-response', ex=1)
+    response_cache.redis_client.set.assert_any_call(
+        'response-hash:fr/radiomeuh', xxhash.xxh32_digest(response), ex=5, get=True
+    )
+    response_cache.redis_client.set.assert_any_call(
+        'response:fr/radiomeuh', 'test-response', ex=1
+    )
 
 
 def test_set_uses_default_ttl_if_response_unchanged():
@@ -51,8 +55,12 @@ def test_set_uses_default_ttl_if_response_unchanged():
     hashed_response = xxhash.xxh32_digest(response)
     response_cache.redis_client.set = MagicMock(return_value=hashed_response)
     response_cache.set(station, response)
-    response_cache.redis_client.set.assert_any_call('response-hash:fr/radiomeuh', xxhash.xxh32_digest(response), ex=5, get=True)
-    response_cache.redis_client.set.assert_any_call('response:fr/radiomeuh', 'test-response', ex=1)
+    response_cache.redis_client.set.assert_any_call(
+        'response-hash:fr/radiomeuh', xxhash.xxh32_digest(response), ex=5, get=True
+    )
+    response_cache.redis_client.set.assert_any_call(
+        'response:fr/radiomeuh', 'test-response', ex=1
+    )
 
 
 def test_set_uses_ttl_if_changed_if_response_changed():
@@ -60,5 +68,9 @@ def test_set_uses_ttl_if_changed_if_response_changed():
     hashed_response = xxhash.xxh32_digest('old-response')
     response_cache.redis_client.set = MagicMock(return_value=hashed_response)
     response_cache.set(station, response)
-    response_cache.redis_client.set.assert_any_call('response-hash:fr/radiomeuh', xxhash.xxh32_digest(response), ex=5, get=True)
-    response_cache.redis_client.set.assert_any_call('response:fr/radiomeuh', 'test-response', ex=5)
+    response_cache.redis_client.set.assert_any_call(
+        'response-hash:fr/radiomeuh', xxhash.xxh32_digest(response), ex=5, get=True
+    )
+    response_cache.redis_client.set.assert_any_call(
+        'response:fr/radiomeuh', 'test-response', ex=5
+    )
