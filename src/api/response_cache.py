@@ -43,7 +43,11 @@ class ResponseCache():
                 raise ValueError("Only one of 'expire_in' or 'expire_at' should be provided as argument")
             current_span = trace.get_current_span()
             new_hashed_response = xxhash.xxh32_digest(response)
-            old_hashed_response = self.redis_client.getset(key_for(station, 'response-hash'), new_hashed_response)
+            old_hashed_response = self.redis_client.getset(
+                key_for(station, 'response-hash'),
+                new_hashed_response,
+                ex=self.default_ttl_seconds_if_changed
+            )
             if expire_in:
                 ttl_seconds = expire_in
             elif expire_at:
