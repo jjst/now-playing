@@ -1,10 +1,11 @@
 import logging
 import redis
 import xxhash
-from datetime import datetime
+import datetime
 from typing import Optional
 from opentelemetry import trace
 
+from base.utils import monkeypatch_method
 from base.config import settings
 from base.stations import RadioStationInfo
 
@@ -12,6 +13,39 @@ response_prefix = "response"
 response_hash_prefix = "response-hash"
 
 tracer = trace.get_tracer(__name__)
+
+
+@monkeypatch_method(redis.Redis)
+def set(self, name, value,
+        ex=None, px=None, nx=False, xx=False, keepttl=False, get=False):
+    """
+    Monkey-patch redis-py's set() to add support for Redis 6.2's 'GET'
+    parameter.
+    """
+    pieces = [name, value]
+    if ex is not None:
+        pieces.append('EX')
+        if isinstance(ex, datetime.timedelta):
+            ex = int(ex.total_seconds())
+        pieces.append(ex)
+    if px is not None:
+        pieces.append('PX')
+        if isinstance(px, datetime.timedelta):
+            px = int(px.total_seconds() * 1000)
+        pieces.append(px)
+
+    if nx:
+        pieces.append('NX')
+    if xx:
+        pieces.append('XX')
+
+    if keepttl:
+        pieces.append('KEEPTTL')
+
+    if get:
+        pieces.append('GET')
+
+    return self.execute_command('SET', *pieces)
 
 
 def key_for(station, prefix):
@@ -37,17 +71,22 @@ class ResponseCache():
                 return response
 
     def set(self, station: RadioStationInfo, response: str,
-            expire_in: Optional[int] = None, expire_at: Optional[datetime] = None):
+            expire_in: Optional[int] = None, expire_at: Optional[datetime.datetime] = None):
         with tracer.start_as_current_span("set_cached_response"):
             if expire_in and expire_at:
                 raise ValueError("Only one of 'expire_in' or 'expire_at' should be provided as argument")
             current_span = trace.get_current_span()
             new_hashed_response = xxhash.xxh32_digest(response)
-            old_hashed_response = self.redis_client.getset(key_for(station, 'response-hash'), new_hashed_response)
+            old_hashed_response = self.redis_client.set(
+                key_for(station, 'response-hash'),
+                new_hashed_response,
+                ex=self.default_ttl_seconds_if_changed,
+                get=True
+            )
             if expire_in:
                 ttl_seconds = expire_in
             elif expire_at:
-                ttl_seconds = max(self.default_ttl_seconds, int((expire_at - datetime.now()).total_seconds()))
+                ttl_seconds = max(self.default_ttl_seconds, int((expire_at - datetime.datetime.now()).total_seconds()))
             elif old_hashed_response and new_hashed_response != old_hashed_response:
                 ttl_seconds = self.default_ttl_seconds_if_changed
             else:
