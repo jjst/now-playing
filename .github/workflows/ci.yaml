@@ -40,14 +40,6 @@ jobs:
             yaml:
               - '**/*.yml'
               - '**/*.yaml'
-      # Runs a bunch of python code quality and linting tools, but doesn't annotate
-      - name: Python Code Quality and Lint
-        uses: ricardochaves/python-lint@v1.3.0
-        with:
-          use-flake8: false # Running in separate step
-          use-isort: false
-          use-black: false
-          use-pycodestyle: false
       - name: Lint with flake8
         uses: TrueBrain/actions-flake8@v2
         with:
