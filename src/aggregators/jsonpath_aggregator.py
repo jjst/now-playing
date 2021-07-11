@@ -34,12 +34,12 @@ def fetch(session, request_type: str, item_type: str, station_id: str,
     if all(field_values.values()):
         logging.debug(field_values)
         title = format_string.format(**field_values)
-        # Hack, do something better
-        if 'end_time' in field_values:
-            end_time = datetime.fromtimestamp(int(field_values['end_time']))
-        else:
-            end_time = None
-        playing_items = [PlayingItem(type=item_type, title=title, end_time=end_time)]
+        playing_items = [PlayingItem(
+            type=item_type,
+            title=title,
+            start_time=field_values.get('start_time'),
+            end_time=field_values.get('end_time')
+        )]
     return AggregationResult(
         items=playing_items,
         sources=[Source(type='json', data=json_data)]
@@ -67,10 +67,20 @@ def extract_json(session, jsonpath_queries, json_data, engine=DEFAULT_ENGINE):
         query_results = query_java_jsonpath_api(session, list(jsonpath_queries), json.dumps(json_data))
         logging.debug("Extraction results from API:")
         logging.debug(f"\n{pprint.pformat(query_results)}\n")
-        return {query: r if isinstance(r, str) else r[0] for (query, r) in query_results.items()}
+        return {query: first_value(r) for (query, r) in query_results.items()}
     else:
         raise ValueError(f"Invalid jsonpath engine value: '{engine}'")
     return query_results
+
+
+def first_value(o):
+    if isinstance(o, str):
+        return o
+    else:
+        try:
+            return next(iter(o))
+        except TypeError:
+            return o
 
 
 def query_java_jsonpath_api(session, jsonpath_queries, json_str):
