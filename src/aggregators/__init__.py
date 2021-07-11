@@ -7,6 +7,8 @@ from dataclasses import dataclass, field
 
 from base import config
 
+OptionalTime = Union[datetime, int, None]
+
 
 # TODO: Separate into subclasses for Programme and Song, with different attributes
 # artist + title in one case, programme_title + episode_title in other
@@ -16,6 +18,21 @@ class PlayingItem():
     title: str
     start_time: Optional[datetime] = None
     end_time: Optional[datetime] = None
+
+    def __init__(self, type: str, title: str, start_time: OptionalTime = None, end_time: OptionalTime = None):
+        self.type = type
+        self.title = title
+        self.start_time = self._to_datetime(start_time)
+        self.end_time = self._to_datetime(end_time)
+
+    def _to_datetime(self, o):
+        if o:
+            try:
+                timestamp = int(o)
+            except TypeError:
+                return o
+            else:
+                return datetime.fromtimestamp(timestamp)
 
     def duration(self) -> Optional[timedelta]:
         if self.start_time and self.end_time:
