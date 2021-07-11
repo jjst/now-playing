@@ -1,6 +1,5 @@
 from jsonpath_ng.ext import parse
 import commentjson
-from datetime import datetime
 import json
 from json.decoder import JSONDecodeError
 import pprint

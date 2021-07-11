@@ -9,6 +9,7 @@ from base import config
 
 OptionalTime = Union[datetime, int, None]
 
+
 # TODO: Separate into subclasses for Programme and Song, with different attributes
 # artist + title in one case, programme_title + episode_title in other
 @dataclass
