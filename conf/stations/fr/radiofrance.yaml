@@ -11,5 +11,4 @@ stations:
               item_type: song
               field_extractors:
                 artist: '$.data.now.playing_item.title'
-                title: '$.data.now.playing_item.subtitle'
-              format_string: '{artist} - {title}'
+                song_title: '$.data.now.playing_item.subtitle'

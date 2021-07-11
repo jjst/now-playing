@@ -11,8 +11,7 @@ stations:
               item_type: song
               field_extractors:
                 artist: '$.rock[0].artist'
-                title: '$.rock[0].title'
+                song_title: '$.rock[0].title'
                 start_time: '$.rock[0].ts'
                 end_time: '$.rock[1].ts'
-              format_string: '{artist} - {title}'
               engine: java-jayway

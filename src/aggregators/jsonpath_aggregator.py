@@ -6,7 +6,7 @@ import pprint
 import logging
 from requests.exceptions import HTTPError
 
-from aggregators import AggregationResult, PlayingItem, Source
+from aggregators import AggregationResult, Song, Programme, Source
 
 PYTHON_JSONPATH_NG_EXT = 'python-jsonpath-ng-ext'
 JAVA_JAYWAY = 'java-jayway'
@@ -16,7 +16,7 @@ JAVA_JSONPATH_API_URL = "https://java-jsonpath-api-bknua.ondigitalocean.app/"
 
 
 def fetch(session, request_type: str, item_type: str, station_id: str,
-          url: str, field_extractors: dict, format_string: str, engine: str = DEFAULT_ENGINE):
+          url: str, field_extractors: dict, engine: str = DEFAULT_ENGINE):
     response = session.get(url)
     try:
         response.raise_for_status()
@@ -32,13 +32,12 @@ def fetch(session, request_type: str, item_type: str, station_id: str,
     playing_items = []
     if all(field_values.values()):
         logging.debug(field_values)
-        title = format_string.format(**field_values)
-        playing_items = [PlayingItem(
-            type=item_type,
-            title=title,
-            start_time=field_values.get('start_time'),
-            end_time=field_values.get('end_time')
-        )]
+        if item_type == 'song':
+            playing_items = [Song(**field_values)]
+        elif item_type == 'progamme':
+            playing_items = [Programme(**field_values)]
+        else:
+            raise ValueError(f"Invalid item_type: '{item_type}'")
     return AggregationResult(
         items=playing_items,
         sources=[Source(type='json', data=json_data)]

@@ -11,7 +11,6 @@ stations:
               url: "https://skyrock.fm/api/v3/player/onair"
               field_extractors:
                 artist: '$.schedule[-1].artists[0].name'
-                title: '$.schedule[-1].info.title'
+                song_title: '$.schedule[-1].info.title'
                 end_time: '$.schedule[-1].info.end_ts'
-              format_string: '{artist} - {title}'
               engine: java-jayway

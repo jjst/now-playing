@@ -1,7 +1,7 @@
 import logging
 from string import Template
 from requests.exceptions import HTTPError
-from aggregators import AggregationResult, PlayingItem, Source
+from aggregators import AggregationResult, Song, Source
 
 # FIXME: pass these ids as config values straight from the config file
 stations = {
@@ -24,10 +24,8 @@ vars_template = Template('{"stationIds":$ids}')
 extensions_template = Template('{"persistedQuery":{"version":1,"sha256Hash":"$hash"}}')
 
 
-def build_title(song):
-    if song is None:
-        return None
-    return f"{', '.join(song['interpreters'])} - {song['title']}"
+def build_artist(song):
+    return ', '.join(song['interpreters'])
 
 
 def fetch(session, request_type, station_id):
@@ -47,9 +45,9 @@ def fetch(session, request_type, station_id):
         return AggregationResult(items=[], sources=[])
     json_body = response.json()
     now_playing_list = json_body['data']['nowList']
-    songs = [item['song'] for item in now_playing_list]
+    songs = [item['song'] for item in now_playing_list if item['song']]
     playing_items = [
-        PlayingItem(type='song', title=build_title(song))
+        Song(artist=build_artist(song), song_title=song['title'])
         for song in songs
     ]
     return AggregationResult(items=playing_items, sources=[Source(type='json', data=json_body)])
