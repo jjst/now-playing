@@ -11,7 +11,6 @@ stations:
               item_type: song
               field_extractors:
                 artist: '$.results.now.artistName'
-                title: '$.results.now.name'
+                song_title: '$.results.now.name'
                 end_time: '$.results.now.stopTime'
-              format_string: '{artist} - {title}'
               engine: java-jayway
