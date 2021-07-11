@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from aggregators import AggregationResult, PlayingItem, Source
+from aggregators import AggregationResult, Programme, Source
 import logging
 
 url = "https://www.franceinter.fr/programmes"
@@ -23,10 +23,10 @@ def fetch_url(session, url):
         if now <= end:
             logging.debug(f'{start} -> {end}: {item["conceptTitle"]} - {item["expressionTitle"]}')
         if now >= start and now <= end:
-            if item['conceptTitle'] == item['expressionTitle']:
-                title = item['conceptTitle']
-            else:
-                title = item['conceptTitle'] + " - " + item['expressionTitle']
-            items = [PlayingItem('programme', title, start_time=start, end_time=end)]
+            programme_title = item['conceptTitle']
+            episode_title = item['expressionTitle']
+            if programme_title == episode_title:
+                episode_title = None
+            items = [Programme(programme_title, episode_title, start_time=start, end_time=end)]
             return AggregationResult(items, sources=[Source('json', playlist)])
     return AggregationResult.empty(sources=[Source('json', playlist)])

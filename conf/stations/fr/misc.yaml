@@ -23,12 +23,21 @@ stations:
           bitrate_kbps: 128
       aggregators:
         now-playing:
-          - module: radio_meuh
+          - module: jsonpath_aggregator
+            params:
+              station_id:
+              url: https://www.radiomeuh.com/player/rtdata/tracks.json
+              item_type: song
+              field_extractors:
+                artist: '$[0].artist'
+                song_title: '$[0].titre'
+              engine: java-jayway
     top-music:
       name: Top Music
       aggregators:
         now-playing:
-          - module: plain_text_aggregator
+          - module: regex_aggregator
             params:
               url: https://www.topmusic.fr/player/widget_title.php
+              regex: "(?P<artist>.+) - (?P<song_title>.+)"
               encoding: latin-1
