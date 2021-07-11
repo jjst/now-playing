@@ -55,7 +55,8 @@ class Programme(PlayingItem):
     programme_title: str
     episode_title: Optional[str]
 
-    def __init__(self, programme_title: str, episode_title: Optional[str], start_time: OptionalTime = None, end_time: OptionalTime = None):
+    def __init__(self, programme_title: str, episode_title: Optional[str],
+                 start_time: OptionalTime = None, end_time: OptionalTime = None):
         if episode_title:
             text = f"{programme_title} - {episode_title}"
         else:

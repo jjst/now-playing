@@ -1,4 +1,4 @@
-from aggregators import AggregationResult, PlayingItem, Song, Source
+from aggregators import AggregationResult, Song, Source
 
 import chardet
 import logging
@@ -6,6 +6,7 @@ from streamscrobbler import streamscrobbler
 import re
 
 SONG_RE_PATTERN = "(.+) - (.+)"
+
 
 def fetch(session, request_type: str, stream_url: str, encoding: str = None):
     stationinfo = streamscrobbler.get_server_info(stream_url)
@@ -44,4 +45,3 @@ def _extract_artist_and_title(song):
     """
     match = re.search(SONG_RE_PATTERN, song)
     return (match.group(1), match.group(2))
-
