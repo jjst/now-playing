@@ -1,7 +1,7 @@
 stations:
   fr:
     oui-fm:
-      name: Chérie FM
+      name: Oui FM
       aggregators:
         now-playing:
           - module: jsonpath_aggregator
