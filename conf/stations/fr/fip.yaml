@@ -1,3 +1,13 @@
+fip-aggregator-common-params: &fip-aggregator-common-params
+  station_id:
+  item_type: song
+  field_extractors:
+    artist: '$.data.now.playing_item.title'
+    song_title: '$.data.now.playing_item.subtitle'
+    start_time: '$.data.now.playing_item.start_time'
+    end_time: '$.data.now.playing_item.end_time'
+  engine: java-jayway
+
 stations:
   fr:
     fip:
@@ -7,9 +17,10 @@ stations:
         - url: https://icecast.radiofrance.fr/fip-midfi.mp3
       aggregators:
         now-playing:
-          - module: fip
+          - module: jsonpath_aggregator
             params:
-              station_id:
+              <<: *fip-aggregator-common-params
+              url: https://www.fip.fr/latest/api/graphql?operationName=Now&variables=%7B%22stationId%22%3A7%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%2295ed3dd1212114e94d459439bd60390b4d6f9e37b38baf8fd9653328ceb3b86b%22%7D%7D
     fip-rock:
       name: FIP Rock
       favicon: https://www.fip.fr/favicons/144-144.png
@@ -17,9 +28,21 @@ stations:
         - url: https://icecast.radiofrance.fr/fiprock-midfi.mp3
       aggregators:
         now-playing:
-          - module: fip
+          - module: jsonpath_aggregator
             params:
-              station_id:
+              <<: *fip-aggregator-common-params
+              url: https://www.fip.fr/latest/api/graphql?operationName=Now&variables=%7B%22stationId%22%3A64%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%2295ed3dd1212114e94d459439bd60390b4d6f9e37b38baf8fd9653328ceb3b86b%22%7D%7D
+    fip-jazz:
+      name: FIP Jazz
+      favicon: https://www.fip.fr/favicons/144-144.png
+      streams:
+        - url: https://icecast.radiofrance.fr/fipjazz-midfi.mp3
+      aggregators:
+        now-playing:
+          - module: jsonpath_aggregator
+            params:
+              <<: *fip-aggregator-common-params
+              url: https://www.fip.fr/latest/api/graphql?operationName=Now&variables=%7B%22stationId%22%3A65%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%2295ed3dd1212114e94d459439bd60390b4d6f9e37b38baf8fd9653328ceb3b86b%22%7D%7D
     fip-pop:
       name: FIP Pop
       favicon: https://www.fip.fr/favicons/144-144.png
@@ -27,9 +50,17 @@ stations:
         - url: https://icecast.radiofrance.fr/fippop-midfi.mp3
       aggregators:
         now-playing:
-          - module: fip
+          - module: jsonpath_aggregator
             params:
               station_id:
+              url: https://www.fip.fr/latest/api/graphql?operationName=Now&variables=%7B%22stationId%22%3A78%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%2295ed3dd1212114e94d459439bd60390b4d6f9e37b38baf8fd9653328ceb3b86b%22%7D%7D
+              item_type: song
+              field_extractors:
+                artist: '$.data.now.playing_item.title'
+                song_title: '$.data.now.playing_item.subtitle'
+                start_time: '$.data.now.playing_item.start_time'
+                end_time: '$.data.now.playing_item.end_time'
+              engine: java-jayway
     fip-groove:
       name: FIP Groove
       favicon: https://www.fip.fr/favicons/144-144.png
@@ -37,9 +68,10 @@ stations:
         - url: https://icecast.radiofrance.fr/fipgroove-midfi.mp3
       aggregators:
         now-playing:
-          - module: fip
+          - module: jsonpath_aggregator
             params:
-              station_id:
+              <<: *fip-aggregator-common-params
+              url: https://www.fip.fr/latest/api/graphql?operationName=Now&variables=%7B%22stationId%22%3A66%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%2295ed3dd1212114e94d459439bd60390b4d6f9e37b38baf8fd9653328ceb3b86b%22%7D%7D
     fip-electro:
       name: FIP Electro
       favicon: https://www.fip.fr/favicons/144-144.png
@@ -47,9 +79,10 @@ stations:
         - url: https://icecast.radiofrance.fr/fipelectro-midfi.mp3
       aggregators:
         now-playing:
-          - module: fip
+          - module: jsonpath_aggregator
             params:
-              station_id:
+              <<: *fip-aggregator-common-params
+              url: https://www.fip.fr/latest/api/graphql?operationName=Now&variables=%7B%22stationId%22%3A74%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%2295ed3dd1212114e94d459439bd60390b4d6f9e37b38baf8fd9653328ceb3b86b%22%7D%7D
     fip-reggae:
       name: FIP Reggae
       favicon: https://www.fip.fr/favicons/144-144.png
@@ -57,9 +90,10 @@ stations:
         - url: https://icecast.radiofrance.fr/fipreggae-midfi.mp3
       aggregators:
         now-playing:
-          - module: fip
+          - module: jsonpath_aggregator
             params:
-              station_id:
+              <<: *fip-aggregator-common-params
+              url: https://www.fip.fr/latest/api/graphql?operationName=Now&variables=%7B%22stationId%22%3A71%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%2295ed3dd1212114e94d459439bd60390b4d6f9e37b38baf8fd9653328ceb3b86b%22%7D%7D
     fip-nouveautes:
       name: FIP Nouveautés
       favicon: https://www.fip.fr/favicons/144-144.png
@@ -67,6 +101,7 @@ stations:
         - url: https://icecast.radiofrance.fr/fipnouveautes-midfi.mp3
       aggregators:
         now-playing:
-          - module: fip
+          - module: jsonpath_aggregator
             params:
-              station_id:
+              <<: *fip-aggregator-common-params
+              url: https://www.fip.fr/latest/api/graphql?operationName=Now&variables=%7B%22stationId%22%3A70%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%2295ed3dd1212114e94d459439bd60390b4d6f9e37b38baf8fd9653328ceb3b86b%22%7D%7D
