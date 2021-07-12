@@ -35,5 +35,5 @@ def test_fetch_returns_valid_programme(country_code, station_id, aggregator):
     result = aggregator(session, 'now-playing')
     for item in result.items:
         if item.type == 'programme':
-            assert item.programme_title is not None and item.programme_title != ""
+            assert item.name is not None and item.name != ""
             assert item.episode_title is None or isinstance(item.episode_title, str) and item.episode_title != ""
