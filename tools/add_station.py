@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 from typing import Optional
 import re
 import os
@@ -8,6 +8,7 @@ from pyradios import RadioBrowser
 import questionary
 from unidecode import unidecode
 import requests
+import yaml
 
 
 subscription_key = os.environ.get("BING_SEARCH_KEY")
@@ -45,7 +46,13 @@ def guess_station_website_url(station_name, station_country):
 
 def find_stream_urls(station_name, station_country):
     results = radio_browser.search(name=station_name, countrycode=station_country.alpha_2)
-    return [Stream(r['url'], r['codec'], r['bitrate']) for r in results]
+    return [
+        Stream(
+            r['url'],
+            r['codec'].lower(),
+            r['bitrate'] if r['bitrate'] != 0 else None
+        ) for r in results
+    ]
 
 
 def ask_whether_to_look_for_streams():
@@ -82,9 +89,20 @@ def main():
     look_for_streams = ask_whether_to_look_for_streams()
     if look_for_streams:
         streams = find_stream_urls(station_name, country)
-        print(streams)
     else:
         stream_url = questionary.text("🎶 What's their stream url? (You can leave this blank)").ask()
+    stations = {
+        'stations': {
+            country.alpha_2.lower(): {
+                slug: {
+                    'name': station_name,
+                    'streams': [{k: v for k, v in asdict(s).items() if v is not None} for s in streams],
+                }
+            }
+        }
+    }
+    print("Here, some yaml for you:")
+    print(yaml.dump(stations))
 
 
 if __name__ == '__main__':
