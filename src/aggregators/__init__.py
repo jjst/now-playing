@@ -3,7 +3,8 @@ import functools
 import logging
 
 from base import config
-from aggregators.models import *
+from aggregators.models import * # noqa
+from aggregators.models import Aggregator
 
 
 def load_aggregators():
