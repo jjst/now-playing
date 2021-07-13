@@ -6,7 +6,6 @@ fip-aggregator-common-params: &fip-aggregator-common-params
     song_title: '$.data.now.playing_item.subtitle'
     start_time: '$.data.now.playing_item.start_time'
     end_time: '$.data.now.playing_item.end_time'
-  engine: java-jayway
 
 stations:
   fr:
