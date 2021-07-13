@@ -11,6 +11,7 @@ from pygments import highlight
 from pygments.lexers import get_lexer_by_name
 from pygments.formatters import TerminalFormatter
 import requests
+from requests.exceptions import ConnectionError, HTTPError
 import yaml
 
 
@@ -49,13 +50,27 @@ def guess_station_website_url(station_name, station_country):
 
 def find_stream_urls(station_name, station_country):
     results = radio_browser.search(name=station_name, countrycode=station_country.alpha_2)
-    return [
-        Stream(
-            r['url'],
-            r['codec'].lower(),
-            r['bitrate'] if r['bitrate'] != 0 else None
-        ) for r in results
-    ]
+    streams = []
+    for r in results:
+        stream_url = r['url']
+        if is_valid_stream_url(stream_url):
+            questionary.print(f'✔️  Found valid stream at "{stream_url}"')
+            streams.append(Stream(
+                stream_url,
+                r['codec'].lower(),
+                r['bitrate'] if r['bitrate'] != 0 else None
+            ))
+    return streams
+
+
+def is_valid_stream_url(url):
+    try:
+        requests.head(url)
+    except ConnectionError:
+        return False
+    except HTTPError:
+        return False
+    return True
 
 
 def ask_whether_to_look_for_streams():
@@ -94,6 +109,8 @@ def generate_station(country, slug, station_name, website_url, streams):
         }
     }
     yaml_string = yaml.dump(stations, sort_keys=False)
+    folder_name = f'conf/stations/{namespace}/'
+    os.makedirs(folder_name, exist_ok=True)
     filename = f'conf/stations/{namespace}/{slug}.yaml'
     with open(filename, 'w') as f:
         f.write(yaml_string)
@@ -117,11 +134,18 @@ def main():
     ).ask()
     country_map = {c.name: c for c in countries}
     country_choices = sorted(country_map.keys())
-    choice = questionary.select(
-        "🗾 Which country is the station from?",
-        choices=country_choices
-    ).ask()  # returns value of selection
-    country = country_map.get(choice)
+    country = None
+    while not country:
+        choice = questionary.autocomplete(
+            "🗾 Which country is the station from?",
+            choices=country_choices
+        ).ask()  # returns value of selection
+        country = country_map.get(choice)
+        if not country:
+            questionary.print(
+                "! 🤔 I don't know that country... can you pick one from the suggestions?",
+                style="bold"
+            )
     guessed_url = guess_station_website_url(station_name, country.name)
     website_url = questionary.text(
         "🌐 What's their website url? ",
@@ -137,6 +161,11 @@ def main():
                 choices=[s.url for s in streams]
             ).ask()
             streams = [s for s in streams if s.url in selected_stream_urls]
+        else:
+            questionary.print(
+                "! 😬 I didn't find any streams for this station... sorry!",
+                style="bold"
+            )
     else:
         streams = []
         stream_url = True
