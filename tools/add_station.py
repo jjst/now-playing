@@ -7,6 +7,9 @@ from pycountry import countries
 from pyradios import RadioBrowser
 import questionary
 from unidecode import unidecode
+from pygments import highlight
+from pygments.lexers import get_lexer_by_name
+from pygments.formatters import TerminalFormatter
 import requests
 import yaml
 
@@ -57,12 +60,51 @@ def find_stream_urls(station_name, station_country):
 
 def ask_whether_to_look_for_streams():
     yes = "Yes, please do"
-    no = "No thanks, I would like to enter stream information manually"
+    no = "No, I would like to enter stream information manually"
     answer = questionary.select(
         "🔍 Would you like me to see if I can find stream URLs for this radio station?",
         choices=[yes, no]
     ).ask()
     return answer == yes
+
+
+def guess_codec(stream_url):
+    if stream_url.endswith('.mp3'):
+        return 'mp3'
+    elif stream_url.endswith('.aac'):
+        return 'aac'
+    elif stream_url.endswith('.aac'):
+        return 'aac'
+
+
+def generate_station(country, slug, station_name, website_url, streams):
+    namespace = country.alpha_2.lower()
+    stations = {
+        'stations': {
+            namespace: {
+                slug: {
+                    'name': station_name,
+                    'website_url': website_url,
+                    'streams': [{k: v for k, v in asdict(s).items() if v is not None} for s in streams],
+                    'aggregators': {
+                        'now-playing': {}
+                    }
+                }
+            }
+        }
+    }
+    yaml_string = yaml.dump(stations, sort_keys=False)
+    filename = f'conf/stations/{namespace}/{slug}.yaml'
+    with open(filename, 'w') as f:
+        f.write(yaml_string)
+    print()
+    questionary.print(
+        f"🙌 Success! I generated the following configuration file for you at '{filename}':"
+    )
+    lexer = get_lexer_by_name("yaml", stripall=True)
+    formatter = TerminalFormatter()
+    result = highlight(yaml_string, lexer, formatter)
+    print(result)
 
 
 def main():
@@ -89,20 +131,22 @@ def main():
     look_for_streams = ask_whether_to_look_for_streams()
     if look_for_streams:
         streams = find_stream_urls(station_name, country)
+        if streams:
+            selected_stream_urls = questionary.checkbox(
+                "🎉 I found some matching streams! Which ones would you like me to include?",
+                choices=[s.url for s in streams]
+            ).ask()
+            streams = [s for s in streams if s.url in selected_stream_urls]
     else:
-        stream_url = questionary.text("🎶 What's their stream url? (You can leave this blank)").ask()
-    stations = {
-        'stations': {
-            country.alpha_2.lower(): {
-                slug: {
-                    'name': station_name,
-                    'streams': [{k: v for k, v in asdict(s).items() if v is not None} for s in streams],
-                }
-            }
-        }
-    }
-    print("Here, some yaml for you:")
-    print(yaml.dump(stations))
+        streams = []
+        stream_url = True
+        while stream_url:
+            stream_url = questionary.text(
+                "🎶 What's their stream url?",
+                instruction="(leave this blank to abort adding a stream)"
+            ).ask()
+    generate_station(country, slug, station_name, website_url, streams)
+
 
 
 if __name__ == '__main__':
