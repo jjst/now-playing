@@ -8,17 +8,23 @@ from pycountry import countries
 from pyradios import RadioBrowser
 import questionary
 from unidecode import unidecode
+from prompt_toolkit.shortcuts import ProgressBar
 from pygments import highlight
 from pygments.lexers import get_lexer_by_name
 from pygments.formatters import TerminalFormatter
 import requests
 from requests.exceptions import ConnectionError, HTTPError
 from streamscrobbler import streamscrobbler
+import tempfile
+import time
 import yaml
 
 
 subscription_key = os.environ.get("BING_SEARCH_KEY")
+audd_token = os.environ.get("AUDD_TOKEN")
+
 search_url = "https://api.bing.microsoft.com/v7.0/search"
+audd_url = "https://api.audd.io/"
 
 radio_browser = RadioBrowser()
 
@@ -44,7 +50,10 @@ def guess_station_website_url(station_name, station_country):
     headers = {"Ocp-Apim-Subscription-Key": subscription_key}
     params = {"q": search_term, "textDecorations": True, "textFormat": "HTML"}
     response = requests.get(search_url, headers=headers, params=params)
-    response.raise_for_status()
+    try:
+        response.raise_for_status()
+    except HTTPError:
+        return None
     search_results = response.json()
     first_result_url = search_results['webPages']['value'][0]['url']
     return first_result_url
@@ -103,6 +112,46 @@ def guess_codec(stream_url):
         return 'aac'
     elif stream_url.endswith('.aac'):
         return 'aac'
+
+
+def save_audio_fingerprint(stream_url, max_size_kbs=200, max_duration_seconds=10):
+    r = requests.get(stream_url, stream=True)
+    audio_file_path = os.path.join(tempfile.gettempdir(), 'stream.mp3')
+
+    with ProgressBar() as pb:
+        with open(audio_file_path, 'wb') as f:
+            content_iterable = r.iter_content(1024)
+            for i, block in enumerate(pb(content_iterable, total=max_size_kbs)):
+                f.write(block)
+                if i >= max_size_kbs:
+                    break
+
+    return audio_file_path
+
+
+def identify_current_song(stream_url):
+    audio_file_path = save_audio_fingerprint(stream_url)
+    with open(audio_file_path, 'rb') as f:
+        data = {
+            'api_token': audd_token,
+            'url': 'https://audd.tech/example1.mp3',
+            'return': 'apple_music,spotify',
+        }
+        files = {
+            'file': f,
+        }
+        response = requests.post('https://api.audd.io/', data=data, files=files)
+        try:
+            response.raise_for_status()
+        except HTTPError:
+            return None
+        else:
+            r = response.json()
+            try:
+                return (r['result']['artist'], r['result']['title'])
+            except KeyError:
+                return None
+
 
 
 def generate_station(country, slug, station_name, website_url, streams, aggregators):
@@ -193,11 +242,11 @@ def find_radio_net_aggregator(station_name):
     headers = {'user-agent': 'station-finder/0.0.1'}
     res = requests.get(
         "https://www.radio.net/search",
-        params={'q': 'radio meuh'},
+        params={'q': station_name},
         headers=headers
     )
     res.raise_for_status()
-    soup = BeautifulSoup(res.text)
+    soup = BeautifulSoup(res.text, features='html.parser')
     span = soup.find("span", text=station_name)
     search_results = span.parent.parent
     station = search_results.find(href=re.compile("^\\/s\\/(?P<station>.+)$"))
@@ -207,11 +256,25 @@ def find_radio_net_aggregator(station_name):
 
 def determine_aggregators(station_name, country, streams):
     look_for_aggegators = ask_whether_to_look_for_aggregators()
-    aggregator_finders = {
-        'stream metadata': lambda: find_stream_aggregator(streams),
-        'radio.net': lambda: find_radio_net_aggregator(station_name)
-    }
     if look_for_aggegators:
+        if audd_token and streams:
+            questionary.print(
+                "👂 Okay, let me try to find which song is currently playing first...",
+                style="bold"
+            )
+            result = identify_current_song(streams[0].url)
+            if result:
+                (artist, title) = result
+                questionary.print(
+                    "",
+                    style="bold"
+                )
+            else:
+                pass
+        aggregator_finders = {
+            'stream metadata': lambda: find_stream_aggregator(streams),
+            'radio.net': lambda: find_radio_net_aggregator(station_name)
+        }
         for aggregator, fn in aggregator_finders.items():
             print(f"  > Trying {aggregator} aggregator...", end=" ")
             result = fn()
@@ -247,10 +310,14 @@ def main():
                 style="bold"
             )
     guessed_url = guess_station_website_url(station_name, country.name)
+    if guessed_url:
+        instruction = "(I tried to guess it for you, but I might be wrong!)"
+    else:
+        instruction = None
     website_url = questionary.text(
         "🌐 What's their website url? ",
-        instruction="(I tried to guess it for you, but I might be wrong!)",
-        default=guessed_url
+        instruction=instruction,
+        default=(guessed_url or "")
     ).ask()
     streams = determine_streams(station_name, country)
     aggregators = determine_aggregators(station_name, country, streams)
