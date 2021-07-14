@@ -366,6 +366,7 @@ async def determine_aggregators(station_name, country, player_url, streams):
                 results.append(result)
             else:
                 print("❌ No luck.")
+        return results
     else:
         return []
 
