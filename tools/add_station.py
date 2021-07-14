@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from adblockparser import AdblockRules
+import click
 from bs4 import BeautifulSoup
 from dataclasses import dataclass, asdict
 from typing import Optional
@@ -9,7 +11,7 @@ from pyradios import RadioBrowser
 import questionary
 from unidecode import unidecode
 from prompt_toolkit.shortcuts import ProgressBar
-from prompt_toolkit import print_formatted_text, HTML
+from prompt_toolkit import print_formatted_text, ANSI
 from pygments import highlight
 from pygments.lexers import get_lexer_by_name
 from pygments.formatters import TerminalFormatter
@@ -22,8 +24,8 @@ import time
 import yaml
 import asyncio
 import nest_asyncio
+import pyppeteer
 from pyppeteer import launch
-from pyppeteer.errors import TimeoutError
 
 
 subscription_key = os.environ.get("BING_SEARCH_KEY")
@@ -33,6 +35,15 @@ search_url = "https://api.bing.microsoft.com/v7.0/search"
 audd_url = "https://api.audd.io/"
 
 radio_browser = RadioBrowser()
+
+
+def fetch_adblock_rules():
+    adblock_rules_url = "https://easylist.to/easylist/easylist.txt"
+    r = requests.get(adblock_rules_url, allow_redirects=True)
+    return AdblockRules(r.iter_lines(decode_unicode=True))
+
+
+adblock_rules = fetch_adblock_rules()
 
 
 class NonFatal(Exception):
@@ -287,13 +298,13 @@ async def find_radio_net_aggregator(station_name):
 async def find_jsonpath_xpath_aggregator(page_url, artist, title):
     loop = asyncio.new_event_loop()
     loop.set_debug(True)
+    resps = []
+
+    extensions_to_ignore = ('.js', '.css')
 
     # FIXME: https://docs.python.org/3/library/asyncio-task.html#waiting-primitives
     async def async_handler(response):
-        print(f'loaded some response from: {response.url}')
-        txt = await asyncio.wait_for(response.text(), timeout=5.0)
-        if artist in txt or title in txt:
-            print(f"Response contains artist or title: {txt}")
+        resps.append(response)
 
     def handler(response):
         # Hack because handler can't be async
@@ -304,9 +315,25 @@ async def find_jsonpath_xpath_aggregator(page_url, artist, title):
     page.on('response', handler)
 
     try:
-        await page.goto(page_url)
-    except TimeoutError:
+        await asyncio.wait_for(page.goto(page_url), timeout=30.0)
+    except asyncio.exceptions.TimeoutError:
         pass
+    for resp in resps:
+        if any(resp.url.endswith(ext) for ext in extensions_to_ignore) or adblock_rules.should_block(resp.url):
+            # print(f"Skipping {resp.url}")
+            pass
+        else:
+            try:
+                txt = await asyncio.wait_for(resp.text(), timeout=5.0)
+            except UnicodeDecodeError:
+                pass
+            except asyncio.exceptions.TimeoutError:
+                pass
+            except pyppeteer.errors.NetworkError:
+                pass
+            else:
+                if artist in txt or title in txt:
+                    print(f"Response {resp.url} contains artist or title: {txt}")
 
 
 async def determine_aggregators(station_name, country, player_url, streams):
@@ -327,8 +354,8 @@ async def determine_aggregators(station_name, country, player_url, streams):
             except NonFatal:
                 pass
             else:
-                print_formatted_text(HTML(
-                    f"👉 I think I found what's currently playing: 🎵 <bold><seagreen>{title}</seagreen></bold> by <bold><seagreen>{artist}</seagreen></bold>"
+                print_formatted_text(ANSI(
+                    f'👉 I think I found what\'s currently playing: 🎵 \x1b[1m{title}\x1b[0m by \x1b[1m{artist}\x1b[0m'
                 ))
                 aggregator_finders['jsonpath/xpath'] = find_jsonpath_xpath_aggregator(player_url, artist, title)
         for aggregator, coroutine in aggregator_finders.items():
@@ -343,48 +370,65 @@ async def determine_aggregators(station_name, country, player_url, streams):
         return []
 
 
-async def main():
+async def add_station(slug=None, country_code=None, station_name=None, website_url=None, player_url=None):
     print("Want to add a new radio station? Let me help you out!")
-    station_name = questionary.text("🔤 What is the name of the station?").ask()
-    slug = questionary.text(
-        "🔤 Which slug (human-friendly ID) would you like to use for this station?",
-        instruction="(if you're not sure, leave the one I picked for you)",
-        default=generate_slug(station_name)
-    ).ask()
-    country_map = {c.name: c for c in countries}
-    country_choices = sorted(country_map.keys())
-    country = None
-    while not country:
-        choice = questionary.autocomplete(
-            "🗾 Which country is the station from?",
-            choices=country_choices
-        ).ask()  # returns value of selection
-        country = country_map.get(choice)
-        if not country:
-            questionary.print(
-                "! 🤔 I don't know that country... can you pick one from the suggestions?",
-                style="bold"
-            )
-    guessed_url = guess_station_website_url(station_name, country.name)
-    if guessed_url:
-        instruction = "(I tried to guess it for you, but I might be wrong!)"
+    if not station_name:
+        station_name = questionary.text("🔤 What is the name of the station?").ask()
+    if not slug:
+        slug = questionary.text(
+            "🔤 Which slug (human-friendly ID) would you like to use for this station?",
+            instruction="(if you're not sure, leave the one I picked for you)",
+            default=generate_slug(station_name)
+        ).ask()
+    if not country_code:
+        country_map = {c.name: c for c in countries}
+        country_choices = sorted(country_map.keys())
+        country = None
+        while not country:
+            choice = questionary.autocomplete(
+                "🗾 Which country is the station from?",
+                choices=country_choices
+            ).ask()  # returns value of selection
+            country = country_map.get(choice)
+            if not country:
+                questionary.print(
+                    "! 🤔 I don't know that country... can you pick one from the suggestions?",
+                    style="bold"
+                )
     else:
-        instruction = None
-    website_url = questionary.text(
-        "🌐 What's their website url? ",
-        instruction=instruction,
-        default=(guessed_url or "")
-    ).ask()
-    player_url = questionary.text(
-        f'🎧 Can you give me the URL of a page on "{website_url}" where I can listen to the live stream?',
-        instruction="(it can be the same as the homepage sometimes - leave blank if you can't find it)",
-    ).ask()
+        country = countries.get(alpha_2=country_code)
+    if not website_url:
+        guessed_url = guess_station_website_url(station_name, country.name)
+        if guessed_url:
+            instruction = "(I tried to guess it for you, but I might be wrong!)"
+        else:
+            instruction = None
+        website_url = questionary.text(
+            "🌐 What's their website url? ",
+            instruction=instruction,
+            default=(guessed_url or "")
+        ).ask()
+    if not player_url:
+        player_url = questionary.text(
+            f'🎧 Can you give me the URL of a page on "{website_url}" where I can listen to the live stream?',
+            instruction="(it can be the same as the homepage sometimes - leave blank if you can't find it)",
+        ).ask()
     streams = determine_streams(station_name, country)
     aggregators = await determine_aggregators(station_name, country, player_url, streams)
     await generate_station(country, slug, station_name, website_url, player_url, streams, aggregators)
 
 
-if __name__ == '__main__':
+@click.command()
+@click.option('--slug')
+@click.option('--country-code')
+@click.option('--name')
+@click.option('--website-url')
+@click.option('--player-url')
+def main(slug=None, country_code=None, name=None, website_url=None, player_url=None):
     nest_asyncio.apply()
     loop = asyncio.new_event_loop()
-    loop.run_until_complete(main())
+    loop.run_until_complete(add_station(slug, country_code, name, website_url, player_url))
+
+
+if __name__ == '__main__':
+    main()
