@@ -285,16 +285,19 @@ async def find_radio_net_aggregator(station_name):
 
 
 async def find_jsonpath_xpath_aggregator(page_url, artist, title):
-    #FIXME: https://docs.python.org/3/library/asyncio-task.html#waiting-primitives
+    loop = asyncio.new_event_loop()
+    loop.set_debug(True)
+
+    # FIXME: https://docs.python.org/3/library/asyncio-task.html#waiting-primitives
     async def async_handler(response):
-        task = asyncio.create_task(foo())
-    def handler(response):
         print(f'loaded some response from: {response.url}')
-        # Hack because handler can't be async
-        loop = asyncio.get_event_loop()
-        done, pending = loop.run_until_complete(asyncio.wait(response.text(), timeout=10))
+        txt = await asyncio.wait_for(response.text(), timeout=5.0)
         if artist in txt or title in txt:
             print(f"Response contains artist or title: {txt}")
+
+    def handler(response):
+        # Hack because handler can't be async
+        loop.run_until_complete(async_handler(response))
 
     browser = await launch()
     page = await browser.newPage()
