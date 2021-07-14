@@ -5,7 +5,7 @@ import logging
 from streamscrobbler import streamscrobbler
 import re
 
-SONG_RE_PATTERN = "(.+) - (.+)"
+SONG_RE_PATTERN = re.compile("(.+) - (.+)")
 
 
 def fetch(session, request_type: str, stream_url: str, encoding: str = None):
@@ -29,8 +29,12 @@ def fetch(session, request_type: str, stream_url: str, encoding: str = None):
                     logging.info(f"Detected: {result}")
                     encoding = result['encoding']
                 song = song.decode(encoding)
-            artist, title = _extract_artist_and_title(song)
-            items = [Song(artist=artist, song_title=title)]
+            res = _extract_artist_and_title(song)
+            if res:
+                artist, title = res
+                items = [Song(artist=artist, song_title=title)]
+            else:
+                items = []
     return AggregationResult(
         items=items,
         sources=sources
@@ -43,5 +47,7 @@ def _extract_artist_and_title(song):
     Try and extract artist and title out of it. It won't necessarily be super
     accurate.
     """
-    match = re.search(SONG_RE_PATTERN, song)
-    return (match.group(1), match.group(2))
+    match = SONG_RE_PATTERN.search(song)
+    if match:
+        return (match.group(1), match.group(2))
+    return None
