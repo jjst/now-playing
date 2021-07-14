@@ -1,0 +1,18 @@
+stations:
+  fr:
+    jazz-radio:
+      name: Jazz Radio
+      website_url: https://www.jazzradio.fr/
+      player_url: https://www.jazzradio.fr/radio/webradio
+      streams:
+      - url: http://jazzradio.ice.infomaniak.ch/jazzradio-high.mp3
+        codec: mp3
+        bitrate_kbps: 192
+      aggregators:
+        now-playing:
+        - module: stream_aggregator
+          params:
+            stream_url: http://jazzradio.ice.infomaniak.ch/jazzradio-high.mp3
+        - module: radio_net_aggregator
+          params:
+            radio_net_id: jazzradio

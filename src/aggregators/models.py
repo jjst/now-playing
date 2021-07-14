@@ -40,11 +40,13 @@ class Song(PlayingItem):
     song_title: str
     album: Optional[str]
 
-    def __init__(self, artist: str, song_title: str, start_time: OptionalTime = None, end_time: OptionalTime = None):
+    def __init__(self, artist: str, song_title: str, album: Optional[str] = None,
+                 start_time: OptionalTime = None, end_time: OptionalTime = None):
         text = f"{artist} - {song_title}"
         super().__init__(type='song', text=text, start_time=start_time, end_time=end_time)
         self.artist = artist
         self.song_title = song_title
+        self.album = album
 
 
 class Programme(PlayingItem):
