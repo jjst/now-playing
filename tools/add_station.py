@@ -9,15 +9,21 @@ from pyradios import RadioBrowser
 import questionary
 from unidecode import unidecode
 from prompt_toolkit.shortcuts import ProgressBar
+from prompt_toolkit import print_formatted_text, HTML
 from pygments import highlight
 from pygments.lexers import get_lexer_by_name
 from pygments.formatters import TerminalFormatter
 import requests
 from requests.exceptions import ConnectionError, HTTPError
+from retry import retry
 from streamscrobbler import streamscrobbler
 import tempfile
 import time
 import yaml
+import asyncio
+import nest_asyncio
+from pyppeteer import launch
+from pyppeteer.errors import TimeoutError
 
 
 subscription_key = os.environ.get("BING_SEARCH_KEY")
@@ -27,6 +33,10 @@ search_url = "https://api.bing.microsoft.com/v7.0/search"
 audd_url = "https://api.audd.io/"
 
 radio_browser = RadioBrowser()
+
+
+class NonFatal(Exception):
+    pass
 
 
 @dataclass
@@ -129,7 +139,8 @@ def save_audio_fingerprint(stream_url, max_size_kbs=200, max_duration_seconds=10
     return audio_file_path
 
 
-def identify_current_song(stream_url):
+@retry(NonFatal, tries=3, delay=5)
+def identify_current_song(stream_url, retries=3):
     audio_file_path = save_audio_fingerprint(stream_url)
     with open(audio_file_path, 'rb') as f:
         data = {
@@ -144,17 +155,19 @@ def identify_current_song(stream_url):
         try:
             response.raise_for_status()
         except HTTPError:
-            return None
+            raise NonFatal("Got wrong HTTP response from audd API")
         else:
             r = response.json()
+            result = r['result']
             try:
-                return (r['result']['artist'], r['result']['title'])
+                return (result['artist'], result['title'])
+            except TypeError:
+                raise NonFatal()
             except KeyError:
-                return None
+                raise NonFatal()
 
 
-
-def generate_station(country, slug, station_name, website_url, streams, aggregators):
+async def generate_station(country, slug, station_name, website_url, player_url, streams, aggregators):
     namespace = country.alpha_2.lower()
     stations = {
         'stations': {
@@ -162,6 +175,7 @@ def generate_station(country, slug, station_name, website_url, streams, aggregat
                 slug: {
                     'name': station_name,
                     'website_url': website_url,
+                    'player_url': player_url,
                     'streams': [{k: v for k, v in asdict(s).items() if v is not None} for s in streams],
                     'aggregators': {
                         'now-playing': aggregators
@@ -212,6 +226,7 @@ def determine_streams(station_name, country):
     return streams
 
 
+@retry(NonFatal, tries=3, delay=2)
 def get_song_metadata_from_stream(stream):
     stationinfo = streamscrobbler.get_server_info(stream.url)
     if stationinfo['metadata']:
@@ -219,15 +234,18 @@ def get_song_metadata_from_stream(stream):
         try:
             song = metadata['song']
         except KeyError:
-            return None
+            raise NonFatal("Could not get song metadata")
         else:
             return song
-    return None
+    raise NonFatal("Could not get song metadata")
 
 
-def find_stream_aggregator(streams):
+async def find_stream_aggregator(streams):
     for stream in streams:
-        song = get_song_metadata_from_stream(stream)
+        try:
+            song = get_song_metadata_from_stream(stream)
+        except NonFatal:
+            pass
         if song:
             return {
                 'module': 'stream_aggregator',
@@ -238,7 +256,7 @@ def find_stream_aggregator(streams):
     return None
 
 
-def find_radio_net_aggregator(station_name):
+async def find_radio_net_aggregator(station_name):
     headers = {'user-agent': 'station-finder/0.0.1'}
     res = requests.get(
         "https://www.radio.net/search",
@@ -248,46 +266,81 @@ def find_radio_net_aggregator(station_name):
     res.raise_for_status()
     soup = BeautifulSoup(res.text, features='html.parser')
     span = soup.find("span", text=station_name)
-    search_results = span.parent.parent
-    station = search_results.find(href=re.compile("^\\/s\\/(?P<station>.+)$"))
-    print(station)
+    regex = re.compile("^\\/s\\/(?P<station>.+)$")
+    if span:
+        search_results = span.parent.parent
+        station = search_results.find(href=regex)
+        if station:
+            href = station['href']
+            match = regex.search(href)
+            if match:
+                radio_net_id = match.group('station')
+                return {
+                    'module': 'radio_net_aggregator',
+                    'params': {
+                        'radio_net_id': radio_net_id
+                    }
+                }
     return None
 
 
-def determine_aggregators(station_name, country, streams):
+async def find_jsonpath_xpath_aggregator(page_url, artist, title):
+    #FIXME: https://docs.python.org/3/library/asyncio-task.html#waiting-primitives
+    async def async_handler(response):
+        task = asyncio.create_task(foo())
+    def handler(response):
+        print(f'loaded some response from: {response.url}')
+        # Hack because handler can't be async
+        loop = asyncio.get_event_loop()
+        done, pending = loop.run_until_complete(asyncio.wait(response.text(), timeout=10))
+        if artist in txt or title in txt:
+            print(f"Response contains artist or title: {txt}")
+
+    browser = await launch()
+    page = await browser.newPage()
+    page.on('response', handler)
+
+    try:
+        await page.goto(page_url)
+    except TimeoutError:
+        pass
+
+
+async def determine_aggregators(station_name, country, player_url, streams):
     look_for_aggegators = ask_whether_to_look_for_aggregators()
     if look_for_aggegators:
+        aggregator_finders = {
+            'stream metadata': find_stream_aggregator(streams),
+            'radio.net': find_radio_net_aggregator(station_name)
+        }
+        results = []
         if audd_token and streams:
             questionary.print(
-                "👂 Okay, let me try to find which song is currently playing first...",
+                "👂 Okay, now, let me try to find which song is currently playing first...",
                 style="bold"
             )
-            result = identify_current_song(streams[0].url)
-            if result:
-                (artist, title) = result
-                questionary.print(
-                    "",
-                    style="bold"
-                )
-            else:
+            try:
+                artist, title = identify_current_song(streams[0].url)
+            except NonFatal:
                 pass
-        aggregator_finders = {
-            'stream metadata': lambda: find_stream_aggregator(streams),
-            'radio.net': lambda: find_radio_net_aggregator(station_name)
-        }
-        for aggregator, fn in aggregator_finders.items():
+            else:
+                print_formatted_text(HTML(
+                    f"👉 I think I found what's currently playing: 🎵 <bold><seagreen>{title}</seagreen></bold> by <bold><seagreen>{artist}</seagreen></bold>"
+                ))
+                aggregator_finders['jsonpath/xpath'] = find_jsonpath_xpath_aggregator(player_url, artist, title)
+        for aggregator, coroutine in aggregator_finders.items():
             print(f"  > Trying {aggregator} aggregator...", end=" ")
-            result = fn()
+            result = await coroutine
             if result:
                 print("✔️  Success!")
-                return [result]
+                results.append(result)
             else:
                 print("❌ No luck.")
     else:
         return []
 
 
-def main():
+async def main():
     print("Want to add a new radio station? Let me help you out!")
     station_name = questionary.text("🔤 What is the name of the station?").ask()
     slug = questionary.text(
@@ -319,10 +372,16 @@ def main():
         instruction=instruction,
         default=(guessed_url or "")
     ).ask()
+    player_url = questionary.text(
+        f'🎧 Can you give me the URL of a page on "{website_url}" where I can listen to the live stream?',
+        instruction="(it can be the same as the homepage sometimes - leave blank if you can't find it)",
+    ).ask()
     streams = determine_streams(station_name, country)
-    aggregators = determine_aggregators(station_name, country, streams)
-    generate_station(country, slug, station_name, website_url, streams, aggregators)
+    aggregators = await determine_aggregators(station_name, country, player_url, streams)
+    await generate_station(country, slug, station_name, website_url, player_url, streams, aggregators)
 
 
 if __name__ == '__main__':
-    main()
+    nest_asyncio.apply()
+    loop = asyncio.new_event_loop()
+    loop.run_until_complete(main())
