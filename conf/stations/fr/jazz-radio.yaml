@@ -6,7 +6,6 @@ stations:
       player_url: https://www.jazzradio.fr/radio/webradio
       streams:
       - url: http://jazzradio.ice.infomaniak.ch/jazzradio-high.mp3
-        codec: mp3
         bitrate_kbps: 192
       aggregators:
         now-playing:
