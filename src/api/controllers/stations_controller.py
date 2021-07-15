@@ -11,7 +11,6 @@ from opentelemetry import trace
 
 from api.models.radio_station_list import RadioStationList
 from api.models.radio_station import RadioStation
-from api.models.now_playing_item import NowPlayingItem
 from api.models.now_playing_item_list import NowPlayingItemList
 from api.models.song import Song
 from api.models.programme import Programme
