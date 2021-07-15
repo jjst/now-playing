@@ -1,4 +1,3 @@
-import logging
 import redis
 import xxhash
 import datetime
@@ -52,6 +51,10 @@ def key_for(station, prefix):
     return f"{prefix}:{station.station_id()}"
 
 
+class CacheError(Exception):
+    pass
+
+
 class ResponseCache():
     def __init__(self, settings=settings):
         self.redis_client = redis.from_url(settings.redis.url, **settings.redis.args)
@@ -63,9 +66,7 @@ class ResponseCache():
             try:
                 response = self.redis_client.get(key_for(station, 'response'))
             except redis.exceptions.ConnectionError as e:
-                logging.warning("Error connecting to Redis. Server cannot return cached response.")
-                logging.exception(e)
-                return None
+                raise CacheError("Error connecting to Redis. Cannot get cached response.") from e
             else:
                 span.set_attribute('cache_hit', (response is not None))
                 return response
@@ -77,12 +78,15 @@ class ResponseCache():
                 raise ValueError("Only one of 'expire_in' or 'expire_at' should be provided as argument")
             current_span = trace.get_current_span()
             new_hashed_response = xxhash.xxh32_digest(response)
-            old_hashed_response = self.redis_client.set(
-                key_for(station, 'response-hash'),
-                new_hashed_response,
-                ex=self.default_ttl_seconds_if_changed,
-                get=True
-            )
+            try:
+                old_hashed_response = self.redis_client.set(
+                    key_for(station, 'response-hash'),
+                    new_hashed_response,
+                    ex=self.default_ttl_seconds_if_changed,
+                    get=True
+                )
+            except redis.exceptions.ConnectionError as e:
+                raise CacheError("Error connecting to Redis. Cannot set cached response.") from e
             if expire_in:
                 ttl_seconds = expire_in
             elif expire_at:
@@ -95,5 +99,4 @@ class ResponseCache():
             try:
                 self.redis_client.set(key_for(station, 'response'), response, ex=ttl_seconds)
             except redis.exceptions.ConnectionError as e:
-                logging.warning("Error connecting to Redis. Server cannot return cached response.")
-                logging.exception(e)
+                raise CacheError("Error connecting to Redis. Cannot set cached response.") from e

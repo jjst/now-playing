@@ -14,12 +14,13 @@ class Stream(Model):
 
     Do not edit the class manually.
     """
-
-    def __init__(self, url: str=None, quality: str=None, bitrate_kbps: int=None):  # noqa: E501
+    def __init__(self, url: str=None, codec: str=None, quality: str=None, bitrate_kbps: int=None):  # noqa: E501
         """Stream - a model defined in Swagger
 
         :param url: The url of this Stream.  # noqa: E501
         :type url: str
+        :param codec: The codec of this Stream.  # noqa: E501
+        :type codec: str
         :param quality: The quality of this Stream.  # noqa: E501
         :type quality: str
         :param bitrate_kbps: The bitrate_kbps of this Stream.  # noqa: E501
@@ -27,17 +28,19 @@ class Stream(Model):
         """
         self.swagger_types = {
             'url': str,
+            'codec': str,
             'quality': str,
             'bitrate_kbps': int
         }
 
         self.attribute_map = {
             'url': 'url',
+            'codec': 'codec',
             'quality': 'quality',
             'bitrate_kbps': 'bitrate_kbps'
         }
-
         self._url = url
+        self._codec = codec
         self._quality = quality
         self._bitrate_kbps = bitrate_kbps
 
@@ -74,6 +77,27 @@ class Stream(Model):
             raise ValueError("Invalid value for `url`, must not be `None`")  # noqa: E501
 
         self._url = url
+
+    @property
+    def codec(self) -> str:
+        """Gets the codec of this Stream.
+
+
+        :return: The codec of this Stream.
+        :rtype: str
+        """
+        return self._codec
+
+    @codec.setter
+    def codec(self, codec: str):
+        """Sets the codec of this Stream.
+
+
+        :param codec: The codec of this Stream.
+        :type codec: str
+        """
+
+        self._codec = codec
 
     @property
     def quality(self) -> str:

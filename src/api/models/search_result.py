@@ -6,9 +6,8 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from api.models.base_model_ import Model
+from api.models.radio_station import RadioStation  # noqa: F401,E501
 from api import util
-
-from api.models.radio_station import RadioStation
 
 
 class SearchResult(Model):
@@ -16,7 +15,6 @@ class SearchResult(Model):
 
     Do not edit the class manually.
     """
-
     def __init__(self, items: List[RadioStation]=None):  # noqa: E501
         """SearchResult - a model defined in Swagger
 
@@ -30,7 +28,6 @@ class SearchResult(Model):
         self.attribute_map = {
             'items': 'items'
         }
-
         self._items = items
 
     @classmethod

@@ -1,10 +1,11 @@
-from api.response_cache import ResponseCache
+from api.response_cache import ResponseCache, CacheError
 from base import stations
 
 from unittest.mock import Mock, MagicMock
 import xxhash
 from datetime import datetime, timedelta
 import pytest
+import redis
 
 settings = Mock(
     redis=Mock(url='redis://localhost:6379/0', args={}),
@@ -15,6 +16,22 @@ response_cache = ResponseCache(settings)
 response = 'test-response'
 
 station = stations.get('fr', 'radiomeuh')
+
+
+def test_set_raises_cacheerror_if_cant_connect_to_redis():
+    err = redis.exceptions.ConnectionError("Can't connect")
+    response_cache.redis_client = MagicMock()
+    response_cache.redis_client.set = MagicMock(side_effect=err)
+    with pytest.raises(CacheError):
+        response_cache.set(station, response)
+
+
+def test_get_raises_cacheerror_if_cant_connect_to_redis():
+    err = redis.exceptions.ConnectionError("Can't connect")
+    response_cache.redis_client = MagicMock()
+    response_cache.redis_client.get = MagicMock(side_effect=err)
+    with pytest.raises(CacheError):
+        response_cache.get(station)
 
 
 def test_set_uses_expire_at_if_provided():
