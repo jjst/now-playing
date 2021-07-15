@@ -145,7 +145,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NowPlaying'
+                $ref: '#/components/schemas/NowPlayingItemList'
         404:
           description: now-playing information for this station is not available
           content: {}
@@ -223,19 +223,79 @@ components:
         url: http://radiomeuh.ice.infomaniak.ch/radiomeuh-128.mp3
         codec: mp3
         bitrate_kbps: 128
-    NowPlaying:
+    NowPlayingItemList:
+      required:
+      - items
       type: object
       properties:
-        title:
+        items:
+          type: array
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/Song'
+              - $ref: '#/components/schemas/Programme'
+    NowPlayingItem:
+      type: object
+      required:
+        - type
+        - text
+      properties:
+        text:
           type: string
         type:
           type: string
           enum:
           - song
           - programme
-        metadata:
-          type: object
-          properties: {}
+        start_time:
+          type: string
+          format: date-time
+        end_time:
+          type: string
+          format: date-time
       example:
-        title: Europe - The Final Countdown
+        text: Europe - The Final Countdown
         type: song
+        start_time: 2017-07-21T17:32:28Z
+        end_time: 2017-07-21T17:37:37Z
+    Song:
+      allOf:
+        - $ref: '#/components/schemas/NowPlayingItem'
+        - type: object
+          required:
+            - artist
+            - title
+          properties:
+            artist:
+              type: string
+            title:
+              type: string
+            album:
+              type: string
+            cover_art:
+              type: string
+          example:
+            text: Europe - The Final Countdown
+            type: song
+            artist: Europe
+            title: The Final Countdown
+            start_time: 2017-07-21T17:32:28Z
+            end_time: 2017-07-21T17:37:37Z
+    Programme:
+      allOf:
+        - $ref: '#/components/schemas/NowPlayingItem'
+        - type: object
+          required:
+            - name
+          properties:
+            name:
+              type: string
+            episode_title:
+              type: string
+          example:
+            text: SOUS LE SOLEIL DE PLATON - Une leçon de cinéma, avec le réalisateur Michel Hazanavicius
+            type: programme
+            name: SOUS LE SOLEIL DE PLATON
+            episode_title: Une leçon de cinéma, avec le réalisateur Michel Hazanavicius
+            start_time: 2021-07-15T10:06:28Z
+            end_time: 2021-07-15T11:04:07Z

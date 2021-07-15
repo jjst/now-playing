@@ -11,8 +11,11 @@ from opentelemetry import trace
 
 from api.models.radio_station_list import RadioStationList
 from api.models.radio_station import RadioStation
-from api.models.now_playing import NowPlaying
+from api.models.now_playing_item_list import NowPlayingItemList
+from api.models.song import Song
+from api.models.programme import Programme
 from api.models.stream import Stream
+from api.encoder import JSONEncoder
 from api.response_cache import ResponseCache, CacheError
 
 import aggregators
@@ -71,26 +74,28 @@ async def get_now_playing_by_country_code_and_station_id(namespace, slug):
             data={'title': f"No 'now-playing' information is available for station '{namespace}/{slug}'"},
             status=404
         )
+    with tracer.start_as_current_span("call_aggregator") as span:
+        span.set_attribute('aggregator.module_name', aggregator.module_name)
+        for key, val in aggregator.params.items():
+            span.set_attribute(f'aggregator.params.{key}', str(val))
+        span.set_attribute('station_id', f'{namespace}/{slug}')
+        span.set_attribute('namespace', namespace)
+        span.set_attribute('slug', slug)
+        aggregation_result = aggregator(session, 'now-playing')
+        asyncio.create_task(save_aggregation_result_on_s3(f"{namespace}/{slug}", aggregation_result))
+    playing_items_list = _build_now_playing_item_list(aggregation_result.items)
+    data = playing_items_list.to_dict()
+    if aggregation_result.items:
+        cache_expiry = min(i.end_time for i in aggregation_result.items)
+    else:
+        cache_expiry = None
+    response = json.dumps(data, cls=JSONEncoder)
     try:
-        with tracer.start_as_current_span("call_aggregator") as span:
-            span.set_attribute('aggregator.module_name', aggregator.module_name)
-            for key, val in aggregator.params.items():
-                span.set_attribute(f'aggregator.params.{key}', str(val))
-            span.set_attribute('station_id', f'{namespace}/{slug}')
-            span.set_attribute('namespace', namespace)
-            span.set_attribute('slug', slug)
-            aggregation_result = aggregator(session, 'now-playing')
-            asyncio.create_task(save_aggregation_result_on_s3(f"{namespace}/{slug}", aggregation_result))
-        playing_item = next(iter(aggregation_result.items))
-        data = NowPlaying(type=playing_item.type, title=playing_item.text).to_dict()
-        try:
-            response_cache.set(station, json.dumps(data), expire_at=playing_item.end_time)
-        except CacheError as e:
-            # Log error, but we can proceed without caching with degraded performance
-            logging.exception(e)
-        return json_response(data=data)
-    except StopIteration:
-        return json_response(data={'title': "Could not fetch now playing information"}, status=500)
+        response_cache.set(station, response, expire_at=cache_expiry)
+    except CacheError as e:
+        # Log error, but we can proceed without caching with degraded performance
+        logging.exception(e)
+    return Response(body=response, content_type='application/json')
 
 
 async def get_station_by_country_code_and_station_id(namespace, slug):  # noqa: E501
@@ -132,6 +137,31 @@ def _build_station(station_info: RadioStationInfo):
         streams=streams
     )
     return radio_station
+
+
+def _build_now_playing_item_list(source_items):
+    items = []
+    for i in source_items:
+        if i.type == 'song':
+            items.append(Song(
+                type='song',
+                text=i.text,
+                artist=i.artist,
+                title=i.song_title,
+                album=i.album,
+                start_time=i.start_time,
+                end_time=i.end_time,
+            ))
+        elif i.type == 'programme':
+            items.append(Programme(
+                type='programme',
+                text=i.text,
+                name=i.name,
+                episode_title=i.episode_title,
+                start_time=i.start_time,
+                end_time=i.end_time,
+            ))
+    return NowPlayingItemList(items=items)
 
 
 async def save_aggregation_result_on_s3(station_id, aggregation_result: AggregationResult):
