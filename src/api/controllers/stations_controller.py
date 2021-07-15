@@ -13,7 +13,7 @@ from api.models.radio_station_list import RadioStationList
 from api.models.radio_station import RadioStation
 from api.models.now_playing import NowPlaying
 from api.models.stream import Stream
-from api.response_cache import ResponseCache
+from api.response_cache import ResponseCache, CacheError
 
 import aggregators
 from aggregators import AggregationResult
@@ -47,7 +47,12 @@ async def get_now_playing_by_country_code_and_station_id(namespace, slug):
         station = stations.get(namespace, slug)
     except KeyError:
         return json_response(data={'title': "Station not found"}, status=404)
-    cached_response = response_cache.get(station)
+    try:
+        cached_response = response_cache.get(station)
+    except CacheError as e:
+        # Log error, but we can proceed without caching with degraded performance
+        cached_response = None
+        logging.exception(e)
     current_span = trace.get_current_span()
     if cached_response:
         logging.info(f"Returning cached respones for {station.station_id()}")
@@ -78,7 +83,11 @@ async def get_now_playing_by_country_code_and_station_id(namespace, slug):
             asyncio.create_task(save_aggregation_result_on_s3(f"{namespace}/{slug}", aggregation_result))
         playing_item = next(iter(aggregation_result.items))
         data = NowPlaying(type=playing_item.type, title=playing_item.text).to_dict()
-        response_cache.set(station, json.dumps(data), expire_at=playing_item.end_time)
+        try:
+            response_cache.set(station, json.dumps(data), expire_at=playing_item.end_time)
+        except CacheError as e:
+            # Log error, but we can proceed without caching with degraded performance
+            logging.exception(e)
         return json_response(data=data)
     except StopIteration:
         return json_response(data={'title': "Could not fetch now playing information"}, status=500)
