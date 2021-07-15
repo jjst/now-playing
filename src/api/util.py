@@ -1,7 +1,6 @@
 import datetime
 
 import six
-import typing
 from api import type_util
 
 

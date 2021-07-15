@@ -17,12 +17,14 @@ response = 'test-response'
 
 station = stations.get('fr', 'radiomeuh')
 
+
 def test_set_raises_cacheerror_if_cant_connect_to_redis():
     err = redis.exceptions.ConnectionError("Can't connect")
     response_cache.redis_client = MagicMock()
     response_cache.redis_client.set = MagicMock(side_effect=err)
     with pytest.raises(CacheError):
         response_cache.set(station, response)
+
 
 def test_get_raises_cacheerror_if_cant_connect_to_redis():
     err = redis.exceptions.ConnectionError("Can't connect")

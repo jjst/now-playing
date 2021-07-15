@@ -1,4 +1,3 @@
-import logging
 import redis
 import xxhash
 import datetime
