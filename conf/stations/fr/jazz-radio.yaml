@@ -7,6 +7,7 @@ stations:
       streams:
       - url: http://jazzradio.ice.infomaniak.ch/jazzradio-high.mp3
         bitrate_kbps: 192
+        codec: mp3
       aggregators:
         now-playing:
         - module: stream_aggregator

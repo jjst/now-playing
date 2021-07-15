@@ -212,6 +212,8 @@ components:
         url:
           type: string
           format: url
+        codec:
+          type: string
         quality:
           type: string
         bitrate_kbps:
@@ -219,6 +221,7 @@ components:
           format: int32
       example:
         url: http://radiomeuh.ice.infomaniak.ch/radiomeuh-128.mp3
+        codec: mp3
         bitrate_kbps: 128
     NowPlaying:
       type: object
