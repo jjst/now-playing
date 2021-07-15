@@ -6,7 +6,7 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from api.models.base_model_ import Model
-from api.models.stream import Stream
+from api.models.stream import Stream  # noqa: F401,E501
 from api import util
 
 
@@ -15,7 +15,6 @@ class RadioStation(Model):
 
     Do not edit the class manually.
     """
-
     def __init__(self, id: str=None, namespace: str=None, slug: str=None, name: str=None, favicon: str=None, country_code: str=None, streams: List[Stream]=None):  # noqa: E501
         """RadioStation - a model defined in Swagger
 
@@ -53,7 +52,6 @@ class RadioStation(Model):
             'country_code': 'country_code',
             'streams': 'streams'
         }
-
         self._id = id
         self._namespace = namespace
         self._slug = slug

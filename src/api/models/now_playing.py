@@ -14,7 +14,6 @@ class NowPlaying(Model):
 
     Do not edit the class manually.
     """
-
     def __init__(self, title: str=None, type: str=None, metadata: object=None):  # noqa: E501
         """NowPlaying - a model defined in Swagger
 
@@ -36,7 +35,6 @@ class NowPlaying(Model):
             'type': 'type',
             'metadata': 'metadata'
         }
-
         self._title = title
         self._type = type
         self._metadata = metadata

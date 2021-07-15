@@ -14,7 +14,6 @@ class Stream(Model):
 
     Do not edit the class manually.
     """
-
     def __init__(self, url: str=None, quality: str=None, bitrate_kbps: int=None):  # noqa: E501
         """Stream - a model defined in Swagger
 
@@ -36,7 +35,6 @@ class Stream(Model):
             'quality': 'quality',
             'bitrate_kbps': 'bitrate_kbps'
         }
-
         self._url = url
         self._quality = quality
         self._bitrate_kbps = bitrate_kbps
