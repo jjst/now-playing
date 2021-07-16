@@ -29,7 +29,7 @@ services:
     value: redis://redis:6379/0
   - key: s3__enabled
     scope: RUN_TIME
-    value: true
+    value: "true"
   image:
     registry: jjst
     registry_type: DOCKER_HUB
