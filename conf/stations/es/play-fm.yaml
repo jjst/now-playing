@@ -1,0 +1,10 @@
+stations:
+  es:
+    play-fm:
+      name: Play FM
+      website_url: http://www.playfm.es/
+      aggregators:
+        now-playing:
+          - module: radio_dot_net
+            params:
+              radio_dot_net_id: playfmes

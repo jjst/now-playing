@@ -1,0 +1,9 @@
+stations:
+  fr:
+    abc-lounge:
+      name: ABC Lounge
+      aggregators:
+        now-playing:
+          - module: radio_dot_net
+            params:
+              radio_dot_net_id: abclounge
