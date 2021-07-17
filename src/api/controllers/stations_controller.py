@@ -1,9 +1,6 @@
 import asyncio
 import json
 import logging
-import boto3
-import botocore.exceptions
-import time
 from aiohttp.web import Response, json_response
 
 from opentelemetry import trace
@@ -17,19 +14,19 @@ from api.models.programme import Programme
 from api.models.stream import Stream
 from api.encoder import JSONEncoder
 from api.response_cache import ResponseCache, CacheError
+from api.result_saver import AggregationResultSaver
 
 import aggregators
-from aggregators import AggregationResult
-from base.json import DataClassJSONEncoder
 from base.stations import RadioStationInfo
 from base.session import session
 import base.stations as stations
-from base.config import settings
 
 
 tracer = trace.get_tracer(__name__)
 
 response_cache = ResponseCache()
+
+aggregation_result_saver = AggregationResultSaver()
 
 
 async def get_stations():
@@ -82,7 +79,9 @@ async def get_now_playing_by_country_code_and_station_id(namespace, slug):
         span.set_attribute('namespace', namespace)
         span.set_attribute('slug', slug)
         aggregation_result = aggregator(session, 'now-playing')
-        asyncio.create_task(save_aggregation_result_on_s3(f"{namespace}/{slug}", aggregation_result))
+        asyncio.create_task(
+            aggregation_result_saver.save_aggregation_result(f"{namespace}/{slug}", aggregation_result)
+        )
     playing_items_list = _build_now_playing_item_list(aggregation_result.items)
     data = playing_items_list.to_dict()
     if aggregation_result.items:
@@ -162,40 +161,3 @@ def _build_now_playing_item_list(source_items):
                 end_time=i.end_time,
             ))
     return NowPlayingItemList(items=items)
-
-
-async def save_aggregation_result_on_s3(station_id, aggregation_result: AggregationResult):
-    if settings.s3.enabled:
-        logging.info(f"Saving aggregated data for {station_id} to S3")
-        try:
-            with tracer.start_as_current_span("save_aggregation_result_on_s3"):
-                s3 = boto3.resource('s3', endpoint_url=settings.s3.endpoint_url)
-                timestamp = int(time.time())
-                bucket = s3.Bucket(settings.s3.bucket_name)
-                key = f"{station_id}/{timestamp}/extracted.json"
-                bucket.put_object(
-                    Key=key,
-                    Body=json.dumps(aggregation_result.items, cls=DataClassJSONEncoder)
-                )
-                for source in aggregation_result.sources:
-                    if isinstance(source.data, str):
-                        extension = "txt"
-                        body = source.data
-                    else:
-                        extension = "json"
-                        body = json.dumps(source.data)
-                    key = f"{station_id}/{timestamp}/sources/{source.type}/data.{extension}"
-                    bucket.put_object(
-                        Key=key,
-                        Body=body
-                    )
-        except botocore.exceptions.BotoCoreError as e:
-            # Don't error out here, just log a warning.
-            # Aggregation was still successful, we just can't gather stats.
-            logging.warning("Could not save aggregation results on S3")
-            logging.exception(e)
-        except botocore.exceptions.ClientError as e:
-            # Don't error out here, just log a warning.
-            # Aggregation was still successful, we just can't gather stats.
-            logging.warning("Could not save aggregation results on S3")
-            logging.exception(e)
