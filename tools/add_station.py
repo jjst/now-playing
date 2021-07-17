@@ -202,7 +202,15 @@ def find_radio_net_aggregator(station_name):
     if span:
         search_results = span.parent.parent
         if search_results:
-            station = search_results.find(href=re.compile("^\\/s\\/(?P<station>.+)$"))
+            match = search_results.find(href=re.compile("^\\/s\\/(?P<station>.+)$"))
+            if match:
+                radio_net_id = match.group('station')
+                return {
+                    'module': 'radio_dot_net',
+                    'params': {
+                        'radio_dot_net_id': radio_net_id
+                    }
+                }
     return None
 
 
