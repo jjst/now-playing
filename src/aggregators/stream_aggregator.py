@@ -1,4 +1,5 @@
 from aggregators import AggregationResult, Song, Source
+from aggregators.utils import extract_artist_and_title
 
 import chardet
 import logging
@@ -29,25 +30,13 @@ def fetch(session, request_type: str, stream_url: str, encoding: str = None):
                     logging.info(f"Detected: {result}")
                     encoding = result['encoding']
                 song = song.decode(encoding)
-            res = _extract_artist_and_title(song)
-            if res:
-                artist, title = res
-                items = [Song(artist=artist, song_title=title)]
-            else:
+            try:
+                artist, title = extract_artist_and_title(song)
+            except ValueError:
                 items = []
+            else:
+                items = [Song(artist=artist, song_title=title)]
     return AggregationResult(
         items=items,
         sources=sources
     )
-
-
-def _extract_artist_and_title(song):
-    """
-    We get a single string with both artist and title, which isn't great.
-    Try and extract artist and title out of it. It won't necessarily be super
-    accurate.
-    """
-    match = SONG_RE_PATTERN.search(song)
-    if match:
-        return (match.group(1), match.group(2))
-    return None

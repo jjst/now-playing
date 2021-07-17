@@ -199,9 +199,10 @@ def find_radio_net_aggregator(station_name):
     res.raise_for_status()
     soup = BeautifulSoup(res.text)
     span = soup.find("span", text=station_name)
-    search_results = span.parent.parent
-    station = search_results.find(href=re.compile("^\\/s\\/(?P<station>.+)$"))
-    print(station)
+    if span:
+        search_results = span.parent.parent
+        if search_results:
+            station = search_results.find(href=re.compile("^\\/s\\/(?P<station>.+)$"))
     return None
 
 
