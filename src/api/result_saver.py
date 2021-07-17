@@ -1,9 +1,5 @@
-import asyncio
 import aioboto3
-from aiohttp import web
 import botocore.exceptions
-from concurrent.futures import Executor
-import functools
 import json
 import logging
 from opentelemetry import trace
