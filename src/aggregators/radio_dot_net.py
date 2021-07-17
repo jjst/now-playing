@@ -21,7 +21,7 @@ def fetch(session, request_type: str, radio_dot_net_id: str):
     sources = [Source(type='json', data=data)]
     try:
         artist, title = extract_artist_and_title(data[0]['title'])
-    except ValueError:
+    except (ValueError, IndexError):
         items = []
     else:
         items = [Song(artist=artist, song_title=title)]
