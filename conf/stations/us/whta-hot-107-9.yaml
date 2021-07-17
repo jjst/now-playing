@@ -1,0 +1,11 @@
+stations:
+  us:
+    whta-hot-107-9:
+      name: WHTA HOT 107.9
+      website_url: https://hotspotatl.com/
+      streams: []
+      aggregators:
+        now-playing:
+          - module: radio_dot_net
+            params:
+              radio_dot_net_id: whta
