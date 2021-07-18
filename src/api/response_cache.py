@@ -72,7 +72,7 @@ class ResponseCache():
                 return response
 
     def set(self, station: RadioStationInfo, response: str,
-            expire_in: Optional[int] = None, expire_at: Optional[datetime.datetime] = None):
+            expire_in: Optional[int] = None, expire_at: Optional[datetime.datetime] = None) -> int:
         with tracer.start_as_current_span("set_cached_response"):
             if expire_in and expire_at:
                 raise ValueError("Only one of 'expire_in' or 'expire_at' should be provided as argument")
@@ -100,3 +100,4 @@ class ResponseCache():
                 self.redis_client.set(key_for(station, 'response'), response, ex=ttl_seconds)
             except redis.exceptions.ConnectionError as e:
                 raise CacheError("Error connecting to Redis. Cannot set cached response.") from e
+            return ttl_seconds

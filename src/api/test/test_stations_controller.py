@@ -1,6 +1,7 @@
 # coding: utf-8
 import connexion
 import logging
+import pytest
 
 from api.response_cache import ResponseCache
 from base import stations
@@ -32,3 +33,17 @@ async def test_get_now_playing_by_station_id_uses_cache(test_client):
     station = stations.get('fr', 'radiomeuh')
     cached_response = response_cache.get(station)
     assert cached_response is not None
+
+
+async def test_get_now_playing_by_station_id_returns_cache_control_header_for_fresh_response(test_client):
+    client = await test_client(create_app)
+    response = await client.get('/api/stations/{namespace}/{slug}/now-playing'.format(namespace='fr', slug='fip'))
+    assert 'Cache-Control' in response.headers
+
+
+@pytest.mark.xfail(reason="not yet implemented")
+async def test_get_now_playing_by_station_id_returns_cache_control_header_for_cached_response(test_client):
+    client = await test_client(create_app)
+    _ = await client.get('/api/stations/{namespace}/{slug}/now-playing'.format(namespace='fr', slug='fip'))
+    response = await client.get('/api/stations/{namespace}/{slug}/now-playing'.format(namespace='fr', slug='fip'))
+    assert 'Cache-Control' in response.headers
