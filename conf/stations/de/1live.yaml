@@ -1,0 +1,13 @@
+stations:
+  de:
+    1live:
+      name: 1LIVE
+      website_url: https://www1.wdr.de/radio/1live/
+      streams:
+      - url: http://wdr-1live-live.icecast.wdr.de/wdr/1live/live/mp3/128/stream.mp3
+        codec: mp3
+      aggregators:
+        now-playing:
+        - module: stream_aggregator
+          params:
+            stream_url: http://wdr-1live-live.icecast.wdr.de/wdr/1live/live/mp3/128/stream.mp3
