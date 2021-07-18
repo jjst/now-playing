@@ -1,4 +1,4 @@
-import redis
+import aioredis
 import xxhash
 import datetime
 from typing import Optional
@@ -14,7 +14,7 @@ response_hash_prefix = "response-hash"
 tracer = trace.get_tracer(__name__)
 
 
-@monkeypatch_method(redis.Redis)
+@monkeypatch_method(aioredis.Redis)
 def set(self, name, value,
         ex=None, px=None, nx=False, xx=False, keepttl=False, get=False):
     """
@@ -57,35 +57,35 @@ class CacheError(Exception):
 
 class ResponseCache():
     def __init__(self, settings=settings):
-        self.redis_client = redis.from_url(settings.redis.url, **settings.redis.args)
+        self.redis_client = aioredis.from_url(settings.redis.url, **settings.redis.args)
         self.default_ttl_seconds = settings.response_cache.default_ttl_seconds
         self.default_ttl_seconds_if_changed = settings.response_cache.default_ttl_seconds_if_changed
 
-    def get(self, station: RadioStationInfo) -> Optional[str]:
+    async def get(self, station: RadioStationInfo) -> Optional[str]:
         with tracer.start_as_current_span("get_cached_response") as span:
             try:
-                response = self.redis_client.get(key_for(station, 'response'))
-            except redis.exceptions.ConnectionError as e:
+                response = await self.redis_client.get(key_for(station, 'response'))
+            except aioredis.exceptions.ConnectionError as e:
                 raise CacheError("Error connecting to Redis. Cannot get cached response.") from e
             else:
                 span.set_attribute('cache_hit', (response is not None))
                 return response
 
-    def set(self, station: RadioStationInfo, response: str,
-            expire_in: Optional[int] = None, expire_at: Optional[datetime.datetime] = None) -> int:
+    async def set(self, station: RadioStationInfo, response: str,
+                  expire_in: Optional[int] = None, expire_at: Optional[datetime.datetime] = None) -> int:
         with tracer.start_as_current_span("set_cached_response"):
             if expire_in and expire_at:
                 raise ValueError("Only one of 'expire_in' or 'expire_at' should be provided as argument")
             current_span = trace.get_current_span()
             new_hashed_response = xxhash.xxh32_digest(response)
             try:
-                old_hashed_response = self.redis_client.set(
+                old_hashed_response = await self.redis_client.set(
                     key_for(station, 'response-hash'),
                     new_hashed_response,
                     ex=self.default_ttl_seconds_if_changed,
                     get=True
                 )
-            except redis.exceptions.ConnectionError as e:
+            except aioredis.exceptions.ConnectionError as e:
                 raise CacheError("Error connecting to Redis. Cannot set cached response.") from e
             if expire_in:
                 ttl_seconds = expire_in
@@ -97,7 +97,7 @@ class ResponseCache():
                 ttl_seconds = self.default_ttl_seconds
             current_span.add_event("determine_cached_response_ttl", attributes={'ttl_seconds': ttl_seconds})
             try:
-                self.redis_client.set(key_for(station, 'response'), response, ex=ttl_seconds)
-            except redis.exceptions.ConnectionError as e:
+                await self.redis_client.set(key_for(station, 'response'), response, ex=ttl_seconds)
+            except aioredis.exceptions.ConnectionError as e:
                 raise CacheError("Error connecting to Redis. Cannot set cached response.") from e
             return ttl_seconds

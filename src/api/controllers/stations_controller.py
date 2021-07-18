@@ -48,7 +48,7 @@ async def get_now_playing_by_country_code_and_station_id(namespace, slug):
     except KeyError:
         return json_response(data={'title': "Station not found"}, status=404)
     try:
-        cached_response = response_cache.get(station)
+        cached_response = await response_cache.get(station)
     except CacheError as e:
         # Log error, but we can proceed without caching with degraded performance
         cached_response = None
@@ -91,7 +91,7 @@ async def get_now_playing_by_country_code_and_station_id(namespace, slug):
     response = json.dumps(data, cls=JSONEncoder)
     actual_cache_expiry_seconds = None
     try:
-        actual_cache_expiry_seconds = response_cache.set(station, response, expire_at=cache_expiry)
+        actual_cache_expiry_seconds = await response_cache.set(station, response, expire_at=cache_expiry)
     except CacheError as e:
         # Log error, but we can proceed without caching with degraded performance
         logging.exception(e)
