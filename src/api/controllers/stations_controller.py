@@ -89,12 +89,16 @@ async def get_now_playing_by_country_code_and_station_id(namespace, slug):
     else:
         cache_expiry = None
     response = json.dumps(data, cls=JSONEncoder)
+    actual_cache_expiry_seconds = None
     try:
-        response_cache.set(station, response, expire_at=cache_expiry)
+        actual_cache_expiry_seconds = response_cache.set(station, response, expire_at=cache_expiry)
     except CacheError as e:
         # Log error, but we can proceed without caching with degraded performance
         logging.exception(e)
-    return Response(body=response, content_type='application/json')
+    headers = {}
+    if actual_cache_expiry_seconds:
+        headers['Cache-Control'] = f'max-age={actual_cache_expiry_seconds}'
+    return Response(body=response, content_type='application/json', headers=headers)
 
 
 async def get_station_by_country_code_and_station_id(namespace, slug):  # noqa: E501
