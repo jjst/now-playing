@@ -53,7 +53,8 @@ async def test_get_now_playing_by_station_id_uses_cache(loop, app, aiohttp_clien
     assert cached_response is not None
 
 
-async def test_get_now_playing_by_station_id_returns_cache_control_header_for_fresh_response(loop, app, aiohttp_client, redis_client):
+async def test_get_now_playing_by_station_id_returns_cache_control_header_for_fresh_response(
+        loop, app, aiohttp_client, redis_client):
     await redis_client.flushall()
     cache = ResponseCache()
     r, _ = await cache.get(stations.get('fr', 'fip'))
@@ -63,7 +64,8 @@ async def test_get_now_playing_by_station_id_returns_cache_control_header_for_fr
     assert 'Cache-Control' in response.headers
 
 
-async def test_get_now_playing_by_station_id_returns_cache_control_header_for_cached_response(loop, app, aiohttp_client, redis_client):
+async def test_get_now_playing_by_station_id_returns_cache_control_header_for_cached_response(
+        loop, app, aiohttp_client, redis_client):
     client = await aiohttp_client(app)
     _ = await client.get('/api/stations/{namespace}/{slug}/now-playing'.format(namespace='fr', slug='fip'))
     response = await client.get('/api/stations/{namespace}/{slug}/now-playing'.format(namespace='fr', slug='fip'))
