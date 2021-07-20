@@ -1,11 +1,12 @@
 from api.response_cache import ResponseCache, CacheError
 from base import stations
 
+import aioredis
+from asynctest.mock import CoroutineMock
 from unittest.mock import Mock, MagicMock
 import xxhash
 from datetime import datetime, timedelta
 import pytest
-import redis
 
 settings = Mock(
     redis=Mock(url='redis://localhost:6379/0', args={}),
@@ -18,47 +19,48 @@ response = 'test-response'
 station = stations.get('fr', 'radiomeuh')
 
 
-def test_set_raises_cacheerror_if_cant_connect_to_redis():
-    err = redis.exceptions.ConnectionError("Can't connect")
+async def test_set_raises_cacheerror_if_cant_connect_to_redis():
+    err = aioredis.exceptions.ConnectionError("Can't connect")
     response_cache.redis_client = MagicMock()
-    response_cache.redis_client.set = MagicMock(side_effect=err)
+    response_cache.redis_client.set = CoroutineMock(side_effect=err)
     with pytest.raises(CacheError):
-        response_cache.set(station, response)
+        await response_cache.set(station, response)
 
 
-def test_get_raises_cacheerror_if_cant_connect_to_redis():
-    err = redis.exceptions.ConnectionError("Can't connect")
+async def test_get_raises_cacheerror_if_cant_connect_to_redis():
+    err = aioredis.exceptions.ConnectionError("Can't connect")
     response_cache.redis_client = MagicMock()
-    response_cache.redis_client.get = MagicMock(side_effect=err)
+    response_cache.redis_client.get = CoroutineMock(side_effect=err)
+    response_cache.redis_client.ttl = CoroutineMock(side_effect=err)
     with pytest.raises(CacheError):
-        response_cache.get(station)
+        await response_cache.get(station)
 
 
-def test_set_uses_expire_at_if_provided():
+async def test_set_uses_expire_at_if_provided():
     response_cache.redis_client = MagicMock()
-    response_cache.redis_client.set = MagicMock(return_value=None)
+    response_cache.redis_client.set = CoroutineMock(return_value=None)
     expiry = datetime.now() + timedelta(seconds=20)
-    response_cache.set(station, response, expire_at=expiry)
+    await response_cache.set(station, response, expire_at=expiry)
     # FIXME: recipe for a transient failure if test runs slowly...
     response_cache.redis_client.set.assert_called_with('response:fr/radiomeuh', 'test-response', ex=19)
 
 
-def test_set_uses_expire_in_if_provided():
+async def test_set_uses_expire_in_if_provided():
     response_cache.redis_client = MagicMock()
-    response_cache.redis_client.set = MagicMock(return_value=None)
-    response_cache.set(station, response, expire_in=20)
+    response_cache.redis_client.set = CoroutineMock(return_value=None)
+    await response_cache.set(station, response, expire_in=20)
     response_cache.redis_client.set.assert_called_with('response:fr/radiomeuh', 'test-response', ex=20)
 
 
-def test_set_raises_valueerror_if_expire_in_and_expire_at_provided():
+async def test_set_raises_valueerror_if_expire_in_and_expire_at_provided():
     with pytest.raises(ValueError):
-        response_cache.set(station, response, expire_in=20, expire_at=datetime.now())
+        await response_cache.set(station, response, expire_in=20, expire_at=datetime.now())
 
 
-def test_set_uses_default_ttl_if_no_response_hash():
+async def test_set_uses_default_ttl_if_no_response_hash():
     response_cache.redis_client = MagicMock()
-    response_cache.redis_client.set = MagicMock(return_value=None)
-    response_cache.set(station, response)
+    response_cache.redis_client.set = CoroutineMock(return_value=None)
+    await response_cache.set(station, response)
     response_cache.redis_client.set.assert_any_call(
         'response-hash:fr/radiomeuh', xxhash.xxh32_digest(response), ex=5, get=True
     )
@@ -67,11 +69,11 @@ def test_set_uses_default_ttl_if_no_response_hash():
     )
 
 
-def test_set_uses_default_ttl_if_response_unchanged():
+async def test_set_uses_default_ttl_if_response_unchanged():
     response_cache.redis_client = MagicMock()
     hashed_response = xxhash.xxh32_digest(response)
-    response_cache.redis_client.set = MagicMock(return_value=hashed_response)
-    response_cache.set(station, response)
+    response_cache.redis_client.set = CoroutineMock(return_value=hashed_response)
+    await response_cache.set(station, response)
     response_cache.redis_client.set.assert_any_call(
         'response-hash:fr/radiomeuh', xxhash.xxh32_digest(response), ex=5, get=True
     )
@@ -80,11 +82,11 @@ def test_set_uses_default_ttl_if_response_unchanged():
     )
 
 
-def test_set_uses_ttl_if_changed_if_response_changed():
+async def test_set_uses_ttl_if_changed_if_response_changed():
     response_cache.redis_client = MagicMock()
     hashed_response = xxhash.xxh32_digest('old-response')
-    response_cache.redis_client.set = MagicMock(return_value=hashed_response)
-    response_cache.set(station, response)
+    response_cache.redis_client.set = CoroutineMock(return_value=hashed_response)
+    await response_cache.set(station, response)
     response_cache.redis_client.set.assert_any_call(
         'response-hash:fr/radiomeuh', xxhash.xxh32_digest(response), ex=5, get=True
     )
