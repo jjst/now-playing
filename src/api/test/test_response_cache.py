@@ -31,6 +31,7 @@ async def test_get_raises_cacheerror_if_cant_connect_to_redis():
     err = aioredis.exceptions.ConnectionError("Can't connect")
     response_cache.redis_client = MagicMock()
     response_cache.redis_client.get = CoroutineMock(side_effect=err)
+    response_cache.redis_client.ttl = CoroutineMock(side_effect=err)
     with pytest.raises(CacheError):
         await response_cache.get(station)
 

@@ -56,14 +56,13 @@ async def test_get_now_playing_by_station_id_uses_cache(loop, app, aiohttp_clien
 async def test_get_now_playing_by_station_id_returns_cache_control_header_for_fresh_response(loop, app, aiohttp_client, redis_client):
     await redis_client.flushall()
     cache = ResponseCache()
-    r = await cache.get(stations.get('fr', 'fip'))
+    r, _ = await cache.get(stations.get('fr', 'fip'))
     assert r is None
     client = await aiohttp_client(app)
     response = await client.get('/api/stations/{namespace}/{slug}/now-playing'.format(namespace='fr', slug='fip'))
     assert 'Cache-Control' in response.headers
 
 
-@pytest.mark.xfail(reason="not yet implemented")
 async def test_get_now_playing_by_station_id_returns_cache_control_header_for_cached_response(loop, app, aiohttp_client, redis_client):
     client = await aiohttp_client(app)
     _ = await client.get('/api/stations/{namespace}/{slug}/now-playing'.format(namespace='fr', slug='fip'))

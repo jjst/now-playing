@@ -1,5 +1,4 @@
 import asyncio
-import connexion
 import json
 import logging
 from aiohttp.web import Response, json_response
@@ -49,7 +48,7 @@ async def get_now_playing_by_country_code_and_station_id(namespace, slug):
     except KeyError:
         return json_response(data={'title': "Station not found"}, status=404)
     try:
-        cached_response = await response_cache.get(station)
+        (cached_response, ttl) = await response_cache.get(station)
     except CacheError as e:
         # Log error, but we can proceed without caching with degraded performance
         cached_response = None
@@ -57,9 +56,12 @@ async def get_now_playing_by_country_code_and_station_id(namespace, slug):
     current_span = trace.get_current_span()
     if cached_response:
         logging.info(f"Returning cached respones for {station.station_id()}")
+        headers = {}
+        if ttl and ttl > 0:
+            headers['Cache-Control'] = f'max-age={ttl}'
         if current_span:
             current_span.set_attribute('http.cached_response', True)
-        return Response(body=cached_response, content_type='application/json')
+        return Response(body=cached_response, content_type='application/json', headers=headers)
     elif current_span:
         current_span.set_attribute('http.cached_response', False)
     try:

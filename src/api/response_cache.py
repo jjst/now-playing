@@ -1,7 +1,8 @@
 import aioredis
+import asyncio
 import xxhash
 import datetime
-from typing import Optional
+from typing import Optional, Tuple
 from opentelemetry import trace
 
 from base.utils import monkeypatch_method
@@ -61,15 +62,20 @@ class ResponseCache():
         self.default_ttl_seconds = settings.response_cache.default_ttl_seconds
         self.default_ttl_seconds_if_changed = settings.response_cache.default_ttl_seconds_if_changed
 
-    async def get(self, station: RadioStationInfo) -> Optional[str]:
+    async def get(self, station: RadioStationInfo) -> Optional[Tuple[str, int]]:
         with tracer.start_as_current_span("get_cached_response") as span:
             try:
-                response = await self.redis_client.get(key_for(station, 'response'))
+                key = key_for(station, 'response')
+                (response, ttl) = await asyncio.gather(
+                    self.redis_client.get(key),
+                    self.redis_client.ttl(key)
+                )
             except aioredis.exceptions.ConnectionError as e:
                 raise CacheError("Error connecting to Redis. Cannot get cached response.") from e
             else:
                 span.set_attribute('cache_hit', (response is not None))
-                return response
+                span.set_attribute('ttl', ttl)
+                return (response, ttl)
 
     async def set(self, station: RadioStationInfo, response: str,
                   expire_in: Optional[int] = None, expire_at: Optional[datetime.datetime] = None) -> int:
