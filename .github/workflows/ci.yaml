@@ -123,6 +123,12 @@ jobs:
     needs: [gen-app-version, build-image]
     steps:
       - uses: actions/checkout@v2
+      - name: Bump version and push tag
+        id: tag-version
+        uses: mathieudutour/github-tag-action@v5.5
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          custom_tag: ${{ needs.gen-app-version.outputs.app-version }}
       - name: Generate app spec from template
         env:
           APPLICATION_VERSION: ${{ needs.gen-app-version.outputs.app-version }}
