@@ -59,6 +59,14 @@ jobs:
           app_version=$(./gen-app-version.sh)
           echo "App version: $app_version"
           echo "::set-output name=version::$app_version"
+      - name: Bump version and push tag
+        id: tag-version
+        if: github.ref == 'refs/heads/main'
+        uses: mathieudutour/github-tag-action@v5.5
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          custom_tag: ${{ steps.gen-version.outputs.version }}
+          tag_prefix: "" # We don't want a 'v' prefix for the tag
     outputs:
       app-version: ${{ steps.gen-version.outputs.version }}
   build-image:
@@ -123,13 +131,6 @@ jobs:
     needs: [gen-app-version, build-image]
     steps:
       - uses: actions/checkout@v2
-      - name: Bump version and push tag
-        id: tag-version
-        uses: mathieudutour/github-tag-action@v5.5
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          custom_tag: ${{ needs.gen-app-version.outputs.app-version }}
-          tag_prefix: "" # We don't want a 'v' prefix for the tag
       - name: Generate app spec from template
         env:
           APPLICATION_VERSION: ${{ needs.gen-app-version.outputs.app-version }}
