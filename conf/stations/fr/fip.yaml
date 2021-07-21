@@ -4,6 +4,7 @@ fip-aggregator-common-params: &fip-aggregator-common-params
   field_extractors:
     artist: '$.data.now.playing_item.title'
     song_title: '$.data.now.playing_item.subtitle'
+    cover_art: '$.data.now.playing_item.cover'
     start_time: '$.data.now.playing_item.start_time'
     end_time: '$.data.now.playing_item.end_time'
 

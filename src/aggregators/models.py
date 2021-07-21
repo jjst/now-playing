@@ -12,12 +12,15 @@ class PlayingItem():
     text: str
     start_time: Optional[datetime]
     end_time: Optional[datetime]
+    cover_art: Optional[str]
 
-    def __init__(self, type: str, text: str, start_time: OptionalTime = None, end_time: OptionalTime = None):
+    def __init__(self, type: str, text: str, cover_art: Optional[str] = None,
+                 start_time: OptionalTime = None, end_time: OptionalTime = None):
         self.type = type
         self.text = text
         self.start_time = self._to_datetime(start_time)
         self.end_time = self._to_datetime(end_time)
+        self.cover_art = cover_art
 
     def _to_datetime(self, o):
         if o:
@@ -40,10 +43,10 @@ class Song(PlayingItem):
     song_title: str
     album: Optional[str]
 
-    def __init__(self, artist: str, song_title: str, album: Optional[str] = None,
+    def __init__(self, artist: str, song_title: str, album: Optional[str] = None, cover_art: Optional[str] = None,
                  start_time: OptionalTime = None, end_time: OptionalTime = None):
         text = f"{artist} - {song_title}"
-        super().__init__(type='song', text=text, start_time=start_time, end_time=end_time)
+        super().__init__(type='song', text=text, cover_art=cover_art, start_time=start_time, end_time=end_time)
         self.artist = artist
         self.song_title = song_title
         self.album = album
@@ -53,13 +56,13 @@ class Programme(PlayingItem):
     name: str
     episode_title: Optional[str]
 
-    def __init__(self, name: str, episode_title: Optional[str],
+    def __init__(self, name: str, episode_title: Optional[str], cover_art: Optional[str] = None,
                  start_time: OptionalTime = None, end_time: OptionalTime = None):
         if episode_title:
             text = f"{name} - {episode_title}"
         else:
             text = name
-        super().__init__(type='programme', text=text, start_time=start_time, end_time=end_time)
+        super().__init__(type='programme', text=text, cover_art=cover_art, start_time=start_time, end_time=end_time)
         self.name = name
         self.episode_title = episode_title
 

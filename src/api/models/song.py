@@ -15,7 +15,7 @@ class Song(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, text: str=None, type: str=None, start_time: datetime=None, end_time: datetime=None, artist: str=None, title: str=None, album: str=None, cover_art: str=None):  # noqa: E501
+    def __init__(self, text: str=None, type: str=None, start_time: datetime=None, end_time: datetime=None, cover_art: str=None, artist: str=None, title: str=None, album: str=None):  # noqa: E501
         """Song - a model defined in Swagger
 
         :param text: The text of this Song.  # noqa: E501
@@ -26,24 +26,24 @@ class Song(Model):
         :type start_time: datetime
         :param end_time: The end_time of this Song.  # noqa: E501
         :type end_time: datetime
+        :param cover_art: The cover_art of this Song.  # noqa: E501
+        :type cover_art: str
         :param artist: The artist of this Song.  # noqa: E501
         :type artist: str
         :param title: The title of this Song.  # noqa: E501
         :type title: str
         :param album: The album of this Song.  # noqa: E501
         :type album: str
-        :param cover_art: The cover_art of this Song.  # noqa: E501
-        :type cover_art: str
         """
         self.swagger_types = {
             'text': str,
             'type': str,
             'start_time': datetime,
             'end_time': datetime,
+            'cover_art': str,
             'artist': str,
             'title': str,
-            'album': str,
-            'cover_art': str
+            'album': str
         }
 
         self.attribute_map = {
@@ -51,19 +51,19 @@ class Song(Model):
             'type': 'type',
             'start_time': 'start_time',
             'end_time': 'end_time',
+            'cover_art': 'cover_art',
             'artist': 'artist',
             'title': 'title',
-            'album': 'album',
-            'cover_art': 'cover_art'
+            'album': 'album'
         }
         self._text = text
         self._type = type
         self._start_time = start_time
         self._end_time = end_time
+        self._cover_art = cover_art
         self._artist = artist
         self._title = title
         self._album = album
-        self._cover_art = cover_art
 
     @classmethod
     def from_dict(cls, dikt) -> 'Song':
@@ -169,6 +169,27 @@ class Song(Model):
         self._end_time = end_time
 
     @property
+    def cover_art(self) -> str:
+        """Gets the cover_art of this Song.
+
+
+        :return: The cover_art of this Song.
+        :rtype: str
+        """
+        return self._cover_art
+
+    @cover_art.setter
+    def cover_art(self, cover_art: str):
+        """Sets the cover_art of this Song.
+
+
+        :param cover_art: The cover_art of this Song.
+        :type cover_art: str
+        """
+
+        self._cover_art = cover_art
+
+    @property
     def artist(self) -> str:
         """Gets the artist of this Song.
 
@@ -234,24 +255,3 @@ class Song(Model):
         """
 
         self._album = album
-
-    @property
-    def cover_art(self) -> str:
-        """Gets the cover_art of this Song.
-
-
-        :return: The cover_art of this Song.
-        :rtype: str
-        """
-        return self._cover_art
-
-    @cover_art.setter
-    def cover_art(self, cover_art: str):
-        """Sets the cover_art of this Song.
-
-
-        :param cover_art: The cover_art of this Song.
-        :type cover_art: str
-        """
-
-        self._cover_art = cover_art
