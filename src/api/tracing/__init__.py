@@ -9,9 +9,9 @@ from opentelemetry.launcher import configure_opentelemetry
 from opentelemetry.instrumentation.requests import RequestsInstrumentor
 from opentelemetry.instrumentation.urllib import URLLibInstrumentor
 from opentelemetry.instrumentation.botocore import BotocoreInstrumentor
+from opentelemetry.instrumentation.redis import RedisInstrumentor
 
 from api.tracing.aiohttp import instrument_aiohttp_app
-from api.tracing.aioredis import AioRedisInstrumentor
 
 
 import os
@@ -48,7 +48,7 @@ def add_instrumentation(app):
     RequestsInstrumentor().instrument(span_callback=set_cached_response_tag)
     URLLibInstrumentor().instrument()
     BotocoreInstrumentor().instrument()
-    AioRedisInstrumentor().instrument()
+    RedisInstrumentor().instrument()
     return app
 
 
