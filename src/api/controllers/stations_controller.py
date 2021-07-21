@@ -29,16 +29,20 @@ response_cache = ResponseCache()
 aggregation_result_saver = AggregationResultSaver()
 
 
+def json_dumps(data):
+    return json.dumps(data, cls=JSONEncoder)
+
+
 async def get_stations():
     all_stations = stations.get_all()
     data = RadioStationList(items=[_build_station(s) for s in all_stations])
-    return json_response(data=data.to_dict())
+    return json_response(data=data, dumps=json_dumps)
 
 
 async def get_stations_by_country_code(namespace):
     stations_by_country = stations.get_all(namespace=namespace)
     data = RadioStationList(items=[_build_station(s) for s in stations_by_country])
-    return json_response(data=data.to_dict())
+    return json_response(data=data, dumps=json_dumps)
 
 
 async def get_now_playing_by_country_code_and_station_id(namespace, slug):
@@ -83,12 +87,11 @@ async def get_now_playing_by_country_code_and_station_id(namespace, slug):
             aggregation_result_saver.save_aggregation_result(f"{namespace}/{slug}", aggregation_result)
         )
     playing_items_list = _build_now_playing_item_list(aggregation_result.items)
-    data = playing_items_list.to_dict()
     if aggregation_result.items:
         cache_expiry = min(i.end_time for i in aggregation_result.items)
     else:
         cache_expiry = None
-    response = json.dumps(data, cls=JSONEncoder)
+    response = json.dumps(playing_items_list, cls=JSONEncoder)
     actual_cache_expiry_seconds = None
     try:
         actual_cache_expiry_seconds = response_cache.set(station, response, expire_at=cache_expiry)
@@ -114,7 +117,7 @@ async def get_station_by_country_code_and_station_id(namespace, slug):  # noqa: 
     """
     try:
         station_info = stations.get(namespace, slug)
-        return json_response(data=_build_station(station_info).to_dict())
+        return json_response(data=_build_station(station_info), dumps=json_dumps)
     except KeyError:
         return json_response(data={'title': "Station not found"}, status=404)
 
