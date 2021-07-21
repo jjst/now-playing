@@ -52,15 +52,8 @@ stations:
         now-playing:
           - module: jsonpath_aggregator
             params:
-              station_id:
+              <<: *fip-aggregator-common-params
               url: https://www.fip.fr/latest/api/graphql?operationName=Now&variables=%7B%22stationId%22%3A78%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%2295ed3dd1212114e94d459439bd60390b4d6f9e37b38baf8fd9653328ceb3b86b%22%7D%7D
-              item_type: song
-              field_extractors:
-                artist: '$.data.now.playing_item.title'
-                song_title: '$.data.now.playing_item.subtitle'
-                start_time: '$.data.now.playing_item.start_time'
-                end_time: '$.data.now.playing_item.end_time'
-              engine: java-jayway
     fip-groove:
       name: FIP Groove
       favicon: https://www.fip.fr/favicons/144-144.png
