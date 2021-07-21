@@ -29,16 +29,20 @@ response_cache = ResponseCache()
 aggregation_result_saver = AggregationResultSaver()
 
 
+def json_dumps(data):
+    return json.dumps(data, cls=JSONEncoder)
+
+
 async def get_stations():
     all_stations = stations.get_all()
     data = RadioStationList(items=[_build_station(s) for s in all_stations])
-    return json_response(data=data.to_dict())
+    return json_response(data=data, dumps=json_dumps)
 
 
 async def get_stations_by_country_code(namespace):
     stations_by_country = stations.get_all(namespace=namespace)
     data = RadioStationList(items=[_build_station(s) for s in stations_by_country])
-    return json_response(data=data.to_dict())
+    return json_response(data=data, dumps=json_dumps)
 
 
 async def get_now_playing_by_country_code_and_station_id(namespace, slug):
@@ -113,7 +117,7 @@ async def get_station_by_country_code_and_station_id(namespace, slug):  # noqa: 
     """
     try:
         station_info = stations.get(namespace, slug)
-        return json_response(data=_build_station(station_info).to_dict())
+        return json_response(data=_build_station(station_info), dumps=json_dumps)
     except KeyError:
         return json_response(data={'title': "Station not found"}, status=404)
 
