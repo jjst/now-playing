@@ -14,4 +14,3 @@ stations:
                 song_title: '$.rock[0].title'
                 start_time: '$.rock[0].ts'
                 end_time: '$.rock[1].ts'
-              engine: java-jayway

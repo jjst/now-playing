@@ -31,7 +31,6 @@ stations:
               field_extractors:
                 artist: '$[0].artist'
                 song_title: '$[0].titre'
-              engine: java-jayway
     top-music:
       name: Top Music
       aggregators:
