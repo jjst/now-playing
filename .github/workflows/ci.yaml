@@ -59,7 +59,7 @@ jobs:
           app_version=$(./gen-app-version.sh)
           echo "App version: $app_version"
           echo "::set-output name=version::$app_version"
-      - name: Bump version and push tag
+      - name: Push tag
         id: tag-version
         if: github.ref == 'refs/heads/main'
         uses: mathieudutour/github-tag-action@v5.5
