@@ -48,7 +48,7 @@ async def get_now_playing_by_country_code_and_station_id(namespace, slug):
     except KeyError:
         return json_response(data={'title': "Station not found"}, status=404)
     try:
-        (cached_response, ttl) = await response_cache.get(station)
+        cached_response = response_cache.get(station)
     except CacheError as e:
         # Log error, but we can proceed without caching with degraded performance
         cached_response = None
@@ -56,12 +56,9 @@ async def get_now_playing_by_country_code_and_station_id(namespace, slug):
     current_span = trace.get_current_span()
     if cached_response:
         logging.info(f"Returning cached respones for {station.station_id()}")
-        headers = {}
-        if ttl and ttl > 0:
-            headers['Cache-Control'] = f'max-age={ttl}'
         if current_span:
             current_span.set_attribute('http.cached_response', True)
-        return Response(body=cached_response, content_type='application/json', headers=headers)
+        return Response(body=cached_response, content_type='application/json')
     elif current_span:
         current_span.set_attribute('http.cached_response', False)
     try:
@@ -94,7 +91,7 @@ async def get_now_playing_by_country_code_and_station_id(namespace, slug):
     response = json.dumps(data, cls=JSONEncoder)
     actual_cache_expiry_seconds = None
     try:
-        actual_cache_expiry_seconds = await response_cache.set(station, response, expire_at=cache_expiry)
+        actual_cache_expiry_seconds = response_cache.set(station, response, expire_at=cache_expiry)
     except CacheError as e:
         # Log error, but we can proceed without caching with degraded performance
         logging.exception(e)
