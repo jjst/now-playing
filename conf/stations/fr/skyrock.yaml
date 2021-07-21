@@ -13,4 +13,3 @@ stations:
                 artist: '$.schedule[-1].artists[0].name'
                 song_title: '$.schedule[-1].info.title'
                 end_time: '$.schedule[-1].info.end_ts'
-              engine: java-jayway
