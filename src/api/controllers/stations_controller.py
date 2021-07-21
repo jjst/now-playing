@@ -83,12 +83,11 @@ async def get_now_playing_by_country_code_and_station_id(namespace, slug):
             aggregation_result_saver.save_aggregation_result(f"{namespace}/{slug}", aggregation_result)
         )
     playing_items_list = _build_now_playing_item_list(aggregation_result.items)
-    data = playing_items_list.to_dict()
     if aggregation_result.items:
         cache_expiry = min(i.end_time for i in aggregation_result.items)
     else:
         cache_expiry = None
-    response = json.dumps(data, cls=JSONEncoder)
+    response = json.dumps(playing_items_list, cls=JSONEncoder)
     actual_cache_expiry_seconds = None
     try:
         actual_cache_expiry_seconds = response_cache.set(station, response, expire_at=cache_expiry)
