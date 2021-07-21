@@ -14,7 +14,7 @@ class NowPlayingItem(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, text: str=None, type: str=None, start_time: datetime=None, end_time: datetime=None):  # noqa: E501
+    def __init__(self, text: str=None, type: str=None, start_time: datetime=None, end_time: datetime=None, cover_art: str=None):  # noqa: E501
         """NowPlayingItem - a model defined in Swagger
 
         :param text: The text of this NowPlayingItem.  # noqa: E501
@@ -25,24 +25,29 @@ class NowPlayingItem(Model):
         :type start_time: datetime
         :param end_time: The end_time of this NowPlayingItem.  # noqa: E501
         :type end_time: datetime
+        :param cover_art: The cover_art of this NowPlayingItem.  # noqa: E501
+        :type cover_art: str
         """
         self.swagger_types = {
             'text': str,
             'type': str,
             'start_time': datetime,
-            'end_time': datetime
+            'end_time': datetime,
+            'cover_art': str
         }
 
         self.attribute_map = {
             'text': 'text',
             'type': 'type',
             'start_time': 'start_time',
-            'end_time': 'end_time'
+            'end_time': 'end_time',
+            'cover_art': 'cover_art'
         }
         self._text = text
         self._type = type
         self._start_time = start_time
         self._end_time = end_time
+        self._cover_art = cover_art
 
     @classmethod
     def from_dict(cls, dikt) -> 'NowPlayingItem':
@@ -146,3 +151,24 @@ class NowPlayingItem(Model):
         """
 
         self._end_time = end_time
+
+    @property
+    def cover_art(self) -> str:
+        """Gets the cover_art of this NowPlayingItem.
+
+
+        :return: The cover_art of this NowPlayingItem.
+        :rtype: str
+        """
+        return self._cover_art
+
+    @cover_art.setter
+    def cover_art(self, cover_art: str):
+        """Sets the cover_art of this NowPlayingItem.
+
+
+        :param cover_art: The cover_art of this NowPlayingItem.
+        :type cover_art: str
+        """
+
+        self._cover_art = cover_art

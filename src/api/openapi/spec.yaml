@@ -253,6 +253,9 @@ components:
         end_time:
           type: string
           format: date-time
+        cover_art:
+          type: string
+          format: uri
       example:
         text: Europe - The Final Countdown
         type: song
@@ -271,8 +274,6 @@ components:
             title:
               type: string
             album:
-              type: string
-            cover_art:
               type: string
           example:
             text: Europe - The Final Countdown
