@@ -2,6 +2,7 @@ stations:
   fr:
     jazz-radio:
       name: Jazz Radio
+      logo_url: https://www.jazzradio.fr/media/option/logo-jazzradio.png
       website_url: https://www.jazzradio.fr/
       player_url: https://www.jazzradio.fr/radio/webradio
       streams:
