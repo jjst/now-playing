@@ -118,11 +118,11 @@ stations:
     france-bleu-normandie-caen:
       <<: *france-bleu-common
       name: France Bleu Normandie (Calvados - Orne)
-      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_normandie-caen.jpg
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_normandie.jpg
     france-bleu-normandie-rouen:
       <<: *france-bleu-common
       name: France Bleu Normandie (Seine-Maritime - Eure)
-      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_normandie-rouen.jpg
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_normandie.jpg
     france-bleu-toulouse:
       <<: *france-bleu-common
       name: France Bleu Occitanie
@@ -142,11 +142,11 @@ stations:
     france-bleu-pays-d-auvergne:
       <<: *france-bleu-common
       name: France Bleu Pays dAuvergne
-      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_pays-d-auvergne.jpg
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_auvergne.jpg
     france-bleu-pays-de-savoie:
       <<: *france-bleu-common
       name: France Bleu Pays de Savoie
-      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_pays-de-savoie.jpg
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_savoie.jpg
     france-bleu-perigord:
       <<: *france-bleu-common
       name: France Bleu Périgord
