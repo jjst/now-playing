@@ -189,6 +189,9 @@ components:
         favicon:
           type: string
           format: uri
+        logo_url:
+          type: string
+          format: uri
         country_code:
           type: string
         streams:

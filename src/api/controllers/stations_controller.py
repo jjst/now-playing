@@ -140,6 +140,7 @@ def _build_station(station_info: RadioStationInfo):
         id=f"{station_info.namespace}/{station_info.slug}",
         name=station_info.name,
         favicon=station_info.favicon,
+        logo_url=station_info.logo_url,
         streams=streams
     )
     return radio_station
