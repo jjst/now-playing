@@ -18,6 +18,7 @@ stations:
     radiomeuh:
       name: Radio Meuh
       favicon: https://www.radiomeuh.com/favicon-32x32.png
+      logo_url: https://shop.radiomeuh.com/img/radiomeuh-logo-1548758338.jpg
       streams:
         - url: http://radiomeuh.ice.infomaniak.ch/radiomeuh-128.mp3
           bitrate_kbps: 128
@@ -33,6 +34,7 @@ stations:
                 song_title: '$[0].titre'
     top-music:
       name: Top Music
+      logo_url: https://www.topmusic.fr/images/logo_topmusic.svg
       aggregators:
         now-playing:
           - module: regex_aggregator
