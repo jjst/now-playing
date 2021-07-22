@@ -3,6 +3,7 @@ stations:
     france-inter:
       name: France Inter
       favicon: https://www.franceinter.fr/favicon.ico
+      logo_url: https://upload.wikimedia.org/wikipedia/fr/thumb/3/39/France_Inter_logo.svg/langfr-1024px-France_Inter_logo.svg.png
       streams:
         - url: http://direct.franceinter.fr/live/franceinter-midfi.mp3
       aggregators:
