@@ -186,13 +186,12 @@ stations = [
 
 s = {}
 for station in stations:
-    station_id = 'france-bleu-' + station['url'].removeprefix("https://www.francebleu.fr/")
+    loc = station['url'].removeprefix("https://www.francebleu.fr/")
+    station_id = 'france-bleu-' + loc
     s[station_id] = {
+        '<<': "*france-bleu-common",
         'name': station['name'],
-        'favicon': 'https://www.francebleu.fr/favicons/favicon-32x32.png',
-        'aggregators': {
-            'now-playing': [{'module': 'france_bleu', 'params': {'station_id': None}}]
-        }
+        'logo_url': f'https://www.francebleu.fr/img/station/logo/logo_francebleu_{loc}.jpg'
     }
 
 with open('france_bleu.yaml', 'w') as f:

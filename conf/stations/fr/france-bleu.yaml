@@ -10,135 +10,180 @@ stations:
     france-bleu-alsace:
       <<: *france-bleu-common
       name: France Bleu Alsace
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_alsace.jpg
     france-bleu-armorique:
       <<: *france-bleu-common
       name: France Bleu Armorique
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_armorique.jpg
     france-bleu-auxerre:
       <<: *france-bleu-common
       name: France Bleu Auxerre
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_auxerre.jpg
     france-bleu-azur:
       <<: *france-bleu-common
       name: France Bleu Azur
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_azur.jpg
     france-bleu-bearn:
       <<: *france-bleu-common
       name: France Bleu Béarn Bigorre
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_bearn.jpg
     france-bleu-belfort-montbeliard:
       <<: *france-bleu-common
       name: France Bleu Belfort-Montbéliard
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_belfort-montbeliard.jpg
     france-bleu-berry:
       <<: *france-bleu-common
       name: France Bleu Berry
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_berry.jpg
     france-bleu-besancon:
       <<: *france-bleu-common
       name: France Bleu Besançon
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_besancon.jpg
     france-bleu-bourgogne:
       <<: *france-bleu-common
       name: France Bleu Bourgogne
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_bourgogne.jpg
     france-bleu-breizh-izel:
       <<: *france-bleu-common
       name: France Bleu Breizh Izel
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_breizh-izel.jpg
     france-bleu-champagne-ardenne:
       <<: *france-bleu-common
       name: France Bleu Champagne-Ardenne
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_champagne-ardenne.jpg
     france-bleu-cotentin:
       <<: *france-bleu-common
       name: France Bleu Cotentin
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_cotentin.jpg
     france-bleu-creuse:
       <<: *france-bleu-common
       name: France Bleu Creuse
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_creuse.jpg
     france-bleu-drome-ardeche:
       <<: *france-bleu-common
       name: France Bleu Drôme Ardèche
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_drome-ardeche.jpg
     france-bleu-elsass:
       <<: *france-bleu-common
       name: France Bleu Elsass
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_elsass.jpg
     france-bleu-gard-lozere:
       <<: *france-bleu-common
       name: France Bleu Gard Lozère
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_gard-lozere.jpg
     france-bleu-gascogne:
       <<: *france-bleu-common
       name: France Bleu Gascogne
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_gascogne.jpg
     france-bleu-gironde:
       <<: *france-bleu-common
       name: France Bleu Gironde
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_gironde.jpg
     france-bleu-herault:
       <<: *france-bleu-common
       name: France Bleu Hérault
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_herault.jpg
     france-bleu-isere:
       <<: *france-bleu-common
       name: France Bleu Isère
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_isere.jpg
     france-bleu-la-rochelle:
       <<: *france-bleu-common
       name: France Bleu La Rochelle
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_la-rochelle.jpg
     france-bleu-limousin:
       <<: *france-bleu-common
       name: France Bleu Limousin
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_limousin.jpg
     france-bleu-loire-ocean:
       <<: *france-bleu-common
       name: France Bleu Loire Océan
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_loire-ocean.jpg
     france-bleu-lorraine-nord:
       <<: *france-bleu-common
       name: France Bleu Lorraine Nord
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_lorraine-nord.jpg
     france-bleu-maine:
       <<: *france-bleu-common
       name: France Bleu Maine
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_maine.jpg
     france-bleu-mayenne:
       <<: *france-bleu-common
       name: France Bleu Mayenne
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_mayenne.jpg
     france-bleu-nord:
       <<: *france-bleu-common
       name: France Bleu Nord
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_nord.jpg
     france-bleu-normandie-caen:
       <<: *france-bleu-common
       name: France Bleu Normandie (Calvados - Orne)
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_normandie-caen.jpg
     france-bleu-normandie-rouen:
       <<: *france-bleu-common
       name: France Bleu Normandie (Seine-Maritime - Eure)
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_normandie-rouen.jpg
     france-bleu-toulouse:
       <<: *france-bleu-common
       name: France Bleu Occitanie
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_toulouse.jpg
     france-bleu-orleans:
       <<: *france-bleu-common
       name: France Bleu Orléans
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_orleans.jpg
     france-bleu-107-1:
       <<: *france-bleu-common
       name: France Bleu Paris
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_107-1.jpg
     france-bleu-pays-basque:
       <<: *france-bleu-common
       name: France Bleu Pays Basque
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_pays-basque.jpg
     france-bleu-pays-d-auvergne:
       <<: *france-bleu-common
-      name: France Bleu Pays d'Auvergne
+      name: France Bleu Pays dAuvergne
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_pays-d-auvergne.jpg
     france-bleu-pays-de-savoie:
       <<: *france-bleu-common
       name: France Bleu Pays de Savoie
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_pays-de-savoie.jpg
     france-bleu-perigord:
       <<: *france-bleu-common
       name: France Bleu Périgord
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_perigord.jpg
     france-bleu-picardie:
       <<: *france-bleu-common
       name: France Bleu Picardie
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_picardie.jpg
     france-bleu-poitou:
       <<: *france-bleu-common
       name: France Bleu Poitou
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_poitou.jpg
     france-bleu-provence:
       <<: *france-bleu-common
       name: France Bleu Provence
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_provence.jpg
     france-bleu-rcfm:
       <<: *france-bleu-common
       name: France Bleu RCFM
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_rcfm.jpg
     france-bleu-roussillon:
       <<: *france-bleu-common
       name: France Bleu Roussillon
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_roussillon.jpg
     france-bleu-saint-etienne-loire:
       <<: *france-bleu-common
       name: France Bleu Saint-Étienne Loire
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_saint-etienne-loire.jpg
     france-bleu-sud-lorraine:
       <<: *france-bleu-common
       name: France Bleu Sud Lorraine
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_sud-lorraine.jpg
     france-bleu-touraine:
       <<: *france-bleu-common
       name: France Bleu Touraine
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_touraine.jpg
     france-bleu-vaucluse:
       <<: *france-bleu-common
       name: France Bleu Vaucluse
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_vaucluse.jpg
