@@ -2,6 +2,7 @@ stations:
   fr:
     abc-lounge:
       name: ABC Lounge
+      logo_url: https://www.abc-lounge.com/radio/wp-content/uploads/2019/11/logo-ABC-Lounge100.png
       aggregators:
         now-playing:
           - module: radio_dot_net
