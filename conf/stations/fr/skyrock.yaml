@@ -2,6 +2,7 @@ stations:
   fr:
     skyrock:
       name: Skyrock
+      logo_url: https://skyrock.fm/static/mobile/skyrockfm.png
       aggregators:
         now-playing:
           - module: jsonpath_aggregator
