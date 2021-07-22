@@ -10,6 +10,7 @@ stations:
     france-bleu-alsace:
       <<: *france-bleu-common
       name: France Bleu Alsace
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_alsace.jpg
     france-bleu-armorique:
       <<: *france-bleu-common
       name: France Bleu Armorique
