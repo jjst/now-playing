@@ -11,6 +11,7 @@ stations:
           - module: france_inter
     frequence-mutine:
       name: Frequence Mutine
+      logo_url: https://www.frequencemutine.fr/tt/img/logo-mutine_300.png
       aggregators:
         now-playing:
           - module: stream_aggregator
