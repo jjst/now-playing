@@ -1,7 +1,8 @@
 stations:
   fr:
-    le-mouv:
-      name: Le Mouv'
+    mouv:
+      name: Mouv'
+      logo_url: https://upload.wikimedia.org/wikipedia/fr/thumb/5/5d/Mouv.svg/langfr-1920px-Mouv.svg.png
       aggregators:
         now-playing:
           - module: jsonpath_aggregator

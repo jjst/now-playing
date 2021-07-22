@@ -2,6 +2,7 @@ stations:
   fr:
     oui-fm:
       name: Oui FM
+      logo_url: https://upload.wikimedia.org/wikipedia/fr/3/33/Oui_FM_2014_logo.png
       aggregators:
         now-playing:
           - module: jsonpath_aggregator

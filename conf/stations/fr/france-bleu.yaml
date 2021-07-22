@@ -134,7 +134,7 @@ stations:
     france-bleu-107-1:
       <<: *france-bleu-common
       name: France Bleu Paris
-      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_107-1.jpg
+      logo_url: https://www.francebleu.fr/img/station/logo/logo_francebleu_paris.jpg
     france-bleu-pays-basque:
       <<: *france-bleu-common
       name: France Bleu Pays Basque
