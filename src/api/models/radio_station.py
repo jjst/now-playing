@@ -15,7 +15,7 @@ class RadioStation(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, id: str=None, namespace: str=None, slug: str=None, name: str=None, favicon: str=None, country_code: str=None, streams: List[Stream]=None):  # noqa: E501
+    def __init__(self, id: str=None, namespace: str=None, slug: str=None, name: str=None, favicon: str=None, logo_url: str=None, country_code: str=None, streams: List[Stream]=None):  # noqa: E501
         """RadioStation - a model defined in Swagger
 
         :param id: The id of this RadioStation.  # noqa: E501
@@ -28,6 +28,8 @@ class RadioStation(Model):
         :type name: str
         :param favicon: The favicon of this RadioStation.  # noqa: E501
         :type favicon: str
+        :param logo_url: The logo_url of this RadioStation.  # noqa: E501
+        :type logo_url: str
         :param country_code: The country_code of this RadioStation.  # noqa: E501
         :type country_code: str
         :param streams: The streams of this RadioStation.  # noqa: E501
@@ -39,6 +41,7 @@ class RadioStation(Model):
             'slug': str,
             'name': str,
             'favicon': str,
+            'logo_url': str,
             'country_code': str,
             'streams': List[Stream]
         }
@@ -49,6 +52,7 @@ class RadioStation(Model):
             'slug': 'slug',
             'name': 'name',
             'favicon': 'favicon',
+            'logo_url': 'logo_url',
             'country_code': 'country_code',
             'streams': 'streams'
         }
@@ -57,6 +61,7 @@ class RadioStation(Model):
         self._slug = slug
         self._name = name
         self._favicon = favicon
+        self._logo_url = logo_url
         self._country_code = country_code
         self._streams = streams
 
@@ -183,6 +188,27 @@ class RadioStation(Model):
         """
 
         self._favicon = favicon
+
+    @property
+    def logo_url(self) -> str:
+        """Gets the logo_url of this RadioStation.
+
+
+        :return: The logo_url of this RadioStation.
+        :rtype: str
+        """
+        return self._logo_url
+
+    @logo_url.setter
+    def logo_url(self, logo_url: str):
+        """Sets the logo_url of this RadioStation.
+
+
+        :param logo_url: The logo_url of this RadioStation.
+        :type logo_url: str
+        """
+
+        self._logo_url = logo_url
 
     @property
     def country_code(self) -> str:
