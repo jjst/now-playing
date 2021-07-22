@@ -12,6 +12,7 @@ stations:
               field_extractors:
                 artist: '$.[?(@.id == "190")].playlist[?(@.song.id != 0)].song.artist'
                 song_title: '$.[?(@.id == "190")].playlist[?(@.song.id != 0)].song.title'
+                cover_art: '$.[?(@.id == "190")].playlist[?(@.song.id != 0)].song.img_url'
               engine: java-jayway
     nrj:
       name: NRJ
@@ -25,4 +26,5 @@ stations:
               field_extractors:
                 artist: '$.[?(@.id == "158")].playlist[?(@.song.id != 0)].song.artist'
                 song_title: '$.[?(@.id == "158")].playlist[?(@.song.id != 0)].song.title'
+                cover_art: '$.[?(@.id == "158")].playlist[?(@.song.id != 0)].song.img_url'
               engine: java-jayway
