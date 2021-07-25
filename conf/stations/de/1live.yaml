@@ -3,6 +3,7 @@ stations:
     1live:
       name: 1LIVE
       website_url: https://www1.wdr.de/radio/1live/
+      logo_url: https://www1.wdr.de/resources/img/wdr/logo/epgmodule/1live_logo.svg
       streams:
       - url: http://wdr-1live-live.icecast.wdr.de/wdr/1live/live/mp3/128/stream.mp3
         codec: mp3
